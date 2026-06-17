@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SCENT LM | Configuración</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#201f1f",
+                    "surface": "#131313",
+                    "on-primary-fixed": "#241a00",
+                    "error-container": "#93000a",
+                    "inverse-primary": "#735c00",
+                    "tertiary-fixed-dim": "#c6c6c8",
+                    "on-secondary-fixed-variant": "#474647",
+                    "on-primary": "#3c2f00",
+                    "tertiary-fixed": "#e2e2e4",
+                    "error": "#ffb4ab",
+                    "surface-bright": "#393939",
+                    "on-secondary-container": "#bab8b9",
+                    "primary-container": "#d4af37",
+                    "primary": "#f2ca50",
+                    "secondary-fixed": "#e5e2e3",
+                    "on-surface-variant": "#d0c5af",
+                    "on-secondary-fixed": "#1b1b1c",
+                    "secondary-fixed-dim": "#c8c6c7",
+                    "surface-container-highest": "#353534",
+                    "on-tertiary": "#2f3132",
+                    "on-tertiary-fixed-variant": "#454749",
+                    "inverse-on-surface": "#313030",
+                    "outline": "#99907c",
+                    "surface-container-low": "#1c1b1b",
+                    "on-primary-fixed-variant": "#574500",
+                    "on-error-container": "#ffdad6",
+                    "secondary": "#c8c6c7",
+                    "tertiary-container": "#b2b3b5",
+                    "tertiary": "#ceced0",
+                    "primary-fixed": "#ffe088",
+                    "surface-container-lowest": "#0e0e0e",
+                    "on-primary-container": "#554300",
+                    "on-error": "#690005",
+                    "background": "#131313",
+                    "surface-variant": "#353534",
+                    "outline-variant": "#4d4635",
+                    "on-tertiary-fixed": "#1a1c1d",
+                    "primary-fixed-dim": "#e9c349",
+                    "on-tertiary-container": "#434547",
+                    "inverse-surface": "#e5e2e1",
+                    "on-surface": "#e5e2e1",
+                    "on-background": "#e5e2e1",
+                    "surface-tint": "#e9c349",
+                    "secondary-container": "#49494a",
+                    "on-secondary": "#303031",
+                    "surface-dim": "#131313",
+                    "surface-container-high": "#2a2a2a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "card-gap": "16px",
+                    "gutter": "24px",
+                    "container-padding-desktop": "40px",
+                    "container-padding-mobile": "20px",
+                    "unit": "8px"
+            },
+            "fontFamily": {
+                    "price-display": ["Hanken Grotesk"],
+                    "headline-lg": ["Hanken Grotesk"],
+                    "headline-lg-mobile": ["Hanken Grotesk"],
+                    "display-lg": ["Hanken Grotesk"],
+                    "body-lg": ["Manrope"],
+                    "title-md": ["Hanken Grotesk"],
+                    "label-caps": ["Hanken Grotesk"],
+                    "body-md": ["Manrope"]
+            },
+            "fontSize": {
+                    "price-display": ["40px", {"lineHeight": "40px", "fontWeight": "300"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #131313;
+            color: #e5e2e1;
+            overflow-x: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .gold-border-gradient {
+            border-image: linear-gradient(to right, #d4af37, #f2ca50) 1;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #131313;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #4d4635;
+            border-radius: 10px;
+        }
+        .bento-card {
+            background-color: #1A1A1B;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            transition: all 0.3s ease;
+        }
+        .bento-card:hover {
+            border-color: rgba(212, 175, 55, 0.3);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
+        .active-tab-glow {
+            box-shadow: 0 0 15px rgba(242, 202, 80, 0.15);
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md flex h-screen">
+<!-- SideNavBar Removed per request -->
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 overflow-y-auto relative">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center px-container-desktop py-4 w-full max-w-full bg-surface dark:bg-surface border-b border-outline-variant shadow-sm z-10 sticky top-0 backdrop-blur-sm bg-surface/90">
+<div class="flex items-center gap-12">
+<div class="flex flex-col">
+<h1 class="font-headline-lg text-headline-lg text-primary leading-none">SCENT LM</h1>
+<p class="font-label-caps text-[10px] text-on-surface-variant tracking-[0.2em] mt-0.5">PREMIUM BOUTIQUE</p>
+</div>
+<nav class="hidden md:flex gap-10">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-title-md text-title-md" href="#">Ventas</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-title-md text-title-md" href="#">Inventario</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-title-md text-title-md" href="#">Reportes</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-title-md text-title-md" href="#">Caja</a>
+<a class="text-primary transition-colors font-title-md text-title-md border-b-2 border-primary pb-1" href="#">Configuración</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center bg-surface-container rounded-full px-4 py-1.5 border border-outline-variant/30">
+<span class="material-symbols-outlined text-on-surface-variant text-sm mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md placeholder-on-surface-variant w-40 lg:w-64" placeholder="Buscar ajuste..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Config Content -->
+<div class="p-container-padding-desktop max-w-full mx-auto w-full">
+<div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Configuración de Sistema</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2 max-w-3xl">Administre las preferencias de su boutique, gestione los niveles de acceso del personal y configure los parámetros fiscales para sus operaciones comerciales.</p>
+</div>
+<button class="px-8 py-3 bg-gradient-to-r from-primary to-primary-container text-on-primary-container font-label-caps text-label-caps rounded-lg hover:shadow-[0_0_20px_rgba(242,202,80,0.3)] transition-all transform hover:-translate-y-0.5 active:scale-95">
+                    Guardar Cambios
+                </button>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-card-gap">
+<!-- Business Details (Large Card) -->
+<section class="md:col-span-8 bento-card rounded-xl p-8">
+<div class="flex items-center gap-4 mb-8">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">store</span>
+</div>
+<h3 class="font-title-md text-title-md">Identidad de la Boutique</h3>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Nombre Comercial</label>
+<input class="bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 transition-colors py-2 text-body-md" type="text" value="Scent LM Premium Boutique"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-caps text-label-caps text-on-surface-variant">NIT / Tax ID</label>
+<input class="bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 transition-colors py-2 text-body-md" type="text" value="900.542.122-8"/>
+</div>
+<div class="flex flex-col gap-1.5 sm:col-span-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Dirección Principal</label>
+<input class="bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 transition-colors py-2 text-body-md" type="text" value="Avenida de los Aromas, Edificio Luxury Suite 102"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Teléfono de Contacto</label>
+<input class="bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 transition-colors py-2 text-body-md" type="text" value="+57 (300) 455-8899"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Correo Electrónico</label>
+<input class="bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 transition-colors py-2 text-body-md" type="email" value="admin@scentlm.com"/>
+</div>
+</div>
+</section>
+<!-- Profile Management (Sidebar Card) -->
+<section class="md:col-span-4 bento-card rounded-xl p-8 flex flex-col">
+<div class="flex items-center gap-4 mb-8">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">group</span>
+</div>
+<h3 class="font-title-md text-title-md">Gestión de Perfiles</h3>
+</div>
+<div class="space-y-4 flex-1">
+<!-- Gerente Item -->
+<div class="p-4 rounded-lg bg-surface-container border border-outline-variant/20 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container/30 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">shield_person</span>
+</div>
+<div>
+<p class="font-body-md font-semibold">Admin Master</p>
+<p class="font-label-caps text-[10px] text-primary">Gerente</p>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</div>
+<!-- Vendedor Item -->
+<div class="p-4 rounded-lg bg-surface-container border border-outline-variant/20 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container/30 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div>
+<p class="font-body-md font-semibold">Caja Principal</p>
+<p class="font-label-caps text-[10px] text-on-surface-variant">Vendedor</p>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</div>
+</div>
+<button class="mt-6 w-full py-3 border border-dashed border-outline text-on-surface-variant font-label-caps text-label-caps rounded-lg hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-lg">add</span>
+                        Agregar Usuario
+                    </button>
+</section>
+<!-- Tax Settings (Small Card) -->
+<section class="md:col-span-6 lg:col-span-4 bento-card rounded-xl p-8">
+<div class="flex items-center gap-4 mb-8">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">receipt_long</span>
+</div>
+<h3 class="font-title-md text-title-md">Parámetros Fiscales</h3>
+</div>
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<div>
+<p class="font-body-md font-medium">Cálculo de IVA</p>
+<p class="font-label-caps text-[10px] text-on-surface-variant">Impuesto al valor agregado</p>
+</div>
+<div class="flex items-center gap-2">
+<input class="w-16 bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 py-1 text-center font-bold" type="number" value="19"/>
+<span class="text-on-surface-variant">%</span>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="font-body-md font-medium">Facturación Electrónica</p>
+<p class="font-label-caps text-[10px] text-on-surface-variant">Habilitado DIAN / Tax Office</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Resolución de Facturación</label>
+<input class="bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 transition-colors py-2 text-body-md font-mono text-sm" type="text" value="RES-2023-098823-LM"/>
+</div>
+</div>
+</section>
+<!-- Printer Configuration (Small Card) -->
+<section class="md:col-span-6 lg:col-span-4 bento-card rounded-xl p-8">
+<div class="flex items-center gap-4 mb-8">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">print</span>
+</div>
+<h3 class="font-title-md text-title-md">Impresión de Tickets</h3>
+</div>
+<div class="space-y-6">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Dispositivo Seleccionado</label>
+<select class="bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 py-2 text-body-md appearance-none">
+<option>Epson TM-T88VI (Thermal)</option>
+<option>Star Micronics mC-Print3</option>
+<option>Network Printer 192.168.1.55</option>
+</select>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Ancho de Papel</label>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1 bg-primary-container text-on-primary-container rounded font-bold text-xs">80mm</button>
+<button class="px-3 py-1 bg-surface-container-highest text-on-surface-variant rounded font-bold text-xs">58mm</button>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Copias Autom.</label>
+<input class="bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 py-1 text-center font-bold" type="number" value="1"/>
+</div>
+</div>
+<button class="w-full py-3 bg-surface-container-highest text-on-surface hover:bg-surface-container-high transition-colors rounded-lg font-label-caps text-label-caps flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-lg">print_connect</span>
+                            Imprimir Ticket de Prueba
+                        </button>
+</div>
+</section>
+<!-- System Theme (Small Visual Card) -->
+<section class="md:col-span-12 lg:col-span-4 bento-card rounded-xl p-8 relative overflow-hidden group">
+<div class="absolute -right-12 -bottom-12 w-48 h-48 bg-primary opacity-5 rounded-full blur-3xl group-hover:opacity-10 transition-opacity"></div>
+<div class="flex items-center gap-4 mb-8">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">palette</span>
+</div>
+<h3 class="font-title-md text-title-md">Estética &amp; Entorno</h3>
+</div>
+<div class="flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<span class="font-body-md">Modo de Interfaz</span>
+<div class="flex p-1 bg-surface-container-low rounded-lg border border-outline-variant/30">
+<button class="p-2 px-4 rounded-md bg-primary text-on-primary-container shadow-lg">
+<span class="material-symbols-outlined text-sm mr-1" style="font-variation-settings: 'FILL' 1;">dark_mode</span>
+<span class="font-label-caps text-[10px]">Dark</span>
+</button>
+<button class="p-2 px-4 rounded-md text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-sm mr-1">light_mode</span>
+<span class="font-label-caps text-[10px]">Light</span>
+</button>
+</div>
+</div>
+<div class="p-6 bg-surface rounded-lg border border-primary/20 relative">
+<div class="flex items-center gap-3 mb-3">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="font-label-caps text-[10px] text-primary">Previsualización de Acento Gold</span>
+</div>
+<div class="h-2 w-full bg-gradient-to-r from-primary/10 via-primary to-primary/10 rounded-full"></div>
+</div>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
+                            El diseño boutique de Scent LM está optimizado para entornos de alta gama, con contrastes suaves que reducen la fatiga visual.
+                        </p>
+</div>
+</section>
+</div>
+</div>
+<!-- Sticky Footer for Mobile (BottomNavBar substitute) -->
+<div class="md:hidden sticky bottom-0 w-full bg-surface-container border-t border-outline-variant flex justify-around py-3 px-2 z-50">
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">point_of_sale</span>
+<span class="text-[10px] font-label-caps">Venta</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="text-[10px] font-label-caps">Stock</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="text-[10px] font-label-caps">Config</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="text-[10px] font-label-caps">Perfil</span>
+</a>
+</div>
+</main>
+<script>
+        // Micro-interactions and effects
+        document.querySelectorAll('.bento-card').forEach(card => {
+            card.addEventListener('mousedown', () => {
+                card.style.transform = 'scale(0.995)';
+            });
+            card.addEventListener('mouseup', () => {
+                card.style.transform = 'scale(1)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'scale(1)';
+            });
+        });
+
+        // Input Focus Visuals
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.querySelector('label')?.classList.add('text-primary');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.querySelector('label')?.classList.remove('text-primary');
+            });
+        });
+    </script>
+</body></html>

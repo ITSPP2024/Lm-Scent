@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SCENT LM | Bienvenida</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+  tailwind.config = { darkMode: "class", theme: { extend: { colors: {
+    background:"#0f0f10", surface:"#131313", primary:"#f2ca50",
+    "primary-dim":"#e9c349","on-primary":"#241a00",
+    "on-surface":"#e5e2e1","on-surface-variant":"#9a9286",
+    outline:"#3a342a"
+  }, fontFamily:{ display:["'Hanken Grotesk'","sans-serif"], body:["Manrope","sans-serif"] } }}}
+</script>
+<style>
+  body{font-family:Manrope,sans-serif;background:radial-gradient(ellipse at top,#1a1611 0%,#0a0a0b 60%);min-height:100vh}
+  .gold{color:#f2ca50}
+  .btn-gold{border:1px solid #f2ca50;color:#f2ca50;letter-spacing:.18em;transition:.2s}
+  .btn-gold:hover{background:#f2ca50;color:#241a00;box-shadow:0 0 30px rgba(242,202,80,.35)}
+  .logo-card{background:#1a1a1d;border:1px solid #2a2a2e;box-shadow:0 20px 60px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.02)}
+  .dot{width:6px;height:6px;border-radius:9999px;background:#f2ca50;box-shadow:0 0 8px #f2ca50}
+</style>
+</head>
+<body class="text-on-surface">
+<div class="min-h-screen flex flex-col">
+  <header class="flex items-center justify-between px-8 py-5">
+    <div class="font-display font-bold tracking-wide text-primary">LM Scent</div>
+    <div class="flex items-center gap-4 text-[11px] tracking-widest uppercase">
+      <span class="gold font-semibold">Boutique Edition</span>
+      <span class="text-on-surface-variant">v. 4.2.0</span>
+    </div>
+  </header>
+
+  <main class="flex-1 flex flex-col items-center justify-center px-6 -mt-6">
+    <div class="logo-card rounded-2xl p-8 mb-10">
+      <div class="w-32 h-32 rounded-full bg-[#0f0f10] border border-[#2a2a2e] flex items-center justify-center">
+        <div class="relative w-24 h-24 rounded-full border-2 border-primary flex items-center justify-center">
+          <span class="font-display text-4xl gold font-bold">Σ</span>
+          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full">
+            <defs><path id="c" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs>
+            <text class="gold" fill="#f2ca50" font-family="Hanken Grotesk" font-size="9" letter-spacing="3">
+              <textPath href="#c" startOffset="0">SCENT  LM  ·  BOUTIQUE  EDITION  ·</textPath>
+            </text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <h1 class="font-display text-3xl md:text-4xl tracking-[0.18em] mb-3">
+      <span class="text-on-surface">GESTIÓN</span> <span class="gold">EXCLUSIVA</span>
+    </h1>
+    <p class="text-on-surface-variant text-sm text-center max-w-md mb-10 leading-relaxed">
+      Sistema de punto de venta diseñado para boutiques<br/>de lujo y perfumerías de autor.
+    </p>
+
+    <a href="/apertura" class="btn-gold rounded-md px-10 py-4 text-sm font-semibold inline-flex items-center gap-3">
+      COMENZAR VENTA
+      <span class="material-symbols-outlined text-base">arrow_forward</span>
+    </a>
+  </main>
+
+  <footer class="flex items-center justify-between px-8 py-5 text-[11px] text-on-surface-variant">
+    <div class="flex items-center gap-2"><span class="dot"></span> Servidor Conectado: Cloud-East-1</div>
+    <div>© 2024 LM Scent. All rights reserved.</div>
+  </footer>
+</div>
+</body>
+</html>

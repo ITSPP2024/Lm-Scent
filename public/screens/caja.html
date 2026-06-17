@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SCENT LM - Gestión de Caja</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .gold-gradient {
+            background: linear-gradient(135deg, #f2ca50 0%, #d4af37 100%);
+        }
+        .gold-glow:hover {
+            box-shadow: 0 0 15px rgba(242, 202, 80, 0.3);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #131313;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #4d4635;
+            border-radius: 10px;
+        }
+        .glass-panel {
+            background: rgba(26, 26, 27, 0.8);
+            backdrop-filter: blur(8px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#99907c",
+                        "secondary-fixed-dim": "#c8c6c7",
+                        "primary": "#f2ca50",
+                        "tertiary": "#ceced0",
+                        "surface-container-highest": "#353534",
+                        "primary-container": "#d4af37",
+                        "surface-tint": "#e9c349",
+                        "secondary-container": "#49494a",
+                        "on-tertiary": "#2f3132",
+                        "on-surface-variant": "#d0c5af",
+                        "on-secondary-fixed": "#1b1b1c",
+                        "inverse-surface": "#e5e2e1",
+                        "surface-dim": "#131313",
+                        "primary-fixed": "#ffe088",
+                        "outline-variant": "#4d4635",
+                        "on-background": "#e5e2e1",
+                        "on-secondary": "#303031",
+                        "surface-container": "#201f1f",
+                        "on-surface": "#e5e2e1",
+                        "inverse-primary": "#735c00",
+                        "on-tertiary-container": "#434547",
+                        "on-secondary-container": "#bab8b9",
+                        "surface-container-low": "#1c1b1b",
+                        "surface-bright": "#393939",
+                        "surface": "#131313",
+                        "on-tertiary-fixed-variant": "#454749",
+                        "on-error": "#690005",
+                        "tertiary-container": "#b2b3b5",
+                        "surface-container-lowest": "#0e0e0e",
+                        "secondary-fixed": "#e5e2e3",
+                        "error-container": "#93000a",
+                        "on-error-container": "#ffdad6",
+                        "background": "#131313",
+                        "on-primary": "#3c2f00",
+                        "inverse-on-surface": "#313030",
+                        "on-primary-container": "#554300",
+                        "tertiary-fixed-dim": "#c6c6c8",
+                        "surface-container-high": "#2a2a2a",
+                        "on-tertiary-fixed": "#1a1c1d",
+                        "surface-variant": "#353534",
+                        "primary-fixed-dim": "#e9c349",
+                        "on-primary-fixed": "#241a00",
+                        "on-primary-fixed-variant": "#574500",
+                        "error": "#ffb4ab",
+                        "tertiary-fixed": "#e2e2e4",
+                        "on-secondary-fixed-variant": "#474647",
+                        "secondary": "#c8c6c7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-padding-desktop": "40px",
+                        "card-gap": "16px",
+                        "gutter": "24px",
+                        "container-padding-mobile": "20px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Manrope"],
+                        "label-caps": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "price-display": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "title-md": ["Hanken Grotesk"],
+                        "body-md": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "price-display": ["40px", {"lineHeight": "40px", "fontWeight": "300"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md custom-scrollbar selection:bg-primary-container selection:text-on-primary-container overflow-hidden">
+<div class="flex h-screen w-full flex-col">
+<!-- TopAppBar (Full width, no Sidebar) -->
+<header class="flex justify-between items-center px-container-desktop py-unit w-full max-w-full bg-surface border-b border-outline-variant shadow-sm z-10 h-16 shrink-0">
+<div class="flex items-center gap-10">
+<div class="flex items-center">
+<h1 class="font-headline-lg text-2xl text-primary tracking-tight">SCENT LM</h1>
+</div>
+<nav class="flex items-center gap-8">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Ventas</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Inventario</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Reportes</a>
+<a class="font-label-caps text-label-caps text-primary border-b-2 border-primary pb-1" href="#">Caja</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Configuración</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer group-hover:text-primary transition-colors">notifications</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full"></span>
+</div>
+<div class="flex items-center gap-3 cursor-pointer group">
+<div class="text-right hidden sm:block">
+<p class="text-on-surface text-xs font-bold leading-none">Admin Boutique</p>
+<p class="text-on-surface-variant text-[10px] uppercase tracking-tighter">Turno Tarde</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors text-3xl">account_circle</span>
+</div>
+</div>
+</header>
+<!-- Scrollable Content Canvas (Full Width) -->
+<main class="flex-1 overflow-y-auto custom-scrollbar p-container-desktop bg-background">
+<div class="max-w-7xl mx-auto space-y-gutter">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-gutter">
+<div>
+<h2 class="font-display-lg text-display-lg text-primary leading-tight">Gestión de Caja</h2>
+<p class="text-on-surface-variant font-body-md mt-2">Control de flujo de efectivo y auditoría diaria para LM Scent.</p>
+</div>
+<div class="flex gap-4">
+<button class="flex items-center gap-2 px-6 py-3 border border-primary/30 text-primary rounded-xl font-label-caps text-label-caps hover:bg-primary/10 transition-all active:scale-95">
+<span class="material-symbols-outlined text-sm">add_circle</span>
+                        Ingreso de Efectivo
+                    </button>
+<button class="flex items-center gap-2 px-6 py-3 border border-error/30 text-error rounded-xl font-label-caps text-label-caps hover:bg-error/10 transition-all active:scale-95">
+<span class="material-symbols-outlined text-sm">remove_circle</span>
+                        Retiro de Efectivo
+                    </button>
+</div>
+</div>
+<!-- Metrics Summary Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-card-gap">
+<!-- Saldo Actual -->
+<div class="bg-surface-container border-t-2 border-primary p-6 rounded-xl relative overflow-hidden group">
+<div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-[120px] text-primary">account_balance_wallet</span>
+</div>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-2">Saldo en Caja</p>
+<h3 class="font-price-display text-price-display text-primary">$4,850.50</h3>
+<div class="mt-4 flex items-center gap-2 text-primary/60">
+<span class="material-symbols-outlined text-sm">update</span>
+<span class="text-xs">Última actualización: 14:32</span>
+</div>
+</div>
+<!-- Entradas -->
+<div class="bg-surface-container border border-outline-variant p-6 rounded-xl group">
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-2">Total Entradas</p>
+<h3 class="font-price-display text-price-display text-on-surface">$6,120.00</h3>
+<div class="mt-4 flex items-center gap-2 text-primary font-bold">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span class="text-xs">+12.4% vs promedio diario</span>
+</div>
+</div>
+<!-- Salidas -->
+<div class="bg-surface-container border border-outline-variant p-6 rounded-xl group">
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-2">Total Salidas</p>
+<h3 class="font-price-display text-price-display text-on-surface">$1,269.50</h3>
+<div class="mt-4 flex items-center gap-2 text-error font-bold">
+<span class="material-symbols-outlined text-sm">trending_down</span>
+<span class="text-xs">Gastos operativos y retiros</span>
+</div>
+</div>
+</div>
+<!-- Main Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Col: Movimientos -->
+<div class="lg:col-span-8 flex flex-col h-full">
+<div class="bg-surface-container border border-outline-variant rounded-xl flex flex-col h-full">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center">
+<h4 class="font-title-md text-title-md text-on-surface">Movimientos de Caja</h4>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container-highest rounded-lg transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">filter_list</span>
+</button>
+<button class="p-2 hover:bg-surface-container-highest rounded-lg transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">download</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto flex-1">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low">
+<tr>
+<th class="px-6 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">Hora</th>
+<th class="px-6 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">Descripción</th>
+<th class="px-6 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">Tipo</th>
+<th class="px-6 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider text-right">Monto</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-surface-container-highest transition-colors group">
+<td class="px-6 py-4 font-label-caps text-on-surface-variant text-xs">14:20</td>
+<td class="px-6 py-4">
+<p class="text-on-surface font-medium">Venta #POS-2093</p>
+<p class="text-[10px] text-on-surface-variant">Parfum d'Elite 100ml</p>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase">Venta</span>
+</td>
+<td class="px-6 py-4 text-right text-primary font-price-display text-lg">$245.00</td>
+</tr>
+<tr class="hover:bg-surface-container-highest transition-colors group">
+<td class="px-6 py-4 font-label-caps text-on-surface-variant text-xs">13:45</td>
+<td class="px-6 py-4">
+<p class="text-on-surface font-medium">Gasto de Mensajería</p>
+<p class="text-[10px] text-on-surface-variant">Envío urgente boutique norte</p>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-error/10 text-error text-[10px] font-bold rounded uppercase">Egreso</span>
+</td>
+<td class="px-6 py-4 text-right text-error font-price-display text-lg">-$25.00</td>
+</tr>
+<tr class="hover:bg-surface-container-highest transition-colors group">
+<td class="px-6 py-4 font-label-caps text-on-surface-variant text-xs">12:10</td>
+<td class="px-6 py-4">
+<p class="text-on-surface font-medium">Retiro Prosegur</p>
+<p class="text-[10px] text-on-surface-variant">Corte parcial matutino</p>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded uppercase">Retiro</span>
+</td>
+<td class="px-6 py-4 text-right text-on-surface font-price-display text-lg">-$1,200.00</td>
+</tr>
+<tr class="hover:bg-surface-container-highest transition-colors group">
+<td class="px-6 py-4 font-label-caps text-on-surface-variant text-xs">11:30</td>
+<td class="px-6 py-4">
+<p class="text-on-surface font-medium">Venta #POS-2092</p>
+<p class="text-[10px] text-on-surface-variant">Velvet Rose Gift Set</p>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase">Venta</span>
+</td>
+<td class="px-6 py-4 text-right text-primary font-price-display text-lg">$180.00</td>
+</tr>
+<tr class="hover:bg-surface-container-highest transition-colors group">
+<td class="px-6 py-4 font-label-caps text-on-surface-variant text-xs">09:00</td>
+<td class="px-6 py-4">
+<p class="text-on-surface font-medium">Apertura de Caja</p>
+<p class="text-[10px] text-on-surface-variant">Fondo inicial</p>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-surface-container-highest text-on-surface-variant text-[10px] font-bold rounded uppercase">Fondo</span>
+</td>
+<td class="px-6 py-4 text-right text-on-surface font-price-display text-lg">$500.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 bg-surface-container-low border-t border-outline-variant flex justify-center">
+<button class="text-on-surface-variant text-xs hover:text-primary transition-colors font-label-caps tracking-widest">Ver Todo el Historial</button>
+</div>
+</div>
+</div>
+<!-- Right Col: Arqueo / Denominations -->
+<div class="lg:col-span-4 space-y-gutter">
+<!-- Arqueo Section -->
+<div class="bg-surface-container border border-outline-variant p-6 rounded-xl flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<h4 class="font-title-md text-title-md text-on-surface">Corte de Caja</h4>
+<span class="material-symbols-outlined text-primary" data-weight="fill">account_balance</span>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between py-2 border-b border-outline-variant/20">
+<span class="text-on-surface-variant text-sm">Efectivo reportado</span>
+<span class="text-on-surface font-price-display text-xl">$4,850.50</span>
+</div>
+<div class="flex items-center justify-between py-2 border-b border-outline-variant/20">
+<span class="text-on-surface-variant text-sm">Esperado en sistema</span>
+<span class="text-on-surface font-price-display text-xl">$4,850.50</span>
+</div>
+<div class="flex items-center justify-between py-2 border-b border-outline-variant/20">
+<span class="text-on-surface-variant text-sm">Diferencia</span>
+<span class="text-primary font-price-display text-xl">$0.00</span>
+</div>
+</div>
+<div class="space-y-3">
+<p class="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Desglose de Efectivo</p>
+<div class="grid grid-cols-2 gap-2">
+<div class="flex items-center justify-between bg-surface p-2 rounded border border-outline-variant/10">
+<span class="text-xs text-primary">$100</span>
+<input class="w-12 bg-transparent text-right text-sm border-0 focus:ring-0 p-0 text-on-surface font-bold" type="number" value="35"/>
+</div>
+<div class="flex items-center justify-between bg-surface p-2 rounded border border-outline-variant/10">
+<span class="text-xs text-primary">$50</span>
+<input class="w-12 bg-transparent text-right text-sm border-0 focus:ring-0 p-0 text-on-surface font-bold" type="number" value="18"/>
+</div>
+<div class="flex items-center justify-between bg-surface p-2 rounded border border-outline-variant/10">
+<span class="text-xs text-primary">$20</span>
+<input class="w-12 bg-transparent text-right text-sm border-0 focus:ring-0 p-0 text-on-surface font-bold" type="number" value="12"/>
+</div>
+<div class="flex items-center justify-between bg-surface p-2 rounded border border-outline-variant/10">
+<span class="text-xs text-primary">$10</span>
+<input class="w-12 bg-transparent text-right text-sm border-0 focus:ring-0 p-0 text-on-surface font-bold" type="number" value="15"/>
+</div>
+<div class="flex items-center justify-between bg-surface p-2 rounded border border-outline-variant/10">
+<span class="text-xs text-primary">$5</span>
+<input class="w-12 bg-transparent text-right text-sm border-0 focus:ring-0 p-0 text-on-surface font-bold" type="number" value="10"/>
+</div>
+<div class="flex items-center justify-between bg-surface p-2 rounded border border-outline-variant/10">
+<span class="text-xs text-primary">Mon.</span>
+<input class="w-12 bg-transparent text-right text-sm border-0 focus:ring-0 p-0 text-on-surface font-bold" type="number" value="25"/>
+</div>
+</div>
+</div>
+<button class="w-full gold-gradient text-on-primary-fixed py-4 rounded-xl font-headline-lg text-lg flex items-center justify-center gap-3 shadow-xl gold-glow transition-all active:scale-95 group">
+<span class="material-symbols-outlined transition-transform group-hover:rotate-12">lock_open</span>
+                            Realizar Corte Final
+                        </button>
+<p class="text-[10px] text-on-surface-variant text-center italic">Este proceso cerrará el turno actual y generará el reporte fiscal.</p>
+</div>
+<!-- Decorative Visual Panel -->
+<div class="relative h-48 rounded-xl overflow-hidden group">
+<img class="absolute inset-0 w-full h-full object-cover grayscale opacity-40 group-hover:opacity-60 transition-opacity" data-alt="A moody, close-up luxury cinematic shot of a bespoke perfume bottle sitting on a textured dark granite surface with soft, warm golden rim lighting. The atmosphere is sophisticated and high-end, reflecting a boutique's meticulous attention to detail. Minimalist shadows and elegant reflections emphasize the premium brand identity of LM Scent." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpHjrd33gqXbXYyQLbnDRPe4zmTBcoroFIr3395zZdx3610JfNsxXx3nRRpYx_tJmiWjgMsJVQrz9zBgInGqS17lvigP4-U842wULiRQHomYEY1gXwaPRpna2EnDjWx9h_mXZr0liA3boIGzZoUZ9N9UZe30-I6tOz1SrJfg3UuiO6AY8gbJ309YjzdvoP6uLVvSXXzgxv_mpj_g-OS82luo8N02LmSB_DVUgu6HgmVWs9m33XSOxUgkElg-Uqtfxo3gNnjMaBEihk"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<p class="font-label-caps text-xs text-primary uppercase tracking-[0.2em]">Auditoría Segura</p>
+<p class="text-on-surface-variant text-[10px] leading-tight mt-1">Todas las transacciones están encriptadas y sincronizadas con el servidor central en tiempo real.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Micro-interaction Scripts -->
+<script>
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        input.addEventListener('change', (e) => {
+            // Minimal ripple or flash on update
+            const parent = e.target.closest('div');
+            parent.classList.add('border-primary/50');
+            setTimeout(() => parent.classList.remove('border-primary/50'), 300);
+        });
+    });
+
+    // Simple button active state visual feedback
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const icon = btn.querySelector('.material-symbols-outlined');
+            if (icon) {
+                icon.style.transform = 'scale(0.8)';
+                setTimeout(() => icon.style.transform = 'scale(1)', 150);
+            }
+        });
+    });
+</script>
+</body></html>

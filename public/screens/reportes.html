@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reportes y Analítica | SCENT LM</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#201f1f",
+                        "surface": "#131313",
+                        "on-primary-fixed": "#241a00",
+                        "error-container": "#93000a",
+                        "inverse-primary": "#735c00",
+                        "tertiary-fixed-dim": "#c6c6c8",
+                        "on-secondary-fixed-variant": "#474647",
+                        "on-primary": "#3c2f00",
+                        "tertiary-fixed": "#e2e2e4",
+                        "error": "#ffb4ab",
+                        "surface-bright": "#393939",
+                        "on-secondary-container": "#bab8b9",
+                        "primary-container": "#d4af37",
+                        "primary": "#f2ca50",
+                        "secondary-fixed": "#e5e2e3",
+                        "on-surface-variant": "#d0c5af",
+                        "on-secondary-fixed": "#1b1b1c",
+                        "secondary-fixed-dim": "#c8c6c7",
+                        "surface-container-highest": "#353534",
+                        "on-tertiary": "#2f3132",
+                        "on-tertiary-fixed-variant": "#454749",
+                        "inverse-on-surface": "#313030",
+                        "outline": "#99907c",
+                        "surface-container-low": "#1c1b1b",
+                        "on-primary-fixed-variant": "#574500",
+                        "on-error-container": "#ffdad6",
+                        "secondary": "#c8c6c7",
+                        "tertiary-container": "#b2b3b5",
+                        "tertiary": "#ceced0",
+                        "primary-fixed": "#ffe088",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-primary-container": "#554300",
+                        "on-error": "#690005",
+                        "background": "#131313",
+                        "surface-variant": "#353534",
+                        "outline-variant": "#4d4635",
+                        "on-tertiary-fixed": "#1a1c1d",
+                        "primary-fixed-dim": "#e9c349",
+                        "on-tertiary-container": "#434547",
+                        "inverse-surface": "#e5e2e1",
+                        "on-surface": "#e5e2e1",
+                        "on-background": "#e5e2e1",
+                        "surface-tint": "#e9c349",
+                        "secondary-container": "#49494a",
+                        "on-secondary": "#303031",
+                        "surface-dim": "#131313",
+                        "surface-container-high": "#2a2a2a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "card-gap": "16px",
+                        "gutter": "24px",
+                        "container-padding-desktop": "40px",
+                        "container-padding-mobile": "20px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "price-display": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Manrope"],
+                        "title-md": ["Hanken Grotesk"],
+                        "label-caps": ["Hanken Grotesk"],
+                        "body-md": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "price-display": ["40px", {"lineHeight": "40px", "fontWeight": "300"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .gold-accent-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #f2ca50, transparent);
+        }
+        .luxury-card {
+            background: #1A1A1B;
+            border: 1px solid rgba(242, 202, 80, 0.1);
+            transition: all 0.3s ease;
+        }
+        .luxury-card:hover {
+            border-color: rgba(242, 202, 80, 0.4);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+        .glass-effect {
+            backdrop-filter: blur(8px);
+            background: rgba(19, 19, 19, 0.8);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #131313; }
+        ::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container overflow-hidden">
+<div class="flex h-screen w-full">
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col overflow-hidden relative">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center px-container-desktop py-4 w-full bg-surface border-b border-outline-variant shadow-sm z-10 shrink-0">
+<div class="flex items-center gap-12">
+<div class="flex flex-col">
+<h1 class="font-headline-lg text-[24px] text-primary tracking-tight leading-none">SCENT LM</h1>
+<p class="font-label-caps text-[10px] text-on-surface-variant">Premium Boutique</p>
+</div>
+<nav class="flex gap-8 items-center">
+<a class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors" href="#">Ventas</a>
+<a class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors" href="#">Inventario</a>
+<a class="font-title-md text-title-md text-primary border-b-2 border-primary pb-1" href="#">Reportes</a>
+<a class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors" href="#">Caja</a>
+<a class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors" href="#">Configuración</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="bg-surface-container-high border-none rounded-full py-2 pl-10 pr-4 text-body-md focus:ring-1 focus:ring-primary w-64 transition-all" placeholder="Buscar reporte..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-surface-container-high rounded-full text-on-surface-variant transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high rounded-full text-on-surface-variant transition-all">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="flex-1 overflow-y-auto p-container-desktop space-y-gutter scroll-smooth">
+<!-- Filters & Export Header -->
+<section class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface">Panel de Analítica</h3>
+<p class="text-on-surface-variant font-body-md">Resumen de rendimiento: 01 de Oct — 31 de Oct, 2023</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center bg-surface-container-high rounded-lg p-1">
+<button class="px-4 py-2 font-label-caps text-label-caps text-on-primary bg-primary rounded-lg shadow-sm">Mensual</button>
+<button class="px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface">Trimestral</button>
+<button class="px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface">Anual</button>
+</div>
+<button class="flex items-center gap-2 border border-outline px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-[20px]">ios_share</span>
+<span class="font-label-caps text-label-caps">Exportar</span>
+</button>
+</div>
+</section>
+<!-- KPI Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-card-gap">
+<div class="luxury-card p-6 rounded-xl flex flex-col gap-2 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full gold-accent-line opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="text-on-surface-variant font-label-caps text-label-caps">Ingresos Totales</span>
+<div class="flex items-end justify-between">
+<span class="font-price-display text-price-display text-primary">$45,280.00</span>
+<span class="text-green-400 font-label-caps text-[10px] flex items-center mb-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> +12.5%
+                        </span>
+</div>
+</div>
+<div class="luxury-card p-6 rounded-xl flex flex-col gap-2 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full gold-accent-line opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="text-on-surface-variant font-label-caps text-label-caps">Ticket Promedio</span>
+<div class="flex items-end justify-between">
+<span class="font-price-display text-price-display text-on-surface">$215.00</span>
+<span class="text-green-400 font-label-caps text-[10px] flex items-center mb-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> +4.2%
+                        </span>
+</div>
+</div>
+<div class="luxury-card p-6 rounded-xl flex flex-col gap-2 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full gold-accent-line opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="text-on-surface-variant font-label-caps text-label-caps">Ventas Realizadas</span>
+<div class="flex items-end justify-between">
+<span class="font-price-display text-price-display text-on-surface">210</span>
+<span class="text-error font-label-caps text-[10px] flex items-center mb-1">
+<span class="material-symbols-outlined text-[14px]">trending_down</span> -2.1%
+                        </span>
+</div>
+</div>
+<div class="luxury-card p-6 rounded-xl flex flex-col gap-2 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full gold-accent-line opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="text-on-surface-variant font-label-caps text-label-caps">Nuevos Clientes</span>
+<div class="flex items-end justify-between">
+<span class="font-price-display text-price-display text-on-surface">48</span>
+<span class="text-green-400 font-label-caps text-[10px] flex items-center mb-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> +18.0%
+                        </span>
+</div>
+</div>
+</section>
+<!-- Visualization Row -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Revenue Chart -->
+<div class="lg:col-span-2 luxury-card p-8 rounded-xl h-96 flex flex-col relative group">
+<div class="absolute top-0 left-0 w-full gold-accent-line"></div>
+<div class="flex justify-between items-start mb-8">
+<h4 class="font-title-md text-title-md text-on-surface">Tendencia de Ingresos</h4>
+<div class="flex items-center gap-4 text-on-surface-variant font-label-caps text-[10px]">
+<span class="flex items-center gap-2"><span class="w-3 h-3 bg-primary rounded-full"></span> Ventas</span>
+<span class="flex items-center gap-2"><span class="w-3 h-3 bg-surface-container-highest rounded-full border border-outline"></span> Meta</span>
+</div>
+</div>
+<div class="flex-1 flex items-end gap-3 pb-2 relative">
+<!-- Mock Chart Bars -->
+<div class="flex-1 bg-surface-container-high rounded-t-sm group-hover:bg-primary/20 transition-all duration-700" style="height: 40%"></div>
+<div class="flex-1 bg-surface-container-high rounded-t-sm group-hover:bg-primary/30 transition-all duration-700" style="height: 55%"></div>
+<div class="flex-1 bg-surface-container-high rounded-t-sm group-hover:bg-primary/25 transition-all duration-700" style="height: 45%"></div>
+<div class="flex-1 bg-surface-container-high rounded-t-sm group-hover:bg-primary/60 transition-all duration-700" style="height: 70%"></div>
+<div class="flex-1 bg-primary rounded-t-sm shadow-[0_-4px_12px_rgba(242,202,80,0.3)]" style="height: 90%"></div>
+<div class="flex-1 bg-surface-container-high rounded-t-sm group-hover:bg-primary/40 transition-all duration-700" style="height: 60%"></div>
+<div class="flex-1 bg-surface-container-high rounded-t-sm group-hover:bg-primary/30 transition-all duration-700" style="height: 50%"></div>
+<!-- Y-Axis Mock -->
+<div class="absolute left-0 top-0 h-full w-full border-b border-outline-variant/30 flex flex-col justify-between pointer-events-none">
+<div class="border-t border-outline-variant/10 w-full h-0"></div>
+<div class="border-t border-outline-variant/10 w-full h-0"></div>
+<div class="border-t border-outline-variant/10 w-full h-0"></div>
+</div>
+</div>
+<div class="flex justify-between pt-4 font-label-caps text-label-caps text-on-surface-variant">
+<span>Lunes</span><span>Martes</span><span>Miércoles</span><span>Jueves</span><span>Viernes</span><span>Sábado</span><span>Domingo</span>
+</div>
+</div>
+<!-- Top Selling -->
+<div class="luxury-card p-8 rounded-xl h-96 flex flex-col relative group">
+<div class="absolute top-0 left-0 w-full gold-accent-line"></div>
+<h4 class="font-title-md text-title-md text-on-surface mb-6">Fragancias Top</h4>
+<div class="space-y-6 flex-1 overflow-y-auto pr-2">
+<div class="flex items-center gap-4 group/item">
+<div class="w-12 h-12 rounded bg-surface-container-highest overflow-hidden shrink-0">
+<img class="w-full h-full object-cover grayscale group-hover/item:grayscale-0 transition-all duration-500" data-alt="Close up professional studio photography of a minimalist rectangular perfume glass bottle with a gold metallic cap. The lighting is moody and dramatic with golden light reflecting on the charcoal black background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTRFpIx2jYnoZ0BPR4b-PXNrKRhWUqvOtZI_7OOTvtyt8mt4aBN7fmLQWVPwgF-tzOqmx9EI6Uhk6h8X-pqFq1XL3O-sk1Lb3qopVMTjpYJ6B_xBjK2QWRzfwyRiVRWnVCJRv55YrQBvfr5xSa102M8xXGcvv2FYbqzWys8HGpKQ0J6QgpU1lxSUdItiGGQn3dxVIOCMmI84Qb5JYv0ERw6WgqqKxV2ihj-s3s_6NKCGcGt-eeGRurvWr81k7PPz47aHDM9BZPlh4r"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-label-caps text-label-caps text-on-surface truncate">Santal 33 Noir</p>
+<div class="w-full bg-surface-container-lowest h-1 rounded-full mt-2">
+<div class="bg-primary h-full rounded-full" style="width: 85%"></div>
+</div>
+</div>
+<span class="font-label-caps text-label-caps text-primary">85 sales</span>
+</div>
+<div class="flex items-center gap-4 group/item">
+<div class="w-12 h-12 rounded bg-surface-container-highest overflow-hidden shrink-0">
+<img class="w-full h-full object-cover grayscale group-hover/item:grayscale-0 transition-all duration-500" data-alt="Luxury glass perfume bottle resting on a dark velvet surface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKLgwJr87ODqTjStHFfpog3m2hOa2VRmEuWE4VsLMPgMvxLmdOz_8-vgO8GqJ2NNAVkruR9nVcSTFNWrWViu4Qcwb0Gf4zIvP0HvQAnPeWumsTtmQhm-jOgAQvOSdQQpfEND_Q-kJs2nszvFWy1yVnFi1yJzN-Tpr7Rk2hY20ARTn-aR-oCyhuEleG4uGBPbqX3IiSqdn9MOm6uYWPZWoKAHShrDBqhtqSL-qzjibRfoiGetZVZOxzUJ9WJ5E7z7zQKX7jbVtzMJzP"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-label-caps text-label-caps text-on-surface truncate">Oud Wood Royal</p>
+<div class="w-full bg-surface-container-lowest h-1 rounded-full mt-2">
+<div class="bg-primary h-full rounded-full" style="width: 62%"></div>
+</div>
+</div>
+<span class="font-label-caps text-label-caps text-primary">62 sales</span>
+</div>
+<div class="flex items-center gap-4 group/item">
+<div class="w-12 h-12 rounded bg-surface-container-highest overflow-hidden shrink-0">
+<img class="w-full h-full object-cover grayscale group-hover/item:grayscale-0 transition-all duration-500" data-alt="Minimalist luxury perfume bottle with golden liquid visible inside." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiqB2g80apHEaYHILseAbp4RIokP24v5KHUTKF7koNRRpXMsNiWdk-LX9AsK4MtgQDGPV6u6mA_gKj7YhBW7XLb1DLh0kq-RViU15A_JiTe95aPHpMYxGRJl4ga25jzV3QLM_FTImJViLhF14X64bSr2Fw208GGRq21rMV3L1N3XtKXTWAmQL-kMQj2uZtHLanX8PhmEhbb75WzU8Ih59_Ev9mUxuDri2ud05iY7YWMAwVqcSKUwonYC0PZS_eF3bqQkPDlx7oO2gZ"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-label-caps text-label-caps text-on-surface truncate">Amber Rose Gold</p>
+<div class="w-full bg-surface-container-lowest h-1 rounded-full mt-2">
+<div class="bg-primary h-full rounded-full" style="width: 45%"></div>
+</div>
+</div>
+<span class="font-label-caps text-label-caps text-primary">45 sales</span>
+</div>
+<div class="flex items-center gap-4 group/item">
+<div class="w-12 h-12 rounded bg-surface-container-highest overflow-hidden shrink-0">
+<img class="w-full h-full object-cover grayscale group-hover/item:grayscale-0 transition-all duration-500" data-alt="A collection of designer perfume bottles displayed in a dark, atmospheric boutique." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWfLAIVftVcaBFEbhIxPicydLGmSwJBl0GUrLeqQ1bUtNb6PHmJMpp1DJJJoY_HfO_V-ir0qxc7MKHUUzXD_dMkisEeUvhY9IxaiKkwTaYWSdEnSWebMCEIDPz3dfOxpyDb7qzp3L5UnOAPaD8lBRG0jO6qdtqY_n5aHIcfJ91YtHeq7NxfF3ru1Iee5fUNqlohjC4VEIKH0qJjdZYT9Cwn3j1Gn1JT4r4yyTTOZsFf7tLKcWI0z8KTrSQZpSbleY_pQ9A82BcD4mJ"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-label-caps text-label-caps text-on-surface truncate">Tobacco Vanille</p>
+<div class="w-full bg-surface-container-lowest h-1 rounded-full mt-2">
+<div class="bg-primary h-full rounded-full" style="width: 38%"></div>
+</div>
+</div>
+<span class="font-label-caps text-label-caps text-primary">38 sales</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Transactions Table -->
+<section class="luxury-card rounded-xl overflow-hidden relative">
+<div class="absolute top-0 left-0 w-full gold-accent-line"></div>
+<div class="p-8 border-b border-outline-variant/30 flex justify-between items-center">
+<h4 class="font-title-md text-title-md text-on-surface">Transacciones Recientes</h4>
+<button class="text-primary font-label-caps text-label-caps hover:underline">Ver todas</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-high/50 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">
+<tr>
+<th class="px-8 py-4">ID Transacción</th>
+<th class="px-8 py-4">Cliente</th>
+<th class="px-8 py-4">Producto</th>
+<th class="px-8 py-4">Fecha</th>
+<th class="px-8 py-4">Monto</th>
+<th class="px-8 py-4">Estado</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-surface-container-high transition-colors group">
+<td class="px-8 py-5 text-on-surface font-label-caps text-label-caps">#TR-8821</td>
+<td class="px-8 py-5 font-body-md text-on-surface">Julianne Moore</td>
+<td class="px-8 py-5 font-body-md text-on-surface-variant">Santal 33 Noir (100ml)</td>
+<td class="px-8 py-5 font-body-md text-on-surface-variant">Oct 24, 14:20</td>
+<td class="px-8 py-5 font-price-display text-[18px] text-primary">$310.00</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 rounded-full bg-green-900/30 text-green-400 text-[10px] font-label-caps">Completado</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors group">
+<td class="px-8 py-5 text-on-surface font-label-caps text-label-caps">#TR-8820</td>
+<td class="px-8 py-5 font-body-md text-on-surface">Alain Ducasse</td>
+<td class="px-8 py-5 font-body-md text-on-surface-variant">Tobacco Vanille (50ml)</td>
+<td class="px-8 py-5 font-body-md text-on-surface-variant">Oct 24, 12:45</td>
+<td class="px-8 py-5 font-price-display text-[18px] text-primary">$185.00</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 rounded-full bg-green-900/30 text-green-400 text-[10px] font-label-caps">Completado</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors group">
+<td class="px-8 py-5 text-on-surface font-label-caps text-label-caps">#TR-8819</td>
+<td class="px-8 py-5 font-body-md text-on-surface">Isabella Rossellini</td>
+<td class="px-8 py-5 font-body-md text-on-surface-variant">Amber Rose Gold (100ml)</td>
+<td class="px-8 py-5 font-body-md text-on-surface-variant">Oct 24, 10:15</td>
+<td class="px-8 py-5 font-price-display text-[18px] text-primary">$295.00</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 rounded-full bg-surface-container-highest text-on-surface-variant text-[10px] font-label-caps">Pendiente</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<!-- Subtle Background Atmosphere -->
+<div class="absolute inset-0 pointer-events-none -z-10 opacity-20"></div>
+</main>
+</div>
+<!-- Micro-interaction Scripts -->
+<script>
+    document.querySelectorAll('.luxury-card').forEach(card => {
+        card.addEventListener('mousedown', () => {
+            card.style.transform = 'scale(0.98)';
+        });
+        card.addEventListener('mouseup', () => {
+            card.style.transform = 'scale(1)';
+        });
+    });
+
+    // Simulating loading animation on entrance
+    window.addEventListener('DOMContentLoaded', () => {
+        const bars = document.querySelectorAll('.group-hover\\:bg-primary\\/20, .group-hover\\:bg-primary\\/30, .group-hover\\:bg-primary\\/25, .group-hover\\:bg-primary\\/60, .group-hover\\:bg-primary\\/40');
+        bars.forEach((bar, index) => {
+            const finalHeight = bar.style.height;
+            bar.style.height = '0px';
+            setTimeout(() => {
+                bar.style.height = finalHeight;
+            }, index * 100);
+        });
+    });
+</script>
+</body></html>

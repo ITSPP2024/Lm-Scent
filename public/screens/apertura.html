@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SCENT LM | Apertura de Caja</title>
+
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@400;500&display=swap" rel="stylesheet"/>
+
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+<script>
+tailwind.config={
+darkMode:"class",
+theme:{
+extend:{
+colors:{
+background:"#0a0a0b",
+surface:"#1a1a1d",
+primary:"#f2ca50",
+"on-primary":"#241a00",
+"on-surface":"#e5e2e1",
+"on-surface-variant":"#9a9286",
+outline:"#3a342a"
+},
+fontFamily:{
+display:["'Hanken Grotesk'","sans-serif"],
+body:["Manrope","sans-serif"]
+}
+}}
+}
+</script>
+
+<style>
+
+body{
+font-family:Manrope,sans-serif;
+background:#000;
+min-height:100vh;
+position:relative;
+overflow:hidden;
+}
+
+.backdrop{
+position:absolute;
+inset:0;
+background:
+radial-gradient(
+ellipse at center,
+#1a1611 0%,
+#0a0a0b 60%,
+#000 100%
+);
+opacity:.55;
+}
+
+.modal{
+background:#161618;
+border:1px solid #2a2a2e;
+box-shadow:
+0 30px 80px rgba(0,0,0,.7),
+0 0 0 1px rgba(242,202,80,.04);
+}
+
+.gold{
+color:#f2ca50;
+}
+
+.eyebrow{
+letter-spacing:.28em;
+font-size:11px;
+color:#9a9286;
+text-transform:uppercase;
+}
+
+.chip{
+border:1px solid #3a342a;
+color:#e5e2e1;
+background:#1f1f22;
+padding:6px 14px;
+border-radius:9999px;
+font-size:12px;
+font-weight:600;
+transition:.15s;
+cursor:pointer;
+}
+
+.chip:hover{
+border-color:#f2ca50;
+color:#f2ca50;
+}
+
+.field{
+background:transparent;
+border:none;
+border-bottom:1px solid #3a342a;
+width:100%;
+padding:8px 0;
+color:#f2ca50;
+font-size:32px;
+font-weight:600;
+outline:none;
+}
+
+.field::placeholder{
+color:#5a5346;
+}
+
+.field-text{
+background:#0f0f10;
+border:1px solid #2a2a2e;
+border-radius:8px;
+width:100%;
+padding:12px 14px;
+color:#e5e2e1;
+font-size:13px;
+outline:none;
+resize:none;
+}
+
+.field-text::placeholder{
+color:#5a5346;
+font-style:italic;
+}
+
+.btn-primary{
+background:#f2ca50;
+color:#241a00;
+width:100%;
+padding:14px;
+border-radius:8px;
+font-size:13px;
+font-weight:700;
+letter-spacing:.18em;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+transition:.2s;
+border:none;
+cursor:pointer;
+}
+
+.btn-primary:hover{
+background:#e9c349;
+box-shadow:0 10px 30px rgba(242,202,80,.3);
+}
+
+.btn-primary:disabled{
+opacity:.6;
+cursor:not-allowed;
+}
+
+</style>
+
+</head>
+
+<body class="text-on-surface">
+
+<div class="backdrop"></div>
+
+<div class="relative min-h-screen flex items-center justify-center p-6">
+
+<div class="modal rounded-2xl w-full max-w-md p-7">
+
+<div class="flex items-start justify-between mb-5">
+
+<span class="eyebrow">
+Operación de Caja
+</span>
+
+<a href="/">
+
+<span class="material-symbols-outlined">
+close
+</span>
+
+</a>
+
+</div>
+
+<h2 class="font-display text-3xl font-bold mb-2">
+Fondo de Caja
+</h2>
+
+<p class="text-on-surface-variant text-sm leading-relaxed mb-6">
+Ingrese el monto inicial en efectivo para la apertura de caja hoy.
+</p>
+
+<div class="mb-5">
+
+<div class="eyebrow gold mb-2">
+Monto Inicial (MXN)
+</div>
+
+<div class="flex items-baseline">
+
+<span class="gold text-3xl font-semibold mr-1">
+$
+</span>
+
+<input
+id="amount"
+class="field"
+placeholder="0.00"
+inputmode="decimal"
+/>
+
+</div>
+
+</div>
+
+<div class="flex gap-2 mb-6">
+
+<button type="button" class="chip" data-v="500">
+$500
+</button>
+
+<button type="button" class="chip" data-v="1000">
+$1,000
+</button>
+
+<button type="button" class="chip" data-v="2000">
+$2,000
+</button>
+
+</div>
+
+<div class="mb-6">
+
+<div class="eyebrow mb-2">
+Notas Adicionales
+</div>
+
+<textarea
+id="notes"
+rows="3"
+class="field-text"
+placeholder="Ej. Cambio en billetes pequeños..."
+></textarea>
+
+</div>
+
+<button
+id="open-cash"
+class="btn-primary"
+type="button">
+
+<span class="material-symbols-outlined text-base">
+lock
+</span>
+
+CONFIRMAR E INICIAR
+
+</button>
+
+<p class="text-[11px] text-on-surface-variant mt-5 flex items-start gap-2 leading-relaxed">
+
+<span class="gold mt-[2px]">
+●
+</span>
+
+<span class="uppercase tracking-wider">
+Esta acción registrará la apertura oficial y permitirá procesar ventas.
+</span>
+
+</p>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import {
+abrirCaja
+}
+from "/src/lib/caja.ts";
+
+const input =
+document.getElementById("amount");
+
+const notes =
+document.getElementById("notes");
+
+const button =
+document.getElementById("open-cash");
+
+document
+.querySelectorAll(".chip")
+.forEach(btn=>{
+
+btn.addEventListener(
+"click",
+()=>{
+
+input.value=
+Number(
+btn.dataset.v
+).toFixed(2);
+
+});
+
+});
+
+button.addEventListener(
+"click",
+
+async()=>{
+
+const fondo =
+Number(input.value);
+
+if(
+!fondo ||
+fondo<=0
+){
+
+alert(
+"Ingrese un monto válido"
+);
+
+return;
+
+}
+
+try{
+
+button.disabled =
+true;
+
+button.innerHTML =
+"GUARDANDO...";
+
+await abrirCaja(
+fondo,
+notes.value
+);
+
+alert(
+"Caja abierta correctamente"
+);
+
+window.location.href =
+"/ventas";
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"No se pudo guardar"
+);
+
+button.disabled =
+false;
+
+button.innerHTML =
+`
+<span class="material-symbols-outlined">
+lock
+</span>
+CONFIRMAR E INICIAR
+`;
+
+}
+
+});
+
+</script>
+
+</body>
+</html>

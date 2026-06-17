@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SCENT LM | Premium POS Terminal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#4d4635",
+                        "secondary": "#c8c6c7",
+                        "secondary-container": "#49494a",
+                        "on-secondary": "#303031",
+                        "primary-fixed": "#ffe088",
+                        "inverse-on-surface": "#313030",
+                        "on-primary-fixed": "#241a00",
+                        "tertiary-container": "#b2b3b5",
+                        "on-tertiary": "#2f3132",
+                        "surface-dim": "#131313",
+                        "secondary-fixed": "#e5e2e3",
+                        "secondary-fixed-dim": "#c8c6c7",
+                        "surface-container-highest": "#353534",
+                        "error-container": "#93000a",
+                        "background": "#131313",
+                        "on-primary-fixed-variant": "#574500",
+                        "on-background": "#e5e2e1",
+                        "tertiary": "#ceced0",
+                        "error": "#ffb4ab",
+                        "outline": "#99907c",
+                        "on-secondary-fixed": "#1b1b1c",
+                        "tertiary-fixed-dim": "#c6c6c8",
+                        "primary-container": "#d4af37",
+                        "on-secondary-container": "#bab8b9",
+                        "on-error": "#690005",
+                        "on-error-container": "#ffdad6",
+                        "on-primary": "#3c2f00",
+                        "on-surface-variant": "#d0c5af",
+                        "surface-bright": "#393939",
+                        "surface-container-high": "#2a2a2a",
+                        "surface-container": "#201f1f",
+                        "surface-variant": "#353534",
+                        "inverse-surface": "#e5e2e1",
+                        "surface-container-low": "#1c1b1b",
+                        "on-tertiary-fixed": "#1a1c1d",
+                        "on-surface": "#e5e2e1",
+                        "surface-tint": "#e9c349",
+                        "primary-fixed-dim": "#e9c349",
+                        "on-tertiary-fixed-variant": "#454749",
+                        "surface": "#131313",
+                        "on-tertiary-container": "#434547",
+                        "on-primary-container": "#554300",
+                        "primary": "#f2ca50",
+                        "tertiary-fixed": "#e2e2e4",
+                        "inverse-primary": "#735c00",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-secondary-fixed-variant": "#474647"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "gutter": "24px",
+                        "container-padding-mobile": "20px",
+                        "card-gap": "16px",
+                        "container-padding-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "price-display": ["Hanken Grotesk"],
+                        "label-caps": ["Hanken Grotesk"],
+                        "body-lg": ["Manrope"],
+                        "title-md": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-md": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "price-display": ["40px", {"lineHeight": "40px", "fontWeight": "300"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .gold-glow:hover {
+            box-shadow: 0 0 15px rgba(242, 202, 80, 0.2);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1c1b1b;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #4d4635;
+            border-radius: 10px;
+        }
+        .premium-border {
+            border: 1px solid rgba(153, 144, 124, 0.1);
+        }
+        .gold-accent-top {
+            border-top: 2px solid #f2ca50;
+        }
+        .tactile-press:active {
+            transform: scale(0.97);
+            transition: transform 0.1s ease;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-hidden h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-surface border-b border-outline-variant shadow-sm flex justify-between items-center px-container-desktop py-unit w-full max-w-full z-50">
+<div class="flex items-center gap-gutter">
+<div class="flex items-center gap-3">
+<img alt="LM Scent Logo" class="h-10 w-10 rounded-full object-cover border border-primary/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx1L8ChuFo0lV2cwq19P_Z1ZI6TatndWWyGalLbbTO_xEFWrTwNGKvEvfyEtPirqURF-fhtPs1DQSzsM19mMLof45jpFiYeixdvjvR3mpiJj-BQ8zajO21Z3soSHWME43z5CJ-SOPTUMqe5MMOYkIjvlpboi0vLZjvwMF-BMGv8fX3IGKV1TIuM-aJ83yN8jbzZFG75ulwlpJK747Pq4D6zM1dCrlWsiKE056dJCouC8ioTH_dfxaYYlgq7xHHLbO7kHA2HpW-BEub"/>
+<h1 class="font-display-lg text-display-lg font-bold text-primary tracking-tight">LM Scent</h1>
+</div>
+<nav class="hidden lg:flex gap-8 ml-12">
+<a class="font-title-md text-title-md text-primary border-b-2 border-primary pb-1" href="#">Ventas</a>
+<a class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors" href=>Inventario</a>
+<a class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors" href=>Reportes</a>
+<a class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors" href=>Caja</a>
+<a class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors" href=>Configuración</a>
+</nav>
+</div>
+<div class="flex items-center gap-gutter">
+<div class="flex gap-4">
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-all text-on-surface-variant" title="Notificaciones">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-all text-on-surface-variant" title="Cerrar Sesión">
+<span class="material-symbols-outlined">logout</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-all text-on-surface-variant">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- Main Workspace -->
+<main class="flex-1 flex overflow-hidden bg-background">
+<!-- Central Cart Workspace -->
+<section class="flex-1 flex flex-col overflow-hidden bg-background relative">
+<!-- Search & Actions Header -->
+<div class="px-container-desktop py-gutter border-b border-outline-variant bg-surface/50 backdrop-blur-md sticky top-0 z-10 flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Venta en Curso</h2>
+<div class="flex gap-4">
+<button class="flex items-center gap-2 px-6 py-2 bg-primary-container/10 border border-primary/30 text-primary rounded-full hover:bg-primary/20 transition-all font-label-caps text-[10px] tactile-press">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">add</span>
+                            NUEVA VENTA
+                        </button>
+<button class="flex items-center gap-2 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary/10 transition-all font-label-caps text-[10px] tactile-press">
+<span class="material-symbols-outlined text-[18px]">grid_view</span>
+                            CONSULTAR CATÁLOGO
+                        </button>
+</div>
+</div>
+<div class="relative group max-w-5xl mx-auto w-full">
+<span class="material-symbols-outlined absolute left-6 top-1/2 -translate-y-1/2 text-primary group-focus-within:scale-110 transition-transform">barcode_scanner</span>
+<input autofocus="" class="w-full bg-surface-container-low border-2 border-outline-variant focus:border-primary focus:ring-0 rounded-full pl-16 pr-6 py-5 text-title-md font-body-md transition-all placeholder:text-on-surface-variant/40" placeholder="Buscar o Escanear Producto (Nombre, SKU, Código de barras)..." type="text"/>
+<div class="absolute right-6 top-1/2 -translate-y-1/2 flex gap-2">
+<span class="bg-surface-container-highest text-[10px] font-bold px-2 py-1 rounded text-on-surface-variant">F1</span>
+</div>
+</div>
+</div>
+<!-- Main Cart List -->
+<div class="flex-1 overflow-y-auto custom-scrollbar px-container-desktop py-gutter">
+<div class="max-w-5xl mx-auto space-y-2">
+<!-- Table Headers -->
+<div class="grid grid-cols-12 gap-4 px-6 py-3 font-label-caps text-[10px] text-on-surface-variant border-b border-outline-variant/30">
+<div class="col-span-6">PRODUCTO</div>
+<div class="col-span-2 text-center">PRECIO</div>
+<div class="col-span-2 text-center">CANTIDAD</div>
+<div class="col-span-2 text-right">SUBTOTAL</div>
+</div>
+<!-- Item 1 -->
+<div class="grid grid-cols-12 gap-4 items-center bg-surface-container-low hover:bg-surface-container transition-colors p-4 rounded-xl premium-border group">
+<div class="col-span-6 flex gap-4 items-center">
+<div class="w-16 h-16 rounded overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Perfume item" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBp_0WzGQ74pVOQJ-Pd3WDkhhcY_AUaUGXXeEiAgNMpua6RKoEVU0ckABELgmg1DO8xWtHDnJnxcmVPElRiu7A75eYpXMd4g7UmKiCDMNmIYWb95tuEn3XztUMcURNrzCp80XHjtoFs1GBB2_W0Ixkp8fJEZ50EMRyeQcs-DmlK0XMcmvZVSygIyUm0-SSvYRHeaZo8pK8Fn19Un7LHQJNsTVZe_MbKsNJupuQ9A9f7J02AMBwumioThiw2P3s0c80_63oPEcmEsvEo"/>
+</div>
+<div>
+<h4 class="font-title-md text-on-surface">Noir Absolu 100ml</h4>
+<p class="text-[10px] font-label-caps text-outline uppercase">Fragancias Premium</p>
+</div>
+</div>
+<div class="col-span-2 text-center font-body-md text-on-surface">$185.00</div>
+<div class="col-span-2 flex justify-center">
+<div class="flex items-center gap-4 bg-surface-container-lowest border border-outline-variant rounded-lg p-1">
+<button class="w-8 h-8 rounded flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-colors">-</button>
+<span class="text-body-md font-bold w-4 text-center">1</span>
+<button class="w-8 h-8 rounded flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-colors">+</button>
+</div>
+</div>
+<div class="col-span-2 text-right flex items-center justify-end gap-4">
+<p class="font-title-md text-primary">$185.00</p>
+<button class="text-on-surface-variant hover:text-error opacity-0 group-hover:opacity-100 transition-all">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="grid grid-cols-12 gap-4 items-center bg-surface-container-low hover:bg-surface-container transition-colors p-4 rounded-xl premium-border group">
+<div class="col-span-6 flex gap-4 items-center">
+<div class="w-16 h-16 rounded overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Candle item" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYUkO_RbdLtr4Ick7ASlXkgeT8kWBVhKDgJrrOyjyacV-qXksk3aqF-0XTOmxVLwjAqPsusdXtqoQ8PkgJr0xJLkZ8-JobDtl_QF2S80hh_umbE1h2gnPqzArxukNcKENst3HuwNb-kEr9u56rnZtjUKi-Z_IUyfg-ZhjTRLxZQE8Op5aPkAhp6PW7jqmna8zLW9WlZ9wLpkZke73sN1DXJhwHfNPa5xI689B1whB2t1qiun1DyFWa18FHnmrW0arcSLQb4ePg6hri"/>
+</div>
+<div>
+<h4 class="font-title-md text-on-surface">Midnight Oud Candle</h4>
+<p class="text-[10px] font-label-caps text-outline uppercase">Accesorios</p>
+</div>
+</div>
+<div class="col-span-2 text-center font-body-md text-on-surface">$65.00</div>
+<div class="col-span-2 flex justify-center">
+<div class="flex items-center gap-4 bg-surface-container-lowest border border-outline-variant rounded-lg p-1">
+<button class="w-8 h-8 rounded flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-colors">-</button>
+<span class="text-body-md font-bold w-4 text-center">2</span>
+<button class="w-8 h-8 rounded flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-colors">+</button>
+</div>
+</div>
+<div class="col-span-2 text-right flex items-center justify-end gap-4">
+<p class="font-title-md text-primary">$130.00</p>
+<button class="text-on-surface-variant hover:text-error opacity-0 group-hover:opacity-100 transition-all">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="px-container-desktop py-6 bg-surface-container-low border-t border-outline-variant sticky bottom-0 z-10">
+<div class="max-w-5xl mx-auto">
+<div class="grid grid-cols-12 gap-gutter items-end"><div class="col-span-5 space-y-2">
+<div class="flex justify-between text-body-md text-on-surface-variant">
+<span class="">Subtotal</span>
+<span class="">$315.00</span>
+</div>
+<div class="flex justify-between text-body-md text-on-surface-variant">
+<span class="">IVA (16%)</span>
+<span class="">$50.40</span>
+</div>
+</div>
+<div class="col-span-7 flex flex-col items-end">
+<div class="flex items-baseline gap-4 mb-4">
+<span class="font-headline-lg text-headline-lg text-on-surface">Total</span>
+<span class="font-price-display text-[48px] text-primary leading-none">$365.40</span>
+</div>
+<div class="flex gap-4 w-full">
+<button class="flex-1 bg-primary py-4 rounded-xl text-on-primary font-display-lg text-[20px] font-bold tracking-widest gold-glow hover:brightness-110 transition-all tactile-press flex items-center justify-center gap-4">PAGAR AHORA <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span></button>
+<button class="px-6 border border-outline-variant text-on-surface-variant hover:text-on-surface rounded-xl transition-colors flex items-center justify-center" title="Imprimir Ticket">
+<span class="material-symbols-outlined">print</span>
+</button>
+</div>
+</div></div>
+</div>
+</div></section>
+</main>
+</div>
+<!-- Floating Utilities -->
+<div class="fixed bottom-gutter right-6 flex flex-col gap-4 z-40">
+<button class="w-14 h-14 bg-surface-container-highest border border-primary text-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all gold-glow tactile-press" title="Consultar precio">
+<span class="material-symbols-outlined">price_check</span>
+</button>
+<button class="w-14 h-14 bg-error-container text-on-error-container rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all tactile-press group" title="Corte de Caja">
+<span class="material-symbols-outlined group-hover:rotate-45 transition-transform">lock_person</span>
+<span class="absolute right-16 bg-error-container text-on-error-container px-3 py-1 rounded-lg text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">CORTE</span>
+</button>
+</div>
+<script type="module">
+
+import {
+obtenerProductos,
+editarProducto
+}
+from "/src/lib/inventario.js";
+
+import {
+registrarVenta
+}
+from "/src/lib/ventas.js";
+
+
+/*
+=====================
+ESTADO
+=====================
+*/
+
+let inventario=[];
+
+let carrito=[];
+
+
+/*
+=====================
+SELECTORES
+=====================
+*/
+
+const buscador=
+document.querySelector(
+'input[type="text"]'
+);
+
+const contenedor=
+document.querySelector(
+".space-y-2"
+);
+
+const subtotalUI=
+document.querySelectorAll(
+".text-on-surface-variant span:last-child"
+)[0];
+
+const ivaUI=
+document.querySelectorAll(
+".text-on-surface-variant span:last-child"
+)[1];
+
+const totalUI=
+document.querySelector(
+".text-primary.leading-none"
+);
+
+const btnPagar=
+document.querySelector(
+".bg-primary.py-4"
+);
+
+const btnNueva=
+[
+...document.querySelectorAll(
+"button"
+)
+]
+.find(
+b=>
+b.textContent
+.includes(
+"NUEVA"
+)
+);
+
+
+/*
+=====================
+INICIO
+=====================
+*/
+
+async function iniciar(){
+
+inventario=
+await obtenerProductos();
+
+render();
+
+}
+
+iniciar();
+
+
+/*
+=====================
+BUSCADOR
+=====================
+*/
+
+buscador.addEventListener(
+"keydown",
+
+e=>{
+
+if(
+e.key!=="Enter"
+)
+return;
+
+e.preventDefault();
+
+buscar(
+buscador.value
+);
+
+buscador.value="";
+
+}
+
+);
+
+
+function buscar(valor){
+
+const p=
+inventario.find(
+
+x=>
+
+x.nombre
+?.toLowerCase()
+.includes(
+valor
+.toLowerCase()
+)
+
+||
+
+x.sku
+===valor
+
+||
+
+x.codigoBarras
+===valor
+
+);
+
+if(
+!p
+){
+
+alert(
+"Producto no encontrado"
+);
+
+return;
+
+}
+
+agregar(
+p);
+
+}
+
+
+/*
+=====================
+AGREGAR
+=====================
+*/
+
+function agregar(p){
+
+if(
+p.stock<=0
+){
+
+alert(
+"Sin stock"
+);
+
+return;
+
+}
+
+const existe=
+carrito.find(
+x=>
+x.id===p.id
+);
+
+if(
+existe
+){
+
+if(
+existe.cantidad
+>=
+p.stock
+){
+
+alert(
+"Stock insuficiente"
+);
+
+return;
+
+}
+
+existe.cantidad++;
+
+}
+
+else{
+
+carrito.push({
+
+...p,
+
+cantidad:1
+
+});
+
+}
+
+render();
+
+}
+
+
+/*
+=====================
+RENDER
+=====================
+*/
+
+function render(){
+
+contenedor.innerHTML="";
+
+let subtotal=0;
+
+carrito.forEach(
+(item,i)=>{
+
+const sub=
+item.precioVenta
+*
+item.cantidad;
+
+subtotal+=sub;
+
+contenedor.innerHTML+=`
+
+<div
+class="
+grid
+grid-cols-12
+gap-4
+items-center
+bg-surface-container-low
+p-4
+rounded-xl
+">
+
+<div class="col-span-6">
+
+${item.nombre}
+
+<br>
+
+<span class="text-xs">
+
+SKU:
+${item.sku}
+
+</span>
+
+</div>
+
+<div class="col-span-2 text-center">
+
+$
+
+${item.precioVenta}
+
+</div>
+
+<div class="col-span-2 flex justify-center gap-2">
+
+<button
+class="menos"
+data="${i}"
+>
+
+−
+
+</button>
+
+<span>
+
+${item.cantidad}
+
+</span>
+
+<button
+class="mas"
+data="${i}"
+>
+
++
+
+</button>
+
+</div>
+
+<div
+class="
+col-span-2
+flex
+justify-end
+gap-4
+"
+>
+
+$
+
+${sub}
+
+<button
+class="borrar"
+data="${i}"
+>
+
+🗑
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+
+eventos();
+
+
+const iva=
+subtotal
+*
+0.16;
+
+const total=
+subtotal
++
+iva;
+
+subtotalUI.textContent=
+"$"+
+subtotal.toFixed(2);
+
+ivaUI.textContent=
+"$"+
+iva.toFixed(2);
+
+totalUI.textContent=
+"$"+
+total.toFixed(2);
+
+}
+
+
+/*
+=====================
+EVENTOS
+=====================
+*/
+
+function eventos(){
+
+document
+.querySelectorAll(
+".mas"
+)
+.forEach(
+b=>
+b.onclick=
+()=>{
+
+carrito[
+b.dataset
+]
+.cantidad++;
+
+render();
+
+}
+);
+
+document
+.querySelectorAll(
+".menos"
+)
+.forEach(
+b=>
+b.onclick=
+()=>{
+
+const x=
+carrito[
+b.dataset
+];
+
+x.cantidad--;
+
+if(
+x.cantidad<=0
+)
+carrito.splice(
+b.dataset,
+1
+);
+
+render();
+
+}
+);
+
+document
+.querySelectorAll(
+".borrar"
+)
+.forEach(
+b=>
+b.onclick=
+()=>{
+
+carrito.splice(
+b.dataset,
+1
+);
+
+render();
+
+}
+);
+
+}
+
+
+/*
+=====================
+PAGAR
+=====================
+*/
+
+btnPagar.onclick=
+async()=>{
+
+if(
+!carrito.length
+){
+
+alert(
+"Carrito vacío"
+);
+
+return;
+
+}
+
+for(
+const p
+of
+carrito
+){
+
+await editarProducto(
+
+p.id,
+
+{
+
+stock:
+p.stock
+-
+p.cantidad,
+
+ventas24h:
+(
+p.ventas24h
+||
+0
+)
++
+(
+p.precioVenta
+*
+p.cantidad
+)
+
+}
+
+);
+
+}
+
+await registrarVenta({
+
+productos:
+carrito,
+
+subtotal:
+carrito.reduce(
+(a,b)=>
+a+
+(
+b.precioVenta
+*
+b.cantidad
+),
+0
+),
+
+iva:16,
+
+total:
+carrito.reduce(
+(a,b)=>
+a+
+(
+b.precioVenta
+*
+b.cantidad
+),
+0
+)
+*
+1.16
+
+});
+
+alert(
+"Venta completada"
+);
+
+carrito=[];
+
+render();
+
+inventario=
+await obtenerProductos();
+
+};
+
+
+/*
+=====================
+NUEVA VENTA
+=====================
+*/
+
+btnNueva.onclick=
+()=>{
+
+carrito=[];
+
+render();
+
+};
+
+</script>
+</body></html>
