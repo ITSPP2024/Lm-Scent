@@ -1,1192 +1,2486 @@
 <!DOCTYPE html>
+<html class="dark" lang="es">
 
-<html class="dark" lang="es"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>SCENT LM | Gestión de Inventario</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "outline-variant": "#4d4635",
-                    "secondary": "#c8c6c7",
-                    "secondary-container": "#49494a",
-                    "on-secondary": "#303031",
-                    "primary-fixed": "#ffe088",
-                    "inverse-on-surface": "#313030",
-                    "on-primary-fixed": "#241a00",
-                    "tertiary-container": "#b2b3b5",
-                    "on-tertiary": "#2f3132",
-                    "surface-dim": "#131313",
-                    "secondary-fixed": "#e5e2e3",
-                    "secondary-fixed-dim": "#c8c6c7",
-                    "surface-container-highest": "#353534",
-                    "error-container": "#93000a",
-                    "background": "#131313",
-                    "on-primary-fixed-variant": "#574500",
-                    "on-background": "#e5e2e1",
-                    "tertiary": "#ceced0",
-                    "error": "#ffb4ab",
-                    "outline": "#99907c",
-                    "on-secondary-fixed": "#1b1b1c",
-                    "tertiary-fixed-dim": "#c6c6c8",
-                    "primary-container": "#d4af37",
-                    "on-secondary-container": "#bab8b9",
-                    "on-error": "#690005",
-                    "on-error-container": "#ffdad6",
-                    "on-primary": "#3c2f00",
-                    "on-surface-variant": "#d0c5af",
-                    "surface-bright": "#393939",
-                    "surface-container-high": "#2a2a2a",
-                    "surface-container": "#201f1f",
-                    "surface-variant": "#353534",
-                    "inverse-surface": "#e5e2e1",
-                    "surface-container-low": "#1c1b1b",
-                    "on-tertiary-fixed": "#1a1c1d",
-                    "on-surface": "#e5e2e1",
-                    "surface-tint": "#e9c349",
-                    "primary-fixed-dim": "#e9c349",
-                    "on-tertiary-fixed-variant": "#454749",
-                    "surface": "#131313",
-                    "on-tertiary-container": "#434547",
-                    "on-primary-container": "#554300",
-                    "primary": "#f2ca50",
-                    "tertiary-fixed": "#e2e2e4",
-                    "inverse-primary": "#735c00",
-                    "surface-container-lowest": "#0e0e0e",
-                    "on-secondary-fixed-variant": "#474647"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0.125rem",
-                    "lg": "0.25rem",
-                    "xl": "0.5rem",
-                    "full": "0.75rem"
-            },
-            "spacing": {
-                    "unit": "8px",
-                    "gutter": "24px",
-                    "container-padding-mobile": "20px",
-                    "card-gap": "16px",
-                    "container-padding-desktop": "40px"
-            },
-            "fontFamily": {
-                    "headline-lg-mobile": ["Hanken Grotesk"],
-                    "price-display": ["Hanken Grotesk"],
-                    "label-caps": ["Hanken Grotesk"],
-                    "body-lg": ["Manrope"],
-                    "title-md": ["Hanken Grotesk"],
-                    "display-lg": ["Hanken Grotesk"],
-                    "headline-lg": ["Hanken Grotesk"],
-                    "body-md": ["Manrope"]
-            },
-            "fontSize": {
-                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
-                    "price-display": ["40px", {"lineHeight": "40px", "fontWeight": "300"}],
-                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700"}],
-                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
-                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
-                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
-                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
-                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+<head>
+
+    <meta charset="utf-8"/>
+
+    <meta
+        content="width=device-width, initial-scale=1.0"
+        name="viewport"
+    />
+
+    <title>LM Scents | Gestión de Inventario</title>
+
+    <!-- ========================================================= -->
+    <!-- TAILWIND -->
+    <!-- ========================================================= -->
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+
+    <!-- ========================================================= -->
+    <!-- FUENTES -->
+    <!-- ========================================================= -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@400;500;600&display=swap"
+        rel="stylesheet"
+    />
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet"
+    />
+
+
+    <!-- ========================================================= -->
+    <!-- CONFIGURACIÓN TAILWIND -->
+    <!-- ========================================================= -->
+
+    <script id="tailwind-config">
+
+        tailwind.config = {
+
+            darkMode: "class",
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        "outline-variant": "#4d4635",
+                        "secondary": "#c8c6c7",
+                        "secondary-container": "#49494a",
+                        "on-secondary": "#303031",
+                        "primary-fixed": "#ffe088",
+                        "inverse-on-surface": "#313030",
+                        "on-primary-fixed": "#241a00",
+                        "tertiary-container": "#b2b3b5",
+                        "on-tertiary": "#2f3132",
+                        "surface-dim": "#131313",
+                        "secondary-fixed": "#e5e2e3",
+                        "secondary-fixed-dim": "#c8c6c7",
+                        "surface-container-highest": "#353534",
+                        "error-container": "#93000a",
+                        "background": "#131313",
+                        "on-primary-fixed-variant": "#574500",
+                        "on-background": "#e5e2e1",
+                        "tertiary": "#ceced0",
+                        "error": "#ffb4ab",
+                        "outline": "#99907c",
+                        "on-secondary-fixed": "#1b1b1c",
+                        "tertiary-fixed-dim": "#c6c6c8",
+                        "primary-container": "#d4af37",
+                        "on-secondary-container": "#bab8b9",
+                        "on-error": "#690005",
+                        "on-error-container": "#ffdad6",
+                        "on-primary": "#3c2f00",
+                        "on-surface-variant": "#d0c5af",
+                        "surface-bright": "#393939",
+                        "surface-container-high": "#2a2a2a",
+                        "surface-container": "#201f1f",
+                        "surface-variant": "#353534",
+                        "inverse-surface": "#e5e2e1",
+                        "surface-container-low": "#1c1b1b",
+                        "on-tertiary-fixed": "#1a1c1d",
+                        "on-surface": "#e5e2e1",
+                        "surface-tint": "#e9c349",
+                        "primary-fixed-dim": "#e9c349",
+                        "on-tertiary-fixed-variant": "#454749",
+                        "surface": "#131313",
+                        "on-tertiary-container": "#434547",
+                        "on-primary-container": "#554300",
+                        "primary": "#f2ca50",
+                        "tertiary-fixed": "#e2e2e4",
+                        "inverse-primary": "#735c00",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-secondary-fixed-variant": "#474647"
+
+                    },
+
+
+                    borderRadius: {
+
+                        DEFAULT: "0.125rem",
+                        lg: "0.25rem",
+                        xl: "0.5rem",
+                        full: "0.75rem"
+
+                    },
+
+
+                    spacing: {
+
+                        unit: "8px",
+                        gutter: "24px",
+                        "container-padding-mobile": "20px",
+                        "card-gap": "16px",
+                        "container-padding-desktop": "40px"
+
+                    },
+
+
+                    fontFamily: {
+
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "price-display": ["Hanken Grotesk"],
+                        "label-caps": ["Hanken Grotesk"],
+                        "body-lg": ["Manrope"],
+                        "title-md": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-md": ["Manrope"]
+
+                    },
+
+
+                    fontSize: {
+
+                        "headline-lg-mobile": [
+                            "24px",
+                            {
+                                lineHeight: "32px",
+                                fontWeight: "600"
+                            }
+                        ],
+
+                        "price-display": [
+                            "40px",
+                            {
+                                lineHeight: "40px",
+                                fontWeight: "300"
+                            }
+                        ],
+
+                        "label-caps": [
+                            "12px",
+                            {
+                                lineHeight: "16px",
+                                letterSpacing: "0.1em",
+                                fontWeight: "700"
+                            }
+                        ],
+
+                        "body-lg": [
+                            "18px",
+                            {
+                                lineHeight: "28px",
+                                fontWeight: "400"
+                            }
+                        ],
+
+                        "title-md": [
+                            "20px",
+                            {
+                                lineHeight: "28px",
+                                fontWeight: "500"
+                            }
+                        ],
+
+                        "display-lg": [
+                            "48px",
+                            {
+                                lineHeight: "56px",
+                                letterSpacing: "-0.02em",
+                                fontWeight: "600"
+                            }
+                        ],
+
+                        "headline-lg": [
+                            "32px",
+                            {
+                                lineHeight: "40px",
+                                letterSpacing: "-0.01em",
+                                fontWeight: "500"
+                            }
+                        ],
+
+                        "body-md": [
+                            "16px",
+                            {
+                                lineHeight: "24px",
+                                fontWeight: "400"
+                            }
+                        ]
+
+                    }
+
+                }
+
             }
-          },
-        },
-      }
+
+        };
+
     </script>
-    <!-- MODAL AGREGAR PRODUCTO -->
 
- <div
-id="modalAgregar"
-class="
-hidden
-fixed
-inset-0
-z-[999]
-items-center
-justify-center
-bg-black/60
-backdrop-blur-md
-p-6
-"
+
+    <!-- ========================================================= -->
+    <!-- ESTILOS -->
+    <!-- ========================================================= -->
+
+    <style>
+
+        .material-symbols-outlined {
+
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24;
+
+            display: inline-block;
+            vertical-align: middle;
+
+        }
+
+
+        .gold-glow:hover {
+
+            box-shadow:
+                0 0 15px
+                rgba(242, 202, 80, 0.2);
+
+        }
+
+
+        .custom-scrollbar::-webkit-scrollbar {
+
+            width: 4px;
+
+        }
+
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+
+            background: #1c1b1b;
+
+        }
+
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+
+            background: #4d4635;
+            border-radius: 10px;
+
+        }
+
+
+        .premium-border {
+
+            border:
+                1px solid
+                rgba(153, 144, 124, 0.1);
+
+        }
+
+
+        .gold-border-top {
+
+            border-top:
+                2px solid
+                #f2ca50;
+
+        }
+
+
+        .tactile-press:active {
+
+            transform: scale(0.97);
+
+            transition:
+                transform 0.1s ease;
+
+        }
+
+
+        .campo {
+
+            width: 100%;
+
+            background: #1c1b1b;
+
+            border:
+                1px solid
+                #4d4635;
+
+            padding: 14px;
+
+            border-radius: 10px;
+
+            outline: none;
+
+            color: white;
+
+            transition: .2s;
+
+        }
+
+
+        .campo:focus {
+
+            border-color: #f2ca50;
+
+            box-shadow:
+                0 0 15px
+                rgba(242, 202, 80, .2);
+
+        }
+
+
+        @keyframes fade {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateY(10px);
+
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0);
+
+            }
+
+        }
+
+
+        .dropdown-menu {
+
+            animation:
+                fade .15s ease-out;
+
+        }
+
+
+        .shine-button {
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #f2ca50 0%,
+                    #ffe088 50%,
+                    #f2ca50 100%
+                );
+
+            background-size: 200% auto;
+
+            transition: .3s;
+
+        }
+
+
+        .shine-button:hover {
+
+            animation:
+                subtle-shine 1.5s
+                infinite linear;
+
+        }
+
+
+        @keyframes subtle-shine {
+
+            0% {
+
+                background-position:
+                    -200% center;
+
+            }
+
+            100% {
+
+                background-position:
+                    200% center;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body
+    class="bg-background text-on-background font-body-md selection:bg-primary selection:text-on-primary"
 >
+
+
+<!-- ========================================================= -->
+<!-- NAVBAR -->
+<!-- ========================================================= -->
+
+<header
+    class="bg-surface border-b border-outline-variant shadow-sm flex justify-between items-center px-container-desktop py-unit w-full z-50"
+>
+
+    <div class="flex items-center gap-gutter">
+
+        <!-- LOGO -->
+
+        <div class="flex items-center gap-3">
+
+            <img
+                alt="LM Scent Logo"
+                class="h-10 w-10 rounded-full object-cover border border-primary/30"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx1L8ChuFo0lV2cwq19P_Z1ZI6TatndWWyGalLbbTO_xEFWrTwNGKvEvfyEtPirqURF-fhtPs1DQSzsM19mMLof45jpFiYeixdvjvR3mpiJj-BQ8zajO21Z3soSHWME43z5CJ-SOPTUMqe5MMOYkIjvlpboi0vLZjvwMF-BMGv8fX3IGKV1TIuM-aJ83yN8jbzZFG75ulwlpJK747Pq4D6zM1dCrlWsiKE056dJCouC8ioTH_dfxaYYlgq7xHHLbO7kHA2HpW-BEub"
+            />
+
+            <h1 class="font-display-lg text-display-lg font-bold text-primary tracking-tight">
+                LM Scents
+            </h1>
+
+        </div>
+
+
+        <!-- MENU -->
+
+        <nav class="hidden lg:flex gap-8 ml-12">
+
+    <a        
+    class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors"
+        href="/screens/ventas.html"
+    >
+        Ventas
+    </a>
+
+    <a
+       class="font-title-md text-title-md text-primary border-b-2 border-primary pb-1"
+
+        href="/screens/inventario.html"
+    >
+        Inventario
+    </a>
+
+    <a
+        class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors"
+        href="/screens/reportes.html"
+    >
+        Reportes
+    </a>
+
+    <a
+        class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors"
+        href="/screens/caja.html"
+    >
+        Caja
+    </a>
+
+    <a
+        class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors"
+        href="/screens/configuracion.html"
+    >
+        Configuración
+    </a>
+
+</nav>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- ACCIONES DERECHA -->
+    <!-- ===================================================== -->
+
+    <div class="flex items-center gap-gutter">
+
+        <div class="flex gap-3 relative">
+
+
+            <!-- NOTIFICACIONES -->
+
+            <button
+                id="btnNotificaciones"
+                type="button"
+                class="p-2 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-full relative"
+                title="Notificaciones"
+            >
+
+                <span class="material-symbols-outlined">
+                    notifications
+                </span>
+
+                <span
+                    id="notificationDot"
+                    class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"
+                ></span>
+
+            </button>
+
+
+            <!-- PANEL NOTIFICACIONES -->
+
+            <div
+                id="notificationMenu"
+                class="hidden dropdown-menu absolute right-14 top-12 w-80 bg-surface-container-low border border-outline-variant rounded-xl shadow-2xl p-4 z-[100]"
+            >
+
+                <div class="flex items-center justify-between mb-4">
+
+                    <h3 class="font-title-md text-on-surface">
+                        Notificaciones
+                    </h3>
+
+                    <span class="text-[10px] text-on-surface-variant uppercase">
+                        Sistema
+                    </span>
+
+                </div>
+
+                <div class="flex items-center gap-3 p-3 rounded-lg bg-surface-container-high">
+
+                    <span class="material-symbols-outlined text-primary">
+                        notifications
+                    </span>
+
+                    <div>
+
+                        <p class="text-sm text-on-surface">
+                            No hay notificaciones nuevas.
+                        </p>
+
+                        <p class="text-xs text-on-surface-variant mt-1">
+                            Aquí aparecerán los avisos del sistema.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CUENTA -->
+
+            <button
+                id="btnCuenta"
+                type="button"
+                class="p-2 rounded-full hover:bg-surface-container-high transition-all text-on-surface-variant"
+                title="Cuenta"
+            >
+
+                <span class="material-symbols-outlined">
+                    account_circle
+                </span>
+
+            </button>
+
+
+            <!-- PANEL CUENTA -->
+
+            <div
+                id="accountMenu"
+                class="hidden dropdown-menu absolute right-0 top-12 w-64 bg-surface-container-low border border-outline-variant rounded-xl shadow-2xl p-3 z-[100]"
+            >
+
+                <div class="flex items-center gap-3 p-3 border-b border-outline-variant">
+
+                    <span class="material-symbols-outlined text-primary text-[34px]">
+                        account_circle
+                    </span>
+
+                    <div>
+
+                        <p class="font-title-md text-on-surface">
+                            Cuenta
+                        </p>
+
+                        <p class="text-xs text-on-surface-variant">
+                            Usuario del sistema
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="pt-2">
+
+                    <button
+                        id="btnPerfil"
+                        type="button"
+                        class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors"
+                    >
+
+                        <span class="material-symbols-outlined text-[20px]">
+                            person
+                        </span>
+
+                        Mi cuenta
+
+                    </button>
+
+
+                    <button
+                        id="btnCerrarSesion"
+                        type="button"
+                        class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-error-container text-on-surface-variant hover:text-on-error-container transition-colors"
+                    >
+
+                        <span class="material-symbols-outlined text-[20px]">
+                            logout
+                        </span>
+
+                        Cerrar sesión
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- ========================================================= -->
+<!-- CONTENIDO PRINCIPAL -->
+<!-- ========================================================= -->
+
+<main
+    class="flex-1 flex flex-col min-w-0 bg-background overflow-hidden relative"
+>
+
+
+    <div
+        class="flex-1 overflow-y-auto p-container-desktop custom-scrollbar"
+    >
+
+
+        <!-- ========================================================= -->
+        <!-- ENCABEZADO -->
+        <!-- ========================================================= -->
+
+        <div
+            class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 max-w-7xl mx-auto w-full"
+        >
+
+            <div>
+
+                <h2
+                    class="font-headline-lg text-headline-lg text-on-surface"
+                >
+                    Gestión de Inventario
+                </h2>
+
+                <p
+                    class="font-body-md text-on-surface-variant"
+                >
+                    Administra y consulta los productos disponibles en el inventario.
+                </p>
+
+            </div>
+
+
+            <div class="flex gap-3">
+
+                <button
+                    id="btnAgregarProducto"
+                    type="button"
+                    class="px-6 py-3 border border-primary text-primary font-label-caps text-label-caps hover:bg-primary hover:text-on-primary transition-all rounded-lg flex items-center gap-2 group tactile-press"
+                >
+
+                    <span
+                        class="material-symbols-outlined group-hover:rotate-90 transition-transform"
+                    >
+                        add
+                    </span>
+
+                    Agregar Producto
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================================= -->
+        <!-- ESTADÍSTICAS REALES -->
+        <!-- ========================================================= -->
+
+        <div
+            class="grid grid-cols-1 md:grid-cols-3 gap-card-gap mb-8 max-w-7xl mx-auto w-full"
+        >
+
+
+            <!-- VALOR STOCK -->
+
+            <div
+                class="bg-surface-container border border-outline-variant p-gutter rounded-xl gold-border-top"
+            >
+
+                <p
+                    class="font-label-caps text-label-caps text-on-surface-variant mb-2"
+                >
+                    VALOR TOTAL STOCK
+                </p>
+
+                <h3
+                    id="statValorStock"
+                    class="font-price-display text-price-display text-primary"
+                >
+                    $0.00
+                </h3>
+
+                <div
+                    class="mt-4 flex items-center text-on-surface-variant text-sm"
+                >
+
+                    <span class="material-symbols-outlined text-sm mr-1">
+                        inventory
+                    </span>
+
+                    <span>
+                        Precio de venta × existencias
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- PRODUCTOS -->
+
+            <div
+                class="bg-surface-container border border-outline-variant p-gutter rounded-xl"
+            >
+
+                <p
+                    class="font-label-caps text-label-caps text-on-surface-variant mb-2"
+                >
+                    PRODUCTOS REGISTRADOS
+                </p>
+
+                <h3
+                    id="statProductos"
+                    class="font-price-display text-price-display text-on-surface"
+                >
+                    0
+                </h3>
+
+                <div
+                    class="mt-4 flex items-center text-on-surface-variant text-sm"
+                >
+
+                    <span class="material-symbols-outlined text-sm mr-1">
+                        inventory_2
+                    </span>
+
+                    <span>
+                        Productos en inventario
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- ALERTAS -->
+
+            <div
+                class="bg-surface-container border border-outline-variant p-gutter rounded-xl"
+            >
+
+                <p
+                    class="font-label-caps text-label-caps text-on-surface-variant mb-2"
+                >
+                    ALERTAS DE STOCK
+                </p>
+
+                <h3
+                    id="statAlertas"
+                    class="font-price-display text-price-display text-error"
+                >
+                    00
+                </h3>
+
+                <div
+                    class="mt-4 flex items-center text-on-surface-variant text-sm"
+                >
+
+                    <span class="material-symbols-outlined text-sm mr-1">
+                        warning
+                    </span>
+
+                    <span>
+                        Productos en nivel mínimo
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================================= -->
+        <!-- TABLA DE PRODUCTOS -->
+        <!-- ========================================================= -->
+
+        <div
+            class="bg-surface-container border border-outline-variant rounded-xl overflow-hidden mb-gutter max-w-7xl mx-auto w-full"
+        >
+
+
+            <!-- HEADER TABLA -->
+
+            <div
+                class="p-gutter border-b border-outline-variant flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-surface-container-high/50"
+            >
+
+                <div>
+
+                    <h4
+                        class="font-title-md text-title-md text-on-surface"
+                    >
+                        Lista de Productos
+                    </h4>
+
+                    <p
+                        id="contadorProductos"
+                        class="text-xs text-on-surface-variant mt-1"
+                    >
+                        0 productos registrados
+                    </p>
+
+                </div>
+
+
+                <div class="flex items-center gap-2">
+
+                    <div class="relative">
+
+                        <input
+                            id="buscarProducto"
+                            type="text"
+                            placeholder="Buscar producto..."
+                            class="bg-surface-container-low border border-outline-variant focus:border-primary focus:ring-0 rounded-lg pl-10 pr-4 py-2 text-sm w-64"
+                        />
+
+                        <span
+                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]"
+                        >
+                            search
+                        </span>
+
+                    </div>
+
+                    <button
+                        id="btnRecargar"
+                        type="button"
+                        class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-lg hover:bg-surface-container-high"
+                        title="Actualizar inventario"
+                    >
+
+                        <span class="material-symbols-outlined">
+                            refresh
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- TABLA -->
+
+            <div class="overflow-x-auto">
+
+                <table class="w-full text-left border-collapse">
+
+                    <thead>
+
+                        <tr class="border-b border-outline-variant">
+
+                            <th
+                                class="px-gutter py-4 font-label-caps text-label-caps text-on-surface-variant"
+                            >
+                                Producto
+                            </th>
+
+                            <th
+                                class="px-gutter py-4 font-label-caps text-label-caps text-on-surface-variant"
+                            >
+                                Código
+                            </th>
+
+                            <th
+                                class="px-gutter py-4 font-label-caps text-label-caps text-on-surface-variant text-right"
+                            >
+                                Precio
+                            </th>
+
+                            <th
+                                class="px-gutter py-4 font-label-caps text-label-caps text-on-surface-variant text-center"
+                            >
+                                Stock
+                            </th>
+
+                            <th
+                                class="px-gutter py-4 font-label-caps text-label-caps text-on-surface-variant"
+                            >
+                                Estado
+                            </th>
+
+                            <th
+                                class="px-gutter py-4 font-label-caps text-label-caps text-on-surface-variant text-right"
+                            >
+                                Acciones
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="tablaProductos"
+                        class="divide-y divide-outline-variant/30"
+                    >
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- ESTADO VACÍO -->
+
+            <div
+                id="estadoVacio"
+                class="hidden py-16 px-6 text-center"
+            >
+
+                <span
+                    class="material-symbols-outlined text-primary text-[48px] mb-4"
+                >
+                    inventory_2
+                </span>
+
+                <h3
+                    class="text-xl text-on-surface font-semibold mb-2"
+                >
+                    No hay productos registrados
+                </h3>
+
+                <p
+                    class="text-on-surface-variant text-sm mb-6"
+                >
+                    Agrega un producto para comenzar a administrar el inventario.
+                </p>
+
+                <button
+                    id="btnAgregarProductoVacio"
+                    type="button"
+                    class="px-6 py-3 bg-primary text-on-primary rounded-lg font-semibold hover:brightness-110 transition-all"
+                >
+                    Agregar Producto
+                </button>
+
+            </div>
+
+
+            <!-- PIE DE TABLA -->
+
+            <div
+                class="p-gutter border-t border-outline-variant flex justify-between items-center text-on-surface-variant"
+            >
+
+                <p
+                    id="resumenProductos"
+                    class="font-label-caps text-[10px]"
+                >
+                    Sin productos
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<!-- ========================================================= -->
+<!-- MODAL AGREGAR PRODUCTO -->
+<!-- ========================================================= -->
 
 <div
-class="
-w-full
-max-w-2xl
-bg-surface-container
-border
-border-outline-variant
-rounded-xl
-overflow-hidden
-shadow-2xl
-animate-[fade_.2s]
-"
+    id="modalAgregar"
+    class="hidden fixed inset-0 z-[999] items-center justify-center bg-black/60 backdrop-blur-md p-6"
 >
 
-<!-- HEADER -->
+    <div
+        class="w-full max-w-2xl bg-surface-container border border-outline-variant rounded-xl overflow-hidden shadow-2xl animate-[fade_.2s]"
+    >
 
-<div
-class="
-flex
-justify-between
-items-center
-px-8
-py-6
-border-b
-border-outline-variant
-"
->
 
-<div>
+        <!-- HEADER MODAL -->
 
-<h3
-class="
-text-2xl
-text-primary
-font-headline-lg
-"
->
+        <div
+            class="flex justify-between items-center px-8 py-6 border-b border-outline-variant"
+        >
 
-Nuevo Producto
+            <div>
 
-</h3>
+                <h3
+                    class="text-2xl text-primary font-headline-lg"
+                >
+                    Nuevo Producto
+                </h3>
 
-<p
-class="
-text-sm
-text-on-surface-variant
-"
->
+                <p
+                    class="text-sm text-on-surface-variant"
+                >
+                    Agregar producto al inventario
+                </p>
 
-Agregar al inventario premium
+            </div>
 
-</p>
+
+            <button
+                id="cerrarModal"
+                type="button"
+                class="hover:text-error transition-colors"
+                title="Cerrar"
+            >
+
+                <span class="material-symbols-outlined">
+                    close
+                </span>
+
+            </button>
+
+        </div>
+
+
+        <!-- FORMULARIO -->
+
+        <form
+            id="formProducto"
+            class="p-8 space-y-6"
+        >
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+    <input
+        name="nombre"
+        required
+        placeholder="Nombre del producto"
+        class="campo"
+    />
+
+    <input
+        name="sku"
+        required
+        placeholder="SKU"
+        class="campo"
+    />
 
 </div>
 
-<button
-id="cerrarModal"
-class="
-hover:text-error
-"
->
 
-<span class="material-symbols-outlined">
+<input
+    name="codigoBarras"
+    placeholder="Código de Barras"
+    class="campo"
+/>
 
-close
 
-</span>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-</button>
+    <input
+        type="number"
+        name="precioCompra"
+        required
+        min="0"
+        step="0.01"
+        placeholder="Precio de compra"
+        class="campo"
+    />
+
+    <input
+        type="number"
+        name="precioVenta"
+        required
+        min="0"
+        step="0.01"
+        placeholder="Precio de venta"
+        class="campo"
+    />
 
 </div>
 
-<!-- BODY -->
 
-<form
-id="formProducto"
-class="
-p-8
-space-y-6
-"
->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-<div class="grid grid-cols-2 gap-4">
+    <input
+        type="number"
+        name="stock"
+        required
+        min="0"
+        step="1"
+        placeholder="Stock"
+        class="campo"
+    />
 
-<input
-name="nombre"
-required
-placeholder="Nombre"
-class="campo"
-/>
-
-<input
-name="sku"
-required
-placeholder="SKU"
-class="campo"
-/>
+    <input
+        type="number"
+        name="stockMinimo"
+        min="0"
+        step="1"
+        placeholder="Stock mínimo"
+        class="campo"
+    />
 
 </div>
 
-<input
-name="codigoBarras"
-placeholder="Código de Barras"
-class="campo"
-/>
 
-<div class="grid grid-cols-2 gap-4">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-<input
-type="number"
-name="precioCompra"
-required
-placeholder="Precio Compra"
-class="campo"
-/>
+    <select
+        name="categoria"
+        required
+        class="campo"
+    >
 
-<input
-type="number"
-name="precioVenta"
-required
-placeholder="Precio Venta"
-class="campo"
-/>
+        <option
+            value=""
+            disabled
+            selected
+        >
+            Seleccionar categoría
+        </option>
+
+        <option value="Gorras">
+            Gorras
+        </option>
+
+        <option value="Camisas">
+            Camisas
+        </option>
+
+        <option value="Camisetas">
+            Camisetas
+        </option>
+
+        <option value="Playeras">
+            Playeras
+        </option>
+
+        <option value="Blusas">
+            Blusas
+        </option>
+
+        <option value="Vestidos">
+            Vestidos
+        </option>
+
+        <option value="Faldas">
+            Faldas
+        </option>
+
+        <option value="Pantalones">
+            Pantalones
+        </option>
+
+        <option value="Jeans">
+            Perfumes
+        </option>
+
+        <option value="Shorts">
+            Shorts
+        </option>
+
+        <option value="Cinturones">
+            Cinturones
+        </option>
+
+        <option value="Chamarras">
+            Chamarras
+        </option>
+
+        <option value="Sudaderas">
+            Sudaderas
+        </option>
+
+        <option value="Ropa Interior">
+            Ropa Interior
+        </option>
+
+        <option value="Calcetines">
+            Calcetines
+        </option>
+
+        <option value="Accesorios">
+            Accesorios
+        </option>
+
+        <option value="Otros">
+            Otros
+        </option>
+
+    </select>
+
+    <div></div>
 
 </div>
 
-<div class="grid grid-cols-2 gap-4">
-
-<input
-type="number"
-name="stock"
-required
-placeholder="Stock"
-class="campo"
-/>
-
-<input
-type="number"
-name="stockMinimo"
-value="5"
-placeholder="Stock mínimo"
-class="campo"
-/>
-
-</div>
 
 <label
-class="
-flex
-items-center
-gap-3
-cursor-pointer
-"
+    class="flex items-center gap-3 cursor-pointer"
 >
 
-<input
-type="checkbox"
-name="activo"
-checked
-class="
-accent-yellow-500
-w-5
-h-5
-"
-/>
+    <input
+        type="checkbox"
+        name="activo"
+        checked
+        class="accent-yellow-500 w-5 h-5"
+    />
 
-<span>
-
-Producto Activo
-
-</span>
+    <span class="text-on-surface">
+        Producto activo
+    </span>
 
 </label>
 
-<div
-class="
-flex
-justify-end
-gap-3
-pt-4
-"
->
+            <!-- BOTONES -->
 
-<button
-type="button"
-id="cancelarModal"
-class="
-px-6
-py-3
-border
-border-outline
-rounded-lg
-"
->
+            <div
+                class="flex justify-end gap-3 pt-4"
+            >
 
-Cancelar
+                <button
+                    type="button"
+                    id="cancelarModal"
+                    class="px-6 py-3 border border-outline text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg transition-colors"
+                >
+                    Cancelar
+                </button>
 
-</button>
 
-<button
-type="submit"
-class="
-px-8
-py-3
-bg-primary
-text-on-primary
-rounded-lg
-shine-button
-font-bold
-"
->
+                <button
+                    type="submit"
+                    class="px-8 py-3 bg-primary text-on-primary rounded-lg shine-button font-bold"
+                >
+                    Guardar Producto
+                </button>
 
-Guardar Producto
+            </div>
 
-</button>
+        </form>
+
+    </div>
 
 </div>
 
-</form>
 
-</div>
+<!-- ========================================================= -->
+<!-- SCRIPT -->
+<!-- ========================================================= -->
 
-</div>
-
-<style>
-
-.campo{
-
-width:100%;
-
-background:#1c1b1b;
-
-border:1px solid #4d4635;
-
-padding:14px;
-
-border-radius:10px;
-
-outline:none;
-
-color:white;
-
-transition:.2s;
-
-}
-
-.campo:focus{
-
-border-color:#f2ca50;
-
-box-shadow:
-0 0 15px
-rgba(
-242,
-202,
-80,
-.2
-);
-
-}
-
-@keyframes fade{
-
-from{
-
-opacity:0;
-transform:
-translateY(
-10px
-);
-
-}
-
-to{
-
-opacity:1;
-transform:
-translateY(
-0
-);
-
-}
-
-}
-
-</style>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .gold-glow {
-            box-shadow: 0 0 15px -5px rgba(242, 202, 80, 0.4);
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #1c1b1b;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #4d4635;
-        }
-        .gold-border-top {
-            border-top: 2px solid #f2ca50;
-        }
-        @keyframes subtle-shine {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
-        .shine-button {
-            background: linear-gradient(90deg, #f2ca50 0%, #ffe088 50%, #f2ca50 100%);
-            background-size: 200% auto;
-            transition: 0.3s;
-        }
-        .shine-button:hover {
-            animation: subtle-shine 1.5s infinite linear;
-        }
-    </style>
-</head>
-<body class="bg-background text-on-background font-body-md selection:bg-primary selection:text-on-primary">
-<div class="flex h-screen overflow-hidden">
-<!-- SideNavBar Removed per request -->
-<!-- Main Content Area -->
-<main class="flex-1 flex flex-col min-w-0 bg-background overflow-hidden relative">
-<!-- TopNavBar -->
-<header class="flex justify-between items-center px-container-desktop py-4 w-full max-w-full bg-surface border-b border-outline-variant shadow-sm z-10">
-<div class="flex items-center gap-12">
-<div class="flex flex-col">
-<h1 class="font-headline-lg text-2xl text-primary tracking-tighter leading-tight">LM Scent</h1>
-<p class="font-label-caps text-[10px] text-on-surface-variant opacity-70 tracking-widest">PREMIUM BOUTIQUE</p>
-</div>
-<nav class="hidden md:flex gap-8 items-center h-full">
-<a class="text-on-surface-variant hover:text-primary transition-colors font-title-md text-title-md" href=>Ventas</a>
-<a class="text-primary border-b-2 border-primary pb-1 font-title-md text-title-md" href=>Inventario</a>
-<a class="text-on-surface-variant hover:text-primary transition-colors font-title-md text-title-md" href=>Reportes</a>
-<a class="text-on-surface-variant hover:text-primary transition-colors font-title-md text-title-md" href=>Caja</a>
-<a class="text-on-surface-variant hover:text-primary transition-colors font-title-md text-title-md" href=>Configuración</a>
-</nav>
-</div>
-<div class="flex items-center gap-4">
-<div class="relative hidden lg:block">
-<input class="bg-surface-container-low border-b border-outline focus:border-primary transition-all outline-none px-4 py-2 text-on-surface w-64 font-body-md" placeholder="Buscar producto..." type="text"/>
-<span class="material-symbols-outlined absolute right-2 top-2 text-on-surface-variant">search</span>
-</div>
-<button class="p-2 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-full relative">
-<span class="material-symbols-outlined">notifications</span>
-<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
-</button>
-<button class="flex items-center gap-2 p-2 hover:bg-surface-container-high transition-all rounded-lg">
-<span class="material-symbols-outlined text-primary">account_circle</span>
-<span class="hidden sm:block font-label-caps text-label-caps">Gerente</span>
-</button>
-</div>
-</header>
-<div class="flex-1 overflow-y-auto p-container-desktop custom-scrollbar">
-<!-- Dashboard Header & Stats -->
-<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 max-w-7xl mx-auto w-full">
-<div>
-<h2 class="font-headline-lg text-headline-lg text-on-surface">Gestión de Inventario</h2>
-<p class="font-body-md text-on-surface-variant">Monitorea y actualiza el stock de tu boutique premium.</p>
-</div>
-<div class="flex gap-3">
-<button class="px-6 py-3 border border-primary text-primary font-label-caps text-label-caps hover:bg-primary hover:text-on-primary transition-all rounded-lg flex items-center gap-2 group">
-<span class="material-symbols-outlined group-hover:rotate-90 transition-transform">add</span>
-                            Agregar Producto
-                        </button>
-</div>
-</div>
-<!-- Stats Grid -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-card-gap mb-8 max-w-7xl mx-auto w-full">
-<div class="bg-surface-container border border-outline-variant p-gutter rounded-xl gold-border-top">
-<p class="font-label-caps text-label-caps text-on-surface-variant mb-2">VALOR TOTAL STOCK</p>
-<h3 class="font-price-display text-price-display text-primary">$142,500</h3>
-<div class="mt-4 flex items-center text-green-400 text-sm">
-<span class="material-symbols-outlined text-sm mr-1">trending_up</span>
-<span class="">+4.2% vs mes anterior</span>
-</div>
-</div>
-<div class="bg-surface-container border border-outline-variant p-gutter rounded-xl">
-<p class="font-label-caps text-label-caps text-on-surface-variant mb-2">PRODUCTOS TOTALES</p>
-<h3 class="font-price-display text-price-display text-on-surface">1,248</h3>
-<div class="mt-4 flex items-center text-on-surface-variant text-sm">
-<span class="material-symbols-outlined text-sm mr-1">inventory</span>
-<span class="">12 categorías activas</span>
-</div>
-</div>
-<div class="bg-surface-container border border-outline-variant p-gutter rounded-xl">
-<p class="font-label-caps text-label-caps text-on-surface-variant mb-2">ALERTAS DE STOCK</p>
-<h3 class="font-price-display text-price-display text-error">08</h3>
-<div class="mt-4 flex items-center text-error text-sm">
-<span class="material-symbols-outlined text-sm mr-1">warning</span>
-<span class="">Requiere atención inmediata</span>
-</div>
-</div>
-<div class="bg-surface-container border border-outline-variant p-gutter rounded-xl">
-<p class="font-label-caps text-label-caps text-on-surface-variant mb-2">VENTAS (24H)</p>
-<h3 class="font-price-display text-price-display text-on-surface">$3,120</h3>
-<div class="mt-4 h-8 flex items-end gap-1">
-<div class="bg-primary/20 w-full h-1/2 rounded-t-sm"></div>
-<div class="bg-primary/40 w-full h-3/4 rounded-t-sm"></div>
-<div class="bg-primary/60 w-full h-2/3 rounded-t-sm"></div>
-<div class="bg-primary/80 w-full h-full rounded-t-sm"></div>
-<div class="bg-primary w-full h-4/5 rounded-t-sm"></div>
-</div>
-</div>
-</div>
-<!-- Product Table Section -->
-<div class="bg-surface-container border border-outline-variant rounded-xl overflow-hidden mb-gutter max-w-7xl mx-auto w-full">
-<div class="p-gutter border-b border-outline-variant flex justify-between items-center bg-surface-container-high/50">
-<h4 class="font-title-md text-title-md text-on-surface">Lista de Productos</h4>
-<div class="flex gap-2">
-<button class="p-2 text-on-surface-variant hover:text-on-surface transition-colors">
-<span class="material-symbols-outlined">filter_list</span>
-</button>
-<button class="p-2 text-on-surface-variant hover:text-on-surface transition-colors">
-<span class="material-symbols-outlined">download</span>
-</button>
-</div>
-</div>
-<div class="overflow-x-auto">
-<table class="w-full text-left border-collapse">
-<thead>
-<tr class="border-b border-outline-variant">
-<th class="px-gutter py-4 font-label-caps text-label-caps text-on-surface-variant">Producto</th>
-<th class="px-gutter py-4 font-label-caps text-label-caps text-on-surface-variant">Categoría</th>
-<th class="px-gutter py-4 font-label-caps text-label-caps text-on-surface-variant text-right">Precio</th>
-<th class="px-gutter py-4 font-label-caps text-label-caps text-on-surface-variant text-center">Stock</th>
-<th class="px-gutter py-4 font-label-caps text-label-caps text-on-surface-variant">Estado</th>
-<th class="px-gutter py-4 font-label-caps text-label-caps text-on-surface-variant text-right">Acciones</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-outline-variant/30">
-<tr class="hover:bg-surface-container-highest/30 transition-colors group">
-<td class="px-gutter py-5 flex items-center gap-4">
-<div class="w-12 h-12 rounded bg-surface-container-highest overflow-hidden border border-outline-variant">
-<img alt="Luxury perfume bottle" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0LTNGpEZRPpgF9xlNodXHwAaykU0z0Y9pjMSmXvPpHoL2GPP7SEa_SA5OEBP2wKwiTSRryxmUpnvQzbJIal4UGa6ZpotfIo4tcvSKl7kIDh15LtiBR-mADcoJeaHe6bY8EHxKLRqaP02OXtyod6Mtfmx8oHdbZQ7VyaPFRxPw7EpyJ_7onPjLlWYrJw0teRwVFg5bL7KR1yoTGH7GHRVvAw69GHlNGNfbJLqLZ7ypHBWsHeGwUK1tvWyNQvSANQWPfvYiHWgFxPa9"/>
-</div>
-<div>
-<p class="text-on-surface font-medium">Oud Royal 50ml</p>
-<p class="text-xs text-on-surface-variant">SKU: OR-0012</p>
-</div>
-</td>
-<td class="px-gutter py-5 text-on-surface-variant">Fragancias</td>
-<td class="px-gutter py-5 text-on-surface font-semibold text-right">$245.00</td>
-<td class="px-gutter py-5 text-center text-on-surface">42</td>
-<td class="px-gutter py-5">
-<span class="px-2 py-1 bg-green-500/10 text-green-400 text-[10px] font-bold rounded uppercase tracking-wider">En Stock</span>
-</td>
-<td class="px-gutter py-5 text-right space-x-1">
-<button class="p-2 text-on-surface-variant hover:text-primary transition-all"><span class="material-symbols-outlined text-sm">edit</span></button>
-<button class="p-2 text-on-surface-variant hover:text-error transition-all"><span class="material-symbols-outlined text-sm">delete</span></button>
-</td>
-</tr>
-<tr class="bg-error-container/5 hover:bg-error-container/10 transition-colors group border-l-4 border-error">
-<td class="px-gutter py-5 flex items-center gap-4">
-<div class="w-12 h-12 rounded bg-surface-container-highest overflow-hidden border border-outline-variant">
-<img alt="Elegant perfume atomizer" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMIfRIJF6HfsHvw9xjBC9T2csCHclPC5h1bFaFjiVnAtSfpjgCyC0grbSZUterDB8Y49YOF3t_jpKK0W4GRAZY63bbwt26nbsIj7jJR1q1dYCei6GJAIeyvbyv97-Z62tz6i1imDWZp55lupSJgmibifFIbh8bbvavVp4ze2J02I4gvyk-YWHJCXDHwB3ONZ9bV-IliihDT1gSl6mWtNPMCgqoLz_SKszT5_t5-efzmQ_j4_VdrVh-ifE24I4MrsKrb_CZMEYsB2o8"/>
-</div>
-<div>
-<p class="text-on-surface font-medium">Silk Road Mist</p>
-<p class="text-xs text-on-surface-variant">SKU: SM-0982</p>
-</div>
-</td>
-<td class="px-gutter py-5 text-on-surface-variant">Cuidado Personal</td>
-<td class="px-gutter py-5 text-on-surface font-semibold text-right">$185.00</td>
-<td class="px-gutter py-5 text-center text-error font-bold">03</td>
-<td class="px-gutter py-5">
-<span class="px-2 py-1 bg-error-container text-on-error-container text-[10px] font-bold rounded uppercase tracking-wider">Bajo Stock</span>
-</td>
-<td class="px-gutter py-5 text-right space-x-1">
-<button class="p-2 text-on-surface-variant hover:text-primary transition-all"><span class="material-symbols-outlined text-sm">edit</span></button>
-<button class="p-2 text-on-surface-variant hover:text-error transition-all"><span class="material-symbols-outlined text-sm">delete</span></button>
-</td>
-</tr>
-<tr class="hover:bg-surface-container-highest/30 transition-colors group">
-<td class="px-gutter py-5 flex items-center gap-4">
-<div class="w-12 h-12 rounded bg-surface-container-highest overflow-hidden border border-outline-variant">
-<img alt="Artisanal glass bottle" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvr4LGcK7X1Vjl0sXRHWH13E28lrh5otqUatehpBlsz9Df1J6kElCF7ECMqp90OiRfNu5Tx-l39weulDQYIgA2hUUquh10FnxO2vBs70WLKSPDMapLbI1IOc87h7iLP_DqdGW_t5EdCCOzIHuNmwdOt_Ope4UR7DvNkMesQOz8EjVxDS2SiYJf9wwxsN7q4cK1EIF78avsEpXd5Mpg-WWAjmsGq6XEQDuB4PiBwXAOjutPA5_xQoz8OX9CAfBATEE0w_OTwTEg5AgC"/>
-</div>
-<div>
-<p class="text-on-surface font-medium">Midnight Amber</p>
-<p class="text-xs text-on-surface-variant">SKU: MA-2234</p>
-</div>
-</td>
-<td class="px-gutter py-5 text-on-surface-variant">Fragancias</td>
-<td class="px-gutter py-5 text-on-surface font-semibold text-right">$310.00</td>
-<td class="px-gutter py-5 text-center text-on-surface">15</td>
-<td class="px-gutter py-5">
-<span class="px-2 py-1 bg-green-500/10 text-green-400 text-[10px] font-bold rounded uppercase tracking-wider">En Stock</span>
-</td>
-<td class="px-gutter py-5 text-right space-x-1">
-<button class="p-2 text-on-surface-variant hover:text-primary transition-all"><span class="material-symbols-outlined text-sm">edit</span></button>
-<button class="p-2 text-on-surface-variant hover:text-error transition-all"><span class="material-symbols-outlined text-sm">delete</span></button>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="p-gutter border-t border-outline-variant flex justify-between items-center text-on-surface-variant">
-<p class="font-label-caps text-[10px]">Mostrando 1-10 de 1,248 productos</p>
-<div class="flex gap-2">
-<button class="p-2 border border-outline-variant rounded hover:bg-surface-container-highest disabled:opacity-30"><span class="material-symbols-outlined">chevron_left</span></button>
-<button class="p-2 border border-outline-variant rounded bg-primary text-on-primary">1</button>
-<button class="p-2 border border-outline-variant rounded hover:bg-surface-container-highest">2</button>
-<button class="p-2 border border-outline-variant rounded hover:bg-surface-container-highest">3</button>
-<button class="p-2 border border-outline-variant rounded hover:bg-surface-container-highest"><span class="material-symbols-outlined">chevron_right</span></button>
-</div>
-</div>
-</div>
-<!-- Footer Section -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter max-w-7xl mx-auto w-full pb-gutter">
-<div class="bg-surface-container-low border border-outline-variant p-gutter rounded-xl">
-<h4 class="font-title-md text-title-md text-on-surface mb-6 flex items-center gap-2">
-<span class="material-symbols-outlined text-primary">analytics</span>
-                            Tendencias de Venta Semanal
-                        </h4>
-<div class="h-48 w-full flex items-end justify-between gap-2">
-<div class="flex flex-col items-center gap-2 w-full">
-<div class="bg-primary/20 w-full h-24 rounded-t-lg relative group">
-<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">$1.2k</div>
-</div>
-<span class="text-[10px] font-label-caps text-on-surface-variant">LUN</span>
-</div>
-<div class="flex flex-col items-center gap-2 w-full">
-<div class="bg-primary/40 w-full h-32 rounded-t-lg relative group">
-<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">$1.8k</div>
-</div>
-<span class="text-[10px] font-label-caps text-on-surface-variant">MAR</span>
-</div>
-<div class="flex flex-col items-center gap-2 w-full">
-<div class="bg-primary/60 w-full h-28 rounded-t-lg relative group">
-<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">$1.5k</div>
-</div>
-<span class="text-[10px] font-label-caps text-on-surface-variant">MIE</span>
-</div>
-<div class="flex flex-col items-center gap-2 w-full">
-<div class="bg-primary/80 w-full h-40 rounded-t-lg relative group">
-<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">$2.2k</div>
-</div>
-<span class="text-[10px] font-label-caps text-on-surface-variant">JUE</span>
-</div>
-<div class="flex flex-col items-center gap-2 w-full">
-<div class="bg-primary w-full h-48 rounded-t-lg relative group">
-<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">$2.8k</div>
-</div>
-<span class="text-[10px] font-label-caps text-on-surface-variant">VIE</span>
-</div>
-</div>
-</div>
-<div class="bg-surface-container-low border border-outline-variant p-gutter rounded-xl relative overflow-hidden">
-<h4 class="font-title-md text-title-md text-on-surface mb-6 flex items-center gap-2">
-<span class="material-symbols-outlined text-primary">priority_high</span>
-                            Acciones Críticas
-                        </h4>
-<div class="space-y-4">
-<div class="flex items-center justify-between p-3 bg-error-container/10 border border-error/20 rounded-lg">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-error">shopping_cart_checkout</span>
-<p class="text-sm font-medium">Reabastecer "Silk Road Mist"</p>
-</div>
-<button class="text-[10px] font-bold text-error uppercase hover:underline">Comprar</button>
-</div>
-<div class="flex items-center justify-between p-3 bg-primary-container/10 border border-primary/20 rounded-lg">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-primary">update</span>
-<p class="text-sm font-medium">Revisión de precios temporada</p>
-</div>
-<button class="text-[10px] font-bold text-primary uppercase hover:underline">Abrir</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Floating Action Button - Contextual -->
-<button class="fixed bottom-gutter right-gutter w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform group md:hidden">
-<span class="material-symbols-outlined">add</span>
-</button>
-</main>
-</div>
 <script type="module">
 
 import {
-agregarProducto,
-obtenerProductos,
-eliminarProducto
-}
-from "/src/lib/inventario.js";
 
-/*
-==================
-SELECTORES
-==================
-*/
+    agregarProducto,
+    obtenerProductos,
+    eliminarProducto
+
+} from "/src/lib/inventario.js";
+
+
+/* ========================================================= */
+/* SELECTORES */
+/* ========================================================= */
 
 const tbody =
-document.querySelector("tbody");
+    document.getElementById(
+        "tablaProductos"
+    );
+
 
 const modal =
-document.getElementById(
-"modalAgregar"
-);
+    document.getElementById(
+        "modalAgregar"
+    );
+
 
 const form =
-document.getElementById(
-"formProducto"
-);
+    document.getElementById(
+        "formProducto"
+    );
+
 
 const cerrar =
-document.getElementById(
-"cerrarModal"
-);
+    document.getElementById(
+        "cerrarModal"
+    );
+
 
 const cancelar =
-document.getElementById(
-"cancelarModal"
-);
+    document.getElementById(
+        "cancelarModal"
+    );
+
 
 const btnAgregar =
-[...document.querySelectorAll("button")]
-.find(
-b=>
-b.textContent
-.includes(
-"Agregar Producto"
-)
-);
+    document.getElementById(
+        "btnAgregarProducto"
+    );
 
-const stats =
-document.querySelectorAll(
-".text-price-display"
-);
 
-/*
-==================
-MODAL
-==================
-*/
+const btnAgregarVacio =
+    document.getElementById(
+        "btnAgregarProductoVacio"
+    );
 
-function abrirModal(){
 
-if(!modal)
-return;
+const btnRecargar =
+    document.getElementById(
+        "btnRecargar"
+    );
 
-modal.classList.remove(
-"hidden"
-);
 
-modal.classList.add(
-"flex"
-);
+const buscarProducto =
+    document.getElementById(
+        "buscarProducto"
+    );
 
-document.body.style.overflow =
-"hidden";
+
+const estadoVacio =
+    document.getElementById(
+        "estadoVacio"
+    );
+
+
+const statValorStock =
+    document.getElementById(
+        "statValorStock"
+    );
+
+
+const statProductos =
+    document.getElementById(
+        "statProductos"
+    );
+
+
+const statAlertas =
+    document.getElementById(
+        "statAlertas"
+    );
+
+
+const contadorProductos =
+    document.getElementById(
+        "contadorProductos"
+    );
+
+
+const resumenProductos =
+    document.getElementById(
+        "resumenProductos"
+    );
+
+
+/* ========================================================= */
+/* DATOS */
+/* ========================================================= */
+
+let productos = [];
+
+
+/* ========================================================= */
+/* MODAL */
+/* ========================================================= */
+
+function abrirModal() {
+
+    modal.classList.remove(
+        "hidden"
+    );
+
+    modal.classList.add(
+        "flex"
+    );
+
+    document.body.style.overflow =
+        "hidden";
+
+    setTimeout(() => {
+
+        const primerCampo =
+            form.querySelector(
+                'input[name="nombre"]'
+            );
+
+        primerCampo?.focus();
+
+    }, 100);
 
 }
 
-function cerrarModal(){
 
-if(!modal)
-return;
+function cerrarModal() {
 
-modal.classList.add(
-"hidden"
-);
+    modal.classList.add(
+        "hidden"
+    );
 
-modal.classList.remove(
-"flex"
-);
+    modal.classList.remove(
+        "flex"
+    );
 
-document.body.style.overflow =
-"auto";
+    document.body.style.overflow =
+        "auto";
 
-form.reset();
+    form.reset();
+
+    const activo =
+        form.querySelector(
+            'input[name="activo"]'
+        );
+
+    if (activo) {
+
+        activo.checked = true;
+
+    }
+
+    const stockMinimo =
+        form.querySelector(
+            'input[name="stockMinimo"]'
+        );
+
+    if (stockMinimo) {
+
+        stockMinimo.value = "5";
+
+    }
 
 }
 
-/*
-ABRIR
-*/
 
 btnAgregar?.addEventListener(
-"click",
-abrirModal
+    "click",
+    abrirModal
 );
 
-/*
-CERRAR X
-*/
+
+btnAgregarVacio?.addEventListener(
+    "click",
+    abrirModal
+);
+
 
 cerrar?.addEventListener(
-"click",
-cerrarModal
+    "click",
+    cerrarModal
 );
 
-/*
-CANCELAR
-*/
 
 cancelar?.addEventListener(
-"click",
-cerrarModal
+    "click",
+    cerrarModal
 );
 
-/*
-CLIC AFUERA
-*/
 
 modal?.addEventListener(
-"click",
-e=>{
+    "click",
+    event => {
 
-if(
-e.target===modal
-)
-cerrarModal();
+        if (
+            event.target === modal
+        ) {
 
-}
+            cerrarModal();
+
+        }
+
+    }
 );
 
-/*
-ESC
-*/
 
 document.addEventListener(
-"keydown",
-e=>{
+    "keydown",
+    event => {
 
-if(
-e.key==="Escape"
-)
-cerrarModal();
+        if (
+            event.key === "Escape" &&
+            !modal.classList.contains("hidden")
+        ) {
 
-}
+            cerrarModal();
+
+        }
+
+    }
 );
 
-/*
-==================
-GUARDAR
-==================
-*/
+
+/* ========================================================= */
+/* AGREGAR PRODUCTO */
+/* ========================================================= */
 
 form?.addEventListener(
-"submit",
+    "submit",
 
-async e=>{
+    async event => {
 
-e.preventDefault();
+        event.preventDefault();
 
-const data =
-new FormData(
-form
+
+        const data =
+            new FormData(
+                form
+            );
+
+
+        const producto = {
+
+            nombre:
+                String(
+                    data.get("nombre") || ""
+                ).trim(),
+
+            sku:
+                String(
+                    data.get("sku") || ""
+                ).trim(),
+
+            codigoBarras:
+                String(
+                    data.get("codigoBarras") || ""
+                ).trim(),
+
+            precioCompra:
+                Number(
+                    data.get("precioCompra")
+                ),
+
+            precioVenta:
+                Number(
+                    data.get("precioVenta")
+                ),
+
+            stock:
+                Number(
+                    data.get("stock")
+                ),
+
+            stockMinimo:
+                Number(
+                    data.get("stockMinimo")
+                ),
+
+            activo:
+                data.get("activo") === "on",
+
+            ventas24h: 0
+
+        };
+
+
+        if (
+            !producto.nombre ||
+            !producto.sku
+        ) {
+
+            alert(
+                "Completa los campos obligatorios."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            producto.precioVenta < 0 ||
+            producto.precioCompra < 0 ||
+            producto.stock < 0 ||
+            producto.stockMinimo < 0
+        ) {
+
+            alert(
+                "Los valores no pueden ser negativos."
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            await agregarProducto(
+                producto
+            );
+
+
+            cerrarModal();
+
+
+            await cargar();
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Error al guardar producto:",
+                error
+            );
+
+
+            alert(
+                "No se pudo guardar el producto."
+            );
+
+        }
+
+    }
+
 );
 
-const producto={
 
-nombre:
-data.get(
-"nombre"
-),
-
-sku:
-data.get(
-"sku"
-),
-
-codigoBarras:
-data.get(
-"codigoBarras"
-),
-
-precioCompra:
-Number(
-data.get(
-"precioCompra"
-)
-),
-
-precioVenta:
-Number(
-data.get(
-"precioVenta"
-)
-),
-
-stock:
-Number(
-data.get(
-"stock"
-)
-),
-
-stockMinimo:
-Number(
-data.get(
-"stockMinimo"
-)
-),
-
-activo:
-data.get(
-"activo"
-)
-==="on",
-
-ventas24h:0
-
-};
-
-try{
-
-await agregarProducto(
-producto
-);
-
-cerrarModal();
-
-await cargar();
-
-}
-catch(err){
-
-console.error(
-err
-);
-
-alert(
-"No se pudo guardar"
-);
-
-}
-
-}
-
-);
-
-/*
-==================
-TABLA
-==================
-*/
-
-async function cargar(){
-
-const productos=
-await obtenerProductos();
-
-tbody.innerHTML="";
-
-let total=0;
-
-let alertas=0;
-
-let ventas=0;
-
-for(const p of productos){
-
-total+=
-(
-p.precioVenta
-||
-0
-)
-*
-(
-p.stock
-||
-0
-);
-
-ventas+=
-(
-p.ventas24h
-||
-0
-);
-
-if(
-p.stock<=
-(
-p.stockMinimo
-||
-5
-)
-)
-alertas++;
-
-tbody.innerHTML+=`
-
-<tr
-class="
-hover:bg-surface-container-highest/20
-">
-
-<td class="px-gutter py-5">
-
-<div>
-
-<p class="font-medium">
-
-${p.nombre}
-
-</p>
-
-<p class="text-xs text-on-surface-variant">
-
-SKU:
-${p.sku}
-
-</p>
-
-</div>
-
-</td>
-
-<td class="px-gutter">
-
-Perfume
-
-</td>
-
-<td class="px-gutter text-right">
-
-$
-
-${(
-p.precioVenta
-||
-0
-)
-.toLocaleString()}
-
-</td>
-
-<td class="px-gutter text-center">
-
-${p.stock}
-
-</td>
-
-<td class="px-gutter">
-
-${
-p.stock<=
-(
-p.stockMinimo
-||
-5
-)
-
-?
-
-`
-<span
-class="
-px-2
-py-1
-bg-error-container
-rounded
-"
->
-
-Bajo Stock
-
-</span>
-`
-
-:
-
-`
-<span
-class="
-px-2
-py-1
-bg-green-500/10
-text-green-400
-rounded
-">
-
-Activo
-
-</span>
-`
-}
-
-</td>
-
-<td
-class="
-text-right
-px-gutter
-">
-
-<button
-class="
-eliminar
-hover:text-error
-"
-data-id="${
-p.id
-}"
->
-
-🗑
-
-</button>
-
-</td>
-
-</tr>
-
-`;
+/* ========================================================= */
+/* ESCAPAR HTML */
+/* ========================================================= */
+
+function escaparHTML(valor) {
+
+    return String(
+        valor ?? ""
+    )
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
 
 }
 
-/*
-ELIMINAR
-*/
+
+/* ========================================================= */
+/* FORMATO MONEDA */
+/* ========================================================= */
+
+function moneda(valor) {
+
+    return new Intl.NumberFormat(
+        "es-MX",
+        {
+            style: "currency",
+            currency: "MXN"
+        }
+    ).format(
+        Number(valor) || 0
+    );
+
+}
+
+
+/* ========================================================= */
+/* CARGAR INVENTARIO */
+/* ========================================================= */
+
+async function cargar() {
+
+    try {
+
+        productos =
+            await obtenerProductos();
+
+        if (
+            !Array.isArray(productos)
+        ) {
+
+            productos = [];
+
+        }
+
+        renderizar(
+            productos
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Error al cargar inventario:",
+            error
+        );
+
+        productos = [];
+
+        tbody.innerHTML = "";
+
+        estadoVacio.classList.remove(
+            "hidden"
+        );
+
+        contadorProductos.textContent =
+            "No fue posible cargar el inventario.";
+
+        resumenProductos.textContent =
+            "Error al consultar productos.";
+
+        statValorStock.textContent =
+            "$0.00";
+
+        statProductos.textContent =
+            "0";
+
+        statAlertas.textContent =
+            "00";
+
+    }
+
+}
+
+
+/* ========================================================= */
+/* RENDERIZAR */
+/* ========================================================= */
+
+function renderizar(lista) {
+
+    tbody.innerHTML = "";
+
+
+    /* ===================================================== */
+    /* ESTADO VACÍO */
+    /* ===================================================== */
+
+    if (
+        lista.length === 0
+    ) {
+
+        estadoVacio.classList.remove(
+            "hidden"
+        );
+
+    }
+
+    else {
+
+        estadoVacio.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    /* ===================================================== */
+    /* ESTADÍSTICAS */
+    /* ===================================================== */
+
+    const valorStock =
+        productos.reduce(
+            (
+                acumulado,
+                producto
+            ) => {
+
+                return acumulado +
+                    (
+                        Number(
+                            producto.precioVenta
+                        ) || 0
+                    ) *
+                    (
+                        Number(
+                            producto.stock
+                        ) || 0
+                    );
+
+            },
+            0
+        );
+
+
+    const alertas =
+        productos.filter(
+            producto => {
+
+                const stock =
+                    Number(
+                        producto.stock
+                    ) || 0;
+
+                const minimo =
+                    Number(
+                        producto.stockMinimo
+                    ) || 0;
+
+                return (
+                    stock <= minimo
+                );
+
+            }
+        ).length;
+
+
+    statValorStock.textContent =
+        moneda(
+            valorStock
+        );
+
+
+    statProductos.textContent =
+        productos.length;
+
+
+    statAlertas.textContent =
+        String(
+            alertas
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    contadorProductos.textContent =
+        `${lista.length} producto${lista.length === 1 ? "" : "s"} mostrado${lista.length === 1 ? "" : "s"}`;
+
+
+    resumenProductos.textContent =
+        productos.length === 0
+            ? "Sin productos registrados"
+            : `Mostrando ${lista.length} de ${productos.length} productos`;
+
+
+    /* ===================================================== */
+    /* TABLA */
+    /* ===================================================== */
+
+    for (
+        const producto of lista
+    ) {
+
+        const stock =
+            Number(
+                producto.stock
+            ) || 0;
+
+
+        const stockMinimo =
+            Number(
+                producto.stockMinimo
+            ) || 0;
+
+
+        const precio =
+            Number(
+                producto.precioVenta
+            ) || 0;
+
+
+        const bajoStock =
+            stock <= stockMinimo;
+
+
+        const nombre =
+            escaparHTML(
+                producto.nombre
+            );
+
+
+        const sku =
+            escaparHTML(
+                producto.sku
+            );
+
+
+        const codigoBarras =
+            escaparHTML(
+                producto.codigoBarras
+            );
+
+
+        const fila =
+            document.createElement(
+                "tr"
+            );
+
+
+        fila.className =
+            bajoStock
+                ? "bg-error-container/5 hover:bg-error-container/10 transition-colors border-l-4 border-error"
+                : "hover:bg-surface-container-highest/20 transition-colors";
+
+
+        fila.innerHTML = `
+
+            <td class="px-gutter py-5">
+
+                <div>
+
+                    <p class="font-medium text-on-surface">
+
+                        ${nombre}
+
+                    </p>
+
+                    <p class="text-xs text-on-surface-variant">
+
+                        SKU:
+                        ${sku}
+
+                    </p>
+
+                </div>
+
+            </td>
+
+
+            <td class="px-gutter py-5 text-on-surface-variant">
+
+                ${
+                    codigoBarras
+                        ? codigoBarras
+                        : "Sin código"
+                }
+
+            </td>
+
+
+            <td class="px-gutter py-5 text-on-surface font-semibold text-right">
+
+                ${moneda(precio)}
+
+            </td>
+
+
+            <td
+                class="
+                    px-gutter
+                    py-5
+                    text-center
+                    ${bajoStock ? "text-error font-bold" : "text-on-surface"}
+                "
+            >
+
+                ${stock}
+
+            </td>
+
+
+            <td class="px-gutter py-5">
+
+                ${
+                    bajoStock
+
+                    ?
+
+                    `
+                    <span
+                        class="
+                            px-2
+                            py-1
+                            bg-error-container
+                            text-on-error-container
+                            text-[10px]
+                            font-bold
+                            rounded
+                            uppercase
+                            tracking-wider
+                        "
+                    >
+                        Bajo Stock
+                    </span>
+                    `
+
+                    :
+
+                    `
+                    <span
+                        class="
+                            px-2
+                            py-1
+                            bg-green-500/10
+                            text-green-400
+                            text-[10px]
+                            font-bold
+                            rounded
+                            uppercase
+                            tracking-wider
+                        "
+                    >
+                        En Stock
+                    </span>
+                    `
+
+                }
+
+            </td>
+
+
+            <td
+                class="
+                    text-right
+                    px-gutter
+                    py-5
+                "
+            >
+
+                <button
+                    type="button"
+                    class="
+                        eliminar
+                        p-2
+                        text-on-surface-variant
+                        hover:text-error
+                        transition-all
+                    "
+                    data-id="${escaparHTML(producto.id)}"
+                    title="Eliminar producto"
+                >
+
+                    <span class="material-symbols-outlined text-[20px]">
+                        delete
+                    </span>
+
+                </button>
+
+            </td>
+
+        `;
+
+
+        tbody.appendChild(
+            fila
+        );
+
+    }
+
+
+    /* ===================================================== */
+    /* EVENTOS ELIMINAR */
+    /* ===================================================== */
+
+    tbody
+        .querySelectorAll(
+            ".eliminar"
+        )
+        .forEach(
+            boton => {
+
+                boton.addEventListener(
+                    "click",
+
+                    async () => {
+
+                        const id =
+                            boton.dataset.id;
+
+
+                        const producto =
+                            productos.find(
+                                item =>
+                                    String(item.id) ===
+                                    String(id)
+                            );
+
+
+                        const confirmar =
+                            confirm(
+                                `¿Deseas eliminar "${producto?.nombre || "este producto"}" del inventario?`
+                            );
+
+
+                        if (!confirmar) {
+
+                            return;
+
+                        }
+
+
+                        try {
+
+                            await eliminarProducto(
+                                id
+                            );
+
+                            await cargar();
+
+                        }
+
+                        catch (error) {
+
+                            console.error(
+                                "Error al eliminar:",
+                                error
+                            );
+
+                            alert(
+                                "No se pudo eliminar el producto."
+                            );
+
+                        }
+
+                    }
+
+                );
+
+            }
+        );
+
+}
+
+
+/* ========================================================= */
+/* BUSCADOR */
+/* ========================================================= */
+
+function filtrarProductos() {
+
+    const termino =
+        buscarProducto.value
+            .trim()
+            .toLowerCase();
+
+
+    if (!termino) {
+
+        renderizar(
+            productos
+        );
+
+        return;
+
+    }
+
+
+    const resultado =
+        productos.filter(
+            producto => {
+
+                const nombre =
+                    String(
+                        producto.nombre || ""
+                    ).toLowerCase();
+
+
+                const sku =
+                    String(
+                        producto.sku || ""
+                    ).toLowerCase();
+
+
+                const codigo =
+                    String(
+                        producto.codigoBarras || ""
+                    ).toLowerCase();
+
+
+                return (
+                    nombre.includes(
+                        termino
+                    ) ||
+
+                    sku.includes(
+                        termino
+                    ) ||
+
+                    codigo.includes(
+                        termino
+                    )
+                );
+
+            }
+        );
+
+
+    renderizar(
+        resultado
+    );
+
+}
+
+
+buscarProducto?.addEventListener(
+    "input",
+    filtrarProductos
+);
+
+
+/* ========================================================= */
+/* RECARGAR */
+/* ========================================================= */
+
+btnRecargar?.addEventListener(
+    "click",
+
+    async () => {
+
+        btnRecargar
+            .querySelector(
+                ".material-symbols-outlined"
+            )
+            ?.classList.add(
+                "animate-spin"
+            );
+
+
+        await cargar();
+
+
+        setTimeout(
+            () => {
+
+                btnRecargar
+                    .querySelector(
+                        ".material-symbols-outlined"
+                    )
+                    ?.classList.remove(
+                        "animate-spin"
+                    );
+
+            },
+            300
+        );
+
+    }
+
+);
+
+
+/* ========================================================= */
+/* BUSCADOR DE NAVBAR */
+/* ========================================================= */
+
+const buscadorNavbar =
+    document.querySelector(
+        'header input[type="text"]'
+    );
+
+
+buscadorNavbar?.addEventListener(
+    "input",
+
+    () => {
+
+        if (!buscarProducto) {
+
+            return;
+
+        }
+
+
+        buscarProducto.value =
+            buscadorNavbar.value;
+
+
+        filtrarProductos();
+
+    }
+);
+
+
+/* ========================================================= */
+/* NOTIFICACIONES */
+/* ========================================================= */
+
+const btnNotificaciones =
+    document.getElementById(
+        "btnNotificaciones"
+    );
+
+
+const notificationMenu =
+    document.getElementById(
+        "notificationMenu"
+    );
+
+
+const btnCuenta =
+    document.getElementById(
+        "btnCuenta"
+    );
+
+
+const accountMenu =
+    document.getElementById(
+        "accountMenu"
+    );
+
+
+btnNotificaciones?.addEventListener(
+    "click",
+
+    event => {
+
+        event.stopPropagation();
+
+        notificationMenu.classList.toggle(
+            "hidden"
+        );
+
+        accountMenu.classList.add(
+            "hidden"
+        );
+
+    }
+);
+
+
+btnCuenta?.addEventListener(
+    "click",
+
+    event => {
+
+        event.stopPropagation();
+
+        accountMenu.classList.toggle(
+            "hidden"
+        );
+
+        notificationMenu.classList.add(
+            "hidden"
+        );
+
+    }
+);
+
+
+document.addEventListener(
+    "click",
+
+    event => {
+
+        if (
+            !notificationMenu.contains(
+                event.target
+            ) &&
+            !btnNotificaciones.contains(
+                event.target
+            )
+        ) {
+
+            notificationMenu.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        if (
+            !accountMenu.contains(
+                event.target
+            ) &&
+            !btnCuenta.contains(
+                event.target
+            )
+        ) {
+
+            accountMenu.classList.add(
+                "hidden"
+            );
+
+        }
+
+    }
+);
+
+
+/* ========================================================= */
+/* CUENTA */
+/* ========================================================= */
 
 document
-.querySelectorAll(
-".eliminar"
-)
-.forEach(
-btn=>{
+    .getElementById(
+        "btnPerfil"
+    )
+    ?.addEventListener(
+        "click",
 
-btn.onclick=
-async()=>{
+        () => {
 
-await eliminarProducto(
-btn.dataset.id
-);
+            alert(
+                "La sección de cuenta estará disponible próximamente."
+            );
 
-await cargar();
+        }
+    );
 
-};
 
-}
-);
+document
+    .getElementById(
+        "btnCerrarSesion"
+    )
+    ?.addEventListener(
+        "click",
 
-/*
-STATS
-*/
+        () => {
 
-stats[0].textContent=
-"$"+
-total
-.toLocaleString();
+            const confirmar =
+                confirm(
+                    "¿Deseas cerrar sesión?"
+                );
 
-stats[1].textContent=
-productos.length;
 
-stats[2].textContent=
-String(
-alertas
-)
-.padStart(
-2,
-"0"
-);
+            if (!confirmar) {
 
-stats[3].textContent=
-"$"+
-ventas
-.toLocaleString();
+                return;
 
-}
+            }
 
-/*
-INICIO
-*/
+
+            /*
+             * Aquí posteriormente
+             * conectaremos el sistema
+             * de autenticación.
+             */
+
+            alert(
+                "Sesión cerrada."
+            );
+
+        }
+    );
+
+
+/* ========================================================= */
+/* INICIO */
+/* ========================================================= */
 
 await cargar();
 
 </script>
-</body></html>
+
+</body>
+</html>

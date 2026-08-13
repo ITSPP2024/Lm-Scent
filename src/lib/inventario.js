@@ -1,153 +1,199 @@
 import {
-collection,
-addDoc,
-getDocs,
-deleteDoc,
-doc,
-updateDoc
+    collection,
+    addDoc,
+    getDocs,
+    deleteDoc,
+    doc,
+    updateDoc
 }
 from "firebase/firestore";
 
+
 import { db } from "./firebase";
 
-const tabla="inventario";
+
+const tabla = "inventario";
+
 
 /*
 OBTENER
 */
 
+
 export async function obtenerProductos(){
 
-const snapshot=
-await getDocs(
-collection(
-db,
-tabla
-)
-);
 
-return snapshot.docs.map(
-d=>({
+    const snapshot =
+        await getDocs(
+            collection(
+                db,
+                tabla
+            )
+        );
 
-id:d.id,
 
-...d.data()
+    return snapshot.docs.map(
+        d => ({
 
-})
-);
+
+            id: d.id,
+
+
+            ...d.data()
+
+
+        })
+    );
+
 
 }
+
 
 /*
 AGREGAR
 */
 
+
 export async function agregarProducto(
-data
+    data
 ){
 
-await addDoc(
 
-collection(
-db,
-tabla
-),
+    await addDoc(
 
-{
 
-activo:
-data.activo
-?? true,
+        collection(
+            db,
+            tabla
+        ),
 
-codigoBarras:
-data.codigoBarras
-?? "",
 
-nombre:
-data.nombre
-?? "",
+        {
 
-precioCompra:
-Number(
-data.precioCompra
-)
-||0,
 
-precioVenta:
-Number(
-data.precioVenta
-)
-||0,
+            activo:
+                data.activo
+                ?? true,
 
-sku:
-data.sku
-?? "",
 
-stock:
-Number(
-data.stock
-)
-||0,
+            codigoBarras:
+                data.codigoBarras
+                ?? "",
 
-stockMinimo:
-Number(
-data.stockMinimo
-)
-||5,
 
-ventas24h:
-0,
+            nombre:
+                data.nombre
+                ?? "",
 
-creado:
-new Date()
+
+            categoria:
+                data.categoria
+                ?? "",
+
+
+            precioCompra:
+                Number(
+                    data.precioCompra
+                )
+                || 0,
+
+
+            precioVenta:
+                Number(
+                    data.precioVenta
+                )
+                || 0,
+
+
+            sku:
+                data.sku
+                ?? "",
+
+
+            stock:
+                Number(
+                    data.stock
+                )
+                || 0,
+
+
+            stockMinimo:
+                Number(
+                    data.stockMinimo
+                )
+                || 5,
+
+
+            ventas24h:
+                0,
+
+
+            creado:
+                new Date()
+
+
+        }
+
+
+    );
+
 
 }
 
-);
-
-}
 
 /*
 ELIMINAR
 */
 
+
 export async function eliminarProducto(
-id
+    id
 ){
 
-await deleteDoc(
 
-doc(
-db,
-tabla,
-id
-)
+    await deleteDoc(
 
-);
+
+        doc(
+            db,
+            tabla,
+            id
+        )
+
+
+    );
+
 
 }
+
 
 /*
 EDITAR
 */
 
+
 export async function editarProducto(
 
-id,
-data
+    id,
+    data
 
 ){
 
-await updateDoc(
 
-doc(
-db,
-tabla,
-id
-),
+    await updateDoc(
 
-data
 
-);
+        doc(
+            db,
+            tabla,
+            id
+        ),
+
+
+        data
+
+
+    );
+
 
 }
