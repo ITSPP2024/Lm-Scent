@@ -845,1800 +845,376 @@
 <!-- CONTENEDOR PRINCIPAL -->
 <!-- ========================================================= -->
 
-<main
-    class="min-h-[calc(100vh-73px)]"
->
-
-
-    <!-- ===================================================== -->
-    <!-- CONTENIDO -->
-    <!-- ===================================================== -->
-
-    <div
-        class="main-content flex-1 overflow-y-auto p-10 space-y-gutter scroll-smooth custom-scrollbar"
-    >
-
-
-        <!-- ================================================= -->
-        <!-- ENCABEZADO -->
-        <!-- ================================================= -->
-
-        <section
-            class="flex flex-col md:flex-row md:items-center justify-between gap-4"
-        >
-
-            <div>
-
-                <h3
-                    class="font-headline-lg text-headline-lg text-on-surface"
-                >
-                    Panel de Analítica
-                </h3>
-
-
-                <p
-                    id="periodo-label"
-                    class="text-on-surface-variant font-body-md"
-                >
-                    Cargando...
-                </p>
-
-            </div>
-
-
-            <!-- ================================================= -->
-            <!-- PERIODOS -->
-            <!-- ================================================= -->
-
-            <div
-                class="flex items-center gap-3"
-            >
-
-                <div
-                    class="flex items-center bg-surface-container-high rounded-lg p-1 gap-1"
-                >
-
-                    <button
-                        class="periodo-btn active px-4 py-2 font-label-caps text-label-caps rounded-lg shadow-sm transition-all"
-                        data-p="hoy"
-                        type="button"
-                    >
-                        Hoy
-                    </button>
-
-
-                    <button
-                        class="periodo-btn px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-all"
-                        data-p="semana"
-                        type="button"
-                    >
-                        Semana
-                    </button>
-
-
-                    <button
-                        class="periodo-btn px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-all"
-                        data-p="mes"
-                        type="button"
-                    >
-                        Mes
-                    </button>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- ================================================= -->
-        <!-- KPI -->
-        <!-- ================================================= -->
-
-        <section
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-card-gap"
-        >
-
-
-            <!-- INGRESOS -->
-
-            <div
-                class="luxury-card p-6 rounded-xl flex flex-col gap-2 relative overflow-hidden group"
-            >
-
-                <div
-                    class="absolute top-0 left-0 w-full gold-accent-line opacity-0 group-hover:opacity-100 transition-opacity"
-                ></div>
-
-
-                <span
-                    class="text-on-surface-variant font-label-caps text-label-caps"
-                >
-                    Ingresos Totales
-                </span>
-
-
-                <div
-                    class="flex items-end justify-between"
-                >
-
-                    <span
-                        id="kpi-ingresos"
-                        class="font-price-display text-price-display text-primary"
-                    >
-                        $0.00
-                    </span>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- TICKET PROMEDIO -->
-
-            <div
-                class="luxury-card p-6 rounded-xl flex flex-col gap-2 relative overflow-hidden group"
-            >
-
-                <div
-                    class="absolute top-0 left-0 w-full gold-accent-line opacity-0 group-hover:opacity-100 transition-opacity"
-                ></div>
-
-
-                <span
-                    class="text-on-surface-variant font-label-caps text-label-caps"
-                >
-                    Ticket Promedio
-                </span>
-
-
-                <div
-                    class="flex items-end justify-between"
-                >
-
-                    <span
-                        id="kpi-ticket"
-                        class="font-price-display text-price-display text-on-surface"
-                    >
-                        $0.00
-                    </span>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- VENTAS -->
-
-            <div
-                class="luxury-card p-6 rounded-xl flex flex-col gap-2 relative overflow-hidden group"
-            >
-
-                <div
-                    class="absolute top-0 left-0 w-full gold-accent-line opacity-0 group-hover:opacity-100 transition-opacity"
-                ></div>
-
-
-                <span
-                    class="text-on-surface-variant font-label-caps text-label-caps"
-                >
-                    Ventas Realizadas
-                </span>
-
-
-                <div
-                    class="flex items-end justify-between"
-                >
-
-                    <span
-                        id="kpi-ventas"
-                        class="font-price-display text-price-display text-on-surface"
-                    >
-                        0
-                    </span>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- UNIDADES -->
-
-            <div
-                class="luxury-card p-6 rounded-xl flex flex-col gap-2 relative overflow-hidden group"
-            >
-
-                <div
-                    class="absolute top-0 left-0 w-full gold-accent-line opacity-0 group-hover:opacity-100 transition-opacity"
-                ></div>
-
-
-                <span
-                    class="text-on-surface-variant font-label-caps text-label-caps"
-                >
-                    Unidades Vendidas
-                </span>
-
-
-                <div
-                    class="flex items-end justify-between"
-                >
-
-                    <span
-                        id="kpi-unidades"
-                        class="font-price-display text-price-display text-on-surface"
-                    >
-                        0
-                    </span>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- ================================================= -->
-        <!-- GRÁFICA + PRODUCTOS TOP -->
-        <!-- ================================================= -->
-
-        <section
-            class="grid grid-cols-1 lg:grid-cols-3 gap-gutter"
-        >
-
-
-            <!-- ================================================= -->
-            <!-- GRÁFICA -->
-            <!-- ================================================= -->
-
-            <div
-                class="lg:col-span-2 luxury-card p-8 rounded-xl h-80 flex flex-col relative group"
-            >
-
-                <div
-                    class="absolute top-0 left-0 w-full gold-accent-line"
-                ></div>
-
-
-                <div
-                    class="flex justify-between items-start mb-4"
-                >
-
-                    <h4
-                        class="font-title-md text-title-md text-on-surface"
-                    >
-                        Ingresos por Período
-                    </h4>
-
-
-                    <span
-                        class="font-label-caps text-[10px] text-on-surface-variant flex items-center gap-2"
-                    >
-
-                        <span
-                            class="w-3 h-3 bg-primary rounded-full inline-block"
-                        ></span>
-
-                        Ventas
-
-                    </span>
-
-                </div>
-
-
-                <div
-                    id="chart-bars"
-                    class="flex-1 flex items-end gap-2 pb-2 relative min-h-0"
-                >
-
-                    <div
-                        class="text-on-surface-variant text-sm w-full text-center pt-8"
-                    >
-                        Cargando gráfica...
-                    </div>
-
-                </div>
-
-
-                <div
-                    id="chart-labels"
-                    class="flex justify-between pt-2 font-label-caps text-label-caps text-on-surface-variant text-[10px] gap-2"
-                ></div>
-
-            </div>
-
-
-
-            <!-- ================================================= -->
-            <!-- PRODUCTOS TOP -->
-            <!-- ================================================= -->
-
-            <div
-                class="luxury-card p-8 rounded-xl h-80 flex flex-col relative group"
-            >
-
-                <div
-                    class="absolute top-0 left-0 w-full gold-accent-line"
-                ></div>
-
-
-                <h4
-                    class="font-title-md text-title-md text-on-surface mb-4"
-                >
-                    Productos Top
-                </h4>
-
-
-                <div
-                    id="top-productos"
-                    class="space-y-4 flex-1 overflow-y-auto pr-1 custom-scrollbar"
-                >
-
-                    <div
-                        class="text-on-surface-variant text-sm text-center pt-6"
-                    >
-                        Cargando...
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- ================================================= -->
-        <!-- TRANSACCIONES -->
-        <!-- ================================================= -->
-
-        <section
-            class="luxury-card rounded-xl overflow-hidden relative"
-        >
-
-            <div
-                class="absolute top-0 left-0 w-full gold-accent-line"
-            ></div>
-
-
-            <div
-                class="p-8 border-b border-outline-variant/30 flex justify-between items-center"
-            >
-
-                <h4
-                    class="font-title-md text-title-md text-on-surface"
-                >
-                    Transacciones Recientes
-                </h4>
-
-
-                <span
-                    id="total-tx"
-                    class="font-label-caps text-label-caps text-on-surface-variant"
-                >
-                    0 registros
-                </span>
-
-            </div>
-
-
-            <div
-                class="overflow-x-auto"
-            >
-
-                <table
-                    class="w-full text-left"
-                >
-
-                    <thead
-                        class="bg-surface-container-high/50 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider"
-                    >
-
-                        <tr>
-
-                            <th class="px-8 py-4">
-                                ID
-                            </th>
-
-                            <th class="px-8 py-4">
-                                Productos
-                            </th>
-
-                            <th class="px-8 py-4">
-                                Fecha
-                            </th>
-
-                            <th class="px-8 py-4">
-                                Monto
-                            </th>
-
-                            <th class="px-8 py-4">
-                                Estado
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody
-                        id="tabla-tx"
-                        class="divide-y divide-outline-variant/10"
-                    >
-
-                        <tr>
-
-                            <td
-                                colspan="5"
-                                class="px-8 py-8 text-center text-on-surface-variant"
-                            >
-                                Cargando...
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
+<!-- Dashboard -->
+<div class="flex-1 overflow-y-auto p-10 space-y-gutter scroll-smooth">
+
+  <!-- Filters -->
+  <section class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <h3 class="font-headline-lg text-headline-lg text-on-surface">Panel de Analítica</h3>
+      <p id="periodo-label" class="text-on-surface-variant font-body-md">Cargando...</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="flex items-center bg-surface-container-high rounded-lg p-1 gap-1">
+        <button class="periodo-btn active px-4 py-2 font-label-caps text-label-caps rounded-lg shadow-sm transition-all" data-p="hoy">Hoy</button>
+        <button class="periodo-btn px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-all" data-p="semana">Semana</button>
+        <button class="periodo-btn px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-all" data-p="mes">Mes</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- KPI Cards -->
+  <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-card-gap">
+    <div class="luxury-card p-6 rounded-xl flex flex-col gap-2 relative overflow-hidden group">
+      <div class="absolute top-0 left-0 w-full gold-accent-line opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      <span class="text-on-surface-variant font-label-caps text-label-caps">Ingresos Totales</span>
+      <div class="flex items-end justify-between">
+        <span id="kpi-ingresos" class="font-price-display text-price-display text-primary">$0.00</span>
+      </div>
+    </div>
+    <div class="luxury-card p-6 rounded-xl flex flex-col gap-2 relative overflow-hidden group">
+      <div class="absolute top-0 left-0 w-full gold-accent-line opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      <span class="text-on-surface-variant font-label-caps text-label-caps">Ticket Promedio</span>
+      <div class="flex items-end justify-between">
+        <span id="kpi-ticket" class="font-price-display text-price-display text-on-surface">$0.00</span>
+      </div>
+    </div>
+    <div class="luxury-card p-6 rounded-xl flex flex-col gap-2 relative overflow-hidden group">
+      <div class="absolute top-0 left-0 w-full gold-accent-line opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      <span class="text-on-surface-variant font-label-caps text-label-caps">Ventas Realizadas</span>
+      <div class="flex items-end justify-between">
+        <span id="kpi-ventas" class="font-price-display text-price-display text-on-surface">0</span>
+      </div>
+    </div>
+    <div class="luxury-card p-6 rounded-xl flex flex-col gap-2 relative overflow-hidden group">
+      <div class="absolute top-0 left-0 w-full gold-accent-line opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      <span class="text-on-surface-variant font-label-caps text-label-caps">Unidades Vendidas</span>
+      <div class="flex items-end justify-between">
+        <span id="kpi-unidades" class="font-price-display text-price-display text-on-surface">0</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chart + Top Productos -->
+  <section class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+    <!-- Barras de ingresos por hora/día -->
+    <div class="lg:col-span-2 luxury-card p-8 rounded-xl h-80 flex flex-col relative group">
+      <div class="absolute top-0 left-0 w-full gold-accent-line"></div>
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="font-title-md text-title-md text-on-surface">Ingresos por Período</h4>
+        <span class="font-label-caps text-[10px] text-on-surface-variant flex items-center gap-2">
+          <span class="w-3 h-3 bg-primary rounded-full inline-block"></span> Ventas
+        </span>
+      </div>
+      <div id="chart-bars" class="flex-1 flex items-end gap-2 pb-2 relative">
+        <div class="text-on-surface-variant text-sm w-full text-center pt-8">Cargando gráfica...</div>
+      </div>
+      <div id="chart-labels" class="flex justify-between pt-2 font-label-caps text-label-caps text-on-surface-variant text-[10px]"></div>
     </div>
 
+    <!-- Top Productos -->
+    <div class="luxury-card p-8 rounded-xl h-80 flex flex-col relative group">
+      <div class="absolute top-0 left-0 w-full gold-accent-line"></div>
+      <h4 class="font-title-md text-title-md text-on-surface mb-4">Productos Top</h4>
+      <div id="top-productos" class="space-y-4 flex-1 overflow-y-auto pr-1">
+        <div class="text-on-surface-variant text-sm text-center pt-6">Cargando...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tabla de Transacciones -->
+  <section class="luxury-card rounded-xl overflow-hidden relative">
+    <div class="absolute top-0 left-0 w-full gold-accent-line"></div>
+    <div class="p-8 border-b border-outline-variant/30 flex justify-between items-center">
+      <h4 class="font-title-md text-title-md text-on-surface">Transacciones Recientes</h4>
+      <span id="total-tx" class="font-label-caps text-label-caps text-on-surface-variant"></span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="bg-surface-container-high/50 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">
+          <tr>
+            <th class="px-8 py-4">ID</th>
+            <th class="px-8 py-4">Productos</th>
+            <th class="px-8 py-4">Fecha</th>
+            <th class="px-8 py-4">Monto</th>
+            <th class="px-8 py-4">Estado</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-tx" class="divide-y divide-outline-variant/10">
+          <tr><td colspan="5" class="px-8 py-8 text-center text-on-surface-variant">Cargando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
 </main>
+</div>
 
+<script type="module" src="/src/lib/Reportes.js">
+import { getDocs, collection, query, where, orderBy, Timestamp } from "firebase/firestore";
+import { db } from "/src/lib/firebase.ts";
 
+const fmt = n => "$" + Number(n || 0).toFixed(2);
+let todasLasVentas = [];
+let periodoActual = "hoy";
 
-<!-- ========================================================= -->
-<!-- JAVASCRIPT -->
-<!-- ========================================================= -->
+function fechaDesde(periodo) {
+  const d = new Date();
+  if (periodo === "hoy") { d.setHours(0,0,0,0); return d; }
+  if (periodo === "semana") { d.setDate(d.getDate() - 7); d.setHours(0,0,0,0); return d; }
+  if (periodo === "mes") { d.setDate(1); d.setHours(0,0,0,0); return d; }
+  return d;
+}
 
-<script type="module">
+function labelPeriodo(periodo) {
+  const hoy = new Date();
+  if (periodo === "hoy") return "Hoy, " + hoy.toLocaleDateString("es-MX", { day:"numeric", month:"long", year:"numeric" });
+  if (periodo === "semana") return "Últimos 7 días";
+  if (periodo === "mes") return "Mes de " + hoy.toLocaleDateString("es-MX", { month:"long", year:"numeric" });
+  return "";
+}
 
-    /* =========================================================
-       FIREBASE FIRESTORE
-    ========================================================== */
+async function cargarVentas() {
+  const desde = fechaDesde(periodoActual);
+  const snap = await getDocs(query(
+    collection(db, "ventas"),
+    where("fecha", ">=", Timestamp.fromDate(desde)),
+    orderBy("fecha", "desc")
+  ));
+  todasLasVentas = snap.docs.map((d, i) => ({ id: d.id, idx: i + 1, ...d.data() }));
+}
 
-import {
-    getDocs,
-    collection,
-    query,
-    where,
-    orderBy,
-    Timestamp
-} from "firebase/firestore";
+function renderKPIs() {
+  const total = todasLasVentas.reduce((a, v) => a + (v.total || 0), 0);
+  const count = todasLasVentas.length;
+  const ticket = count ? total / count : 0;
+  const unidades = todasLasVentas.reduce((a, v) => a + (v.productos || []).reduce((s, p) => s + (p.cantidad || 1), 0), 0);
 
-import { db } from "/src/lib/Reportes.js";
+  document.getElementById("kpi-ingresos").textContent = fmt(total);
+  document.getElementById("kpi-ticket").textContent = fmt(ticket);
+  document.getElementById("kpi-ventas").textContent = count;
+  document.getElementById("kpi-unidades").textContent = unidades;
+  document.getElementById("periodo-label").textContent = labelPeriodo(periodoActual);
+}
 
+function renderChart() {
+  const barsEl = document.getElementById("chart-bars");
+  const labelsEl = document.getElementById("chart-labels");
 
-    /* =========================================================
-       ELEMENTOS DEL DOM
-    ========================================================== */
+  if (!todasLasVentas.length) {
+    barsEl.innerHTML = `
+      <div class="text-on-surface-variant text-sm w-full text-center pt-8">
+        Sin datos en este período
+      </div>
+    `;
+    labelsEl.innerHTML = "";
+    return;
+  }
 
-    const btnNotificaciones =
-        document.getElementById(
-            "btnNotificaciones"
+  const grupos = {};
+
+  todasLasVentas.forEach(v => {
+    const d = v.fecha?.toDate
+      ? v.fecha.toDate()
+      : new Date(
+          v.fecha?.seconds
+            ? v.fecha.seconds * 1000
+            : v.fecha
         );
 
+    if (isNaN(d.getTime())) return;
 
-    const notificationMenu =
-        document.getElementById(
-            "notificationMenu"
+    let key;
+
+    if (periodoActual === "hoy") {
+      key = d.toLocaleTimeString("es-MX", {
+        hour: "2-digit",
+        hour12: false
+      }) + "h";
+    } else {
+      key = d.toLocaleDateString("es-MX", {
+        weekday: "short",
+        day: "numeric"
+      });
+    }
+
+    grupos[key] = (grupos[key] || 0) + Number(v.total || 0);
+  });
+
+  const entries = Object.entries(grupos).slice(-7);
+
+  if (!entries.length) {
+    barsEl.innerHTML = `
+      <div class="text-on-surface-variant text-sm w-full text-center">
+        Sin datos para mostrar
+      </div>
+    `;
+    labelsEl.innerHTML = "";
+    return;
+  }
+
+  const maxVal = Math.max(
+    ...entries.map(([, valor]) => Number(valor)),
+    1
+  );
+
+  barsEl.innerHTML = `
+    <div class="w-full h-full flex items-end gap-3">
+      ${entries.map(([label, valor]) => {
+
+        const numero = Number(valor);
+        const altura = Math.max(
+          8,
+          (numero / maxVal) * 100
         );
 
-
-    const btnCuenta =
-        document.getElementById(
-            "btnCuenta"
-        );
-
-
-    const accountMenu =
-        document.getElementById(
-            "accountMenu"
-        );
-
-
-    const btnPerfil =
-        document.getElementById(
-            "btnPerfil"
-        );
-
-
-    const btnCerrarSesion =
-        document.getElementById(
-            "btnCerrarSesion"
-        );
-
-
-    const notificationDot =
-        document.getElementById(
-            "notificationDot"
-        );
-
-
-    /* =========================================================
-       VARIABLES
-    ========================================================== */
-
-    let todasLasVentas = [];
-
-    let periodoActual = "hoy";
-
-
-    /* =========================================================
-       FORMATO DE MONEDA
-    ========================================================== */
-
-    function fmt(numero) {
-
-        return new Intl.NumberFormat(
-            "es-MX",
-            {
-                style: "currency",
-                currency: "MXN",
-                minimumFractionDigits: 2
-            }
-        ).format(
-            Number(numero || 0)
-        );
-
-    }
-
-
-    /* =========================================================
-       ESCAPAR HTML
-    ========================================================== */
-
-    function escapeHTML(valor) {
-
-        return String(valor ?? "")
-            .replace(
-                /&/g,
-                "&amp;"
-            )
-            .replace(
-                /</g,
-                "&lt;"
-            )
-            .replace(
-                />/g,
-                "&gt;"
-            )
-            .replace(
-                /"/g,
-                "&quot;"
-            )
-            .replace(
-                /'/g,
-                "&#039;"
-            );
-
-    }
-
-
-    /* =========================================================
-       FECHA INICIAL
-    ========================================================== */
-
-    function fechaDesde(periodo) {
-
-        const fecha =
-            new Date();
-
-
-        if (periodo === "hoy") {
-
-            fecha.setHours(
-                0,
-                0,
-                0,
-                0
-            );
-
-            return fecha;
-
-        }
-
-
-        if (periodo === "semana") {
-
-            fecha.setDate(
-                fecha.getDate() - 6
-            );
-
-            fecha.setHours(
-                0,
-                0,
-                0,
-                0
-            );
-
-            return fecha;
-
-        }
-
-
-        if (periodo === "mes") {
-
-            fecha.setDate(1);
-
-            fecha.setHours(
-                0,
-                0,
-                0,
-                0
-            );
-
-            return fecha;
-
-        }
-
-
-        return fecha;
-
-    }
-
-
-    /* =========================================================
-       TEXTO DEL PERIODO
-    ========================================================== */
-
-    function labelPeriodo(periodo) {
-
-        const hoy =
-            new Date();
-
-
-        if (periodo === "hoy") {
-
-            return (
-                "Hoy, " +
-                hoy.toLocaleDateString(
-                    "es-MX",
-                    {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric"
-                    }
-                )
-            );
-
-        }
-
-
-        if (periodo === "semana") {
-
-            return "Últimos 7 días";
-
-        }
-
-
-        if (periodo === "mes") {
-
-            return (
-                "Mes de " +
-                hoy.toLocaleDateString(
-                    "es-MX",
-                    {
-                        month: "long",
-                        year: "numeric"
-                    }
-                )
-            );
-
-        }
-
-
-        return "";
-
-    }
-
-
-    /* =========================================================
-       OBTENER FECHA
-    ========================================================== */
-
-    function obtenerFecha(fecha) {
-
-        if (!fecha) {
-
-            return null;
-
-        }
-
-
-        if (
-            typeof fecha.toDate ===
-            "function"
-        ) {
-
-            return fecha.toDate();
-
-        }
-
-
-        if (
-            typeof fecha ===
-            "object" &&
-            typeof fecha.seconds ===
-            "number"
-        ) {
-
-            return new Date(
-                fecha.seconds * 1000
-            );
-
-        }
-
-
-        const resultado =
-            new Date(fecha);
-
-
-        return isNaN(
-            resultado.getTime()
-        )
-            ? null
-            : resultado;
-
-    }
-
-
-    /* =========================================================
-       CARGAR VENTAS
-    ========================================================== */
-
-    async function cargarVentas() {
-
-        const desde =
-            fechaDesde(
-                periodoActual
-            );
-
-
-        const ventasRef =
-            collection(
-                db,
-                "ventas"
-            );
-
-
-        const ventasQuery =
-            query(
-
-                ventasRef,
-
-                where(
-                    "fecha",
-                    ">=",
-                    Timestamp.fromDate(
-                        desde
-                    )
-                ),
-
-                orderBy(
-                    "fecha",
-                    "desc"
-                )
-
-            );
-
-
-        const snap =
-            await getDocs(
-                ventasQuery
-            );
-
-
-        todasLasVentas =
-            snap.docs.map(
-                (doc) => ({
-
-                    id: doc.id,
-
-                    ...doc.data()
-
-                })
-            );
-
-
-        /*
-         * Ordenamos nuevamente en JavaScript
-         * para asegurar que las fechas válidas
-         * aparezcan correctamente.
-         */
-
-        todasLasVentas.sort(
-            (a, b) => {
-
-                const fechaA =
-                    obtenerFecha(
-                        a.fecha
-                    )?.getTime() || 0;
-
-
-                const fechaB =
-                    obtenerFecha(
-                        b.fecha
-                    )?.getTime() || 0;
-
-
-                return fechaB - fechaA;
-
-            }
-        );
-
-    }
-
-
-    /* =========================================================
-       OBTENER PRODUCTOS
-    ========================================================== */
-
-    function obtenerProductosVenta(
-        venta
-    ) {
-
-        if (
-            Array.isArray(
-                venta.productos
-            )
-        ) {
-
-            return venta.productos;
-
-        }
-
-
-        if (
-            Array.isArray(
-                venta.items
-            )
-        ) {
-
-            return venta.items;
-
-        }
-
-
-        return [];
-
-    }
-
-
-    /* =========================================================
-       CALCULAR UNIDADES
-    ========================================================== */
-
-    function calcularUnidades() {
-
-        return todasLasVentas.reduce(
-            (
-                total,
-                venta
-            ) => {
-
-                const productos =
-                    obtenerProductosVenta(
-                        venta
-                    );
-
-
-                const unidades =
-                    productos.reduce(
-                        (
-                            suma,
-                            producto
-                        ) => {
-
-                            return (
-                                suma +
-                                Number(
-                                    producto.cantidad ??
-                                    producto.qty ??
-                                    1
-                                )
-                            );
-
-                        },
-                        0
-                    );
-
-
-                return total + unidades;
-
-            },
-            0
-        );
-
-    }
-
-
-    /* =========================================================
-       KPIs
-    ========================================================== */
-
-    function renderKPIs() {
-
-        const total =
-            todasLasVentas.reduce(
-                (
-                    acumulado,
-                    venta
-                ) => {
-
-                    return (
-                        acumulado +
-                        Number(
-                            venta.total || 0
-                        )
-                    );
-
-                },
-                0
-            );
-
-
-        const cantidadVentas =
-            todasLasVentas.length;
-
-
-        const ticket =
-            cantidadVentas > 0
-                ? total / cantidadVentas
-                : 0;
-
-
-        const unidades =
-            calcularUnidades();
-
-
-        document.getElementById(
-            "kpi-ingresos"
-        ).textContent =
-            fmt(total);
-
-
-        document.getElementById(
-            "kpi-ticket"
-        ).textContent =
-            fmt(ticket);
-
-
-        document.getElementById(
-            "kpi-ventas"
-        ).textContent =
-            cantidadVentas;
-
-
-        document.getElementById(
-            "kpi-unidades"
-        ).textContent =
-            unidades;
-
-
-        document.getElementById(
-            "periodo-label"
-        ).textContent =
-            labelPeriodo(
-                periodoActual
-            );
-
-    }
-
-
-    /* =========================================================
-       DATOS PARA GRÁFICA
-    ========================================================== */
-
-    function obtenerDatosGrafica() {
-
-        const grupos = {};
-
-
-        todasLasVentas
-            .forEach(
-                (
-                    venta
-                ) => {
-
-                    const fecha =
-                        obtenerFecha(
-                            venta.fecha
-                        );
-
-
-                    if (!fecha) {
-                        return;
-                    }
-
-
-                    let key;
-
-
-                    if (
-                        periodoActual ===
-                        "hoy"
-                    ) {
-
-                        key =
-                            fecha
-                                .getHours()
-                                .toString()
-                                .padStart(
-                                    2,
-                                    "0"
-                                ) +
-                            ":00";
-
-
-                    } else {
-
-                        const dia =
-                            fecha
-                                .toLocaleDateString(
-                                    "es-MX",
-                                    {
-                                        weekday:
-                                            "short",
-                                        day:
-                                            "numeric"
-                                    }
-                                );
-
-
-                        key = dia;
-
-                    }
-
-
-                    grupos[key] =
-                        (
-                            grupos[key] ||
-                            0
-                        ) +
-                        Number(
-                            venta.total ||
-                            0
-                        );
-
-                }
-            );
-
-
-        return Object
-            .entries(
-                grupos
-            )
-            .slice(-7);
-
-    }
-
-
-    /* =========================================================
-       GRÁFICA
-    ========================================================== */
-
-    function renderChart() {
-
-        const barsEl =
-            document.getElementById(
-                "chart-bars"
-            );
-
-
-        const labelsEl =
-            document.getElementById(
-                "chart-labels"
-            );
-
-
-        const entries =
-            obtenerDatosGrafica();
-
-
-        if (!entries.length) {
-
-            barsEl.innerHTML = `
-
-                <div
-                    class="text-on-surface-variant text-sm w-full text-center pt-8"
-                >
-                    Sin datos en este período
-                </div>
-
-            `;
-
-
-            labelsEl.innerHTML = "";
-
-            return;
-
-        }
-
-
-        const maxVal =
-            Math.max(
-                ...entries.map(
-                    (
-                        [, valor]
-                    ) =>
-                        Number(valor)
-                ),
-                1
-            );
-
-
-        barsEl.innerHTML =
-            entries
-                .map(
-                    (
-                        [
-                            key,
-                            valor
-                        ]
-                    ) => {
-
-                        const porcentaje =
-                            Math.max(
-                                8,
-                                (
-                                    Number(
-                                        valor
-                                    ) /
-                                    maxVal
-                                ) *
-                                100
-                            );
-
-
-                        return `
-
-                            <div
-                                class="flex-1 flex flex-col items-center gap-1 h-full justify-end min-w-0"
-                            >
-
-                                <span
-                                    class="text-[9px] text-primary font-bold truncate max-w-full"
-                                    title="${fmt(valor)}"
-                                >
-                                    ${fmt(valor)}
-                                </span>
-
-
-                                <div
-                                    class="w-full max-w-[55px] bg-primary rounded-t-sm opacity-80 hover:opacity-100 transition-opacity"
-                                    style="height:${porcentaje}%"
-                                    title="${fmt(valor)}"
-                                ></div>
-
-                            </div>
-
-                        `;
-
-                    }
-                )
-                .join("");
-
-
-        labelsEl.innerHTML =
-            entries
-                .map(
-                    (
-                        [
-                            key
-                        ]
-                    ) => {
-
-                        return `
-
-                            <span
-                                class="flex-1 text-center truncate"
-                            >
-                                ${escapeHTML(key)}
-                            </span>
-
-                        `;
-
-                    }
-                )
-                .join("");
-
-    }
-
-
-    /* =========================================================
-       PRODUCTOS TOP
-    ========================================================== */
-
-    function renderTopProductos() {
-
-        const conteo = {};
-
-
-        todasLasVentas
-            .forEach(
-                (
-                    venta
-                ) => {
-
-                    const productos =
-                        obtenerProductosVenta(
-                            venta
-                        );
-
-
-                    productos.forEach(
-                        (
-                            producto
-                        ) => {
-
-                            const nombre =
-                                producto.nombre ||
-                                producto.name ||
-                                "Sin nombre";
-
-
-                            const cantidad =
-                                Number(
-                                    producto.cantidad ??
-                                    producto.qty ??
-                                    1
-                                );
-
-
-                            conteo[nombre] =
-                                (
-                                    conteo[nombre] ||
-                                    0
-                                ) +
-                                cantidad;
-
-                        }
-                    );
-
-                }
-            );
-
-
-        const top =
-            Object
-                .entries(
-                    conteo
-                )
-                .sort(
-                    (
-                        a,
-                        b
-                    ) =>
-                        b[1] -
-                        a[1]
-                )
-                .slice(
-                    0,
-                    5
-                );
-
-
-        const maxV =
-            top[0]?.[1] ||
-            1;
-
-
-        const el =
-            document.getElementById(
-                "top-productos"
-            );
-
-
-        if (!top.length) {
-
-            el.innerHTML = `
-
-                <div
-                    class="text-on-surface-variant text-sm text-center pt-6"
-                >
-                    Sin ventas en este período
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-
-        el.innerHTML =
-            top
-                .map(
-                    (
-                        [
-                            nombre,
-                            cantidad
-                        ]
-                    ) => {
-
-                        const porcentaje =
-                            Math.max(
-                                5,
-                                (
-                                    cantidad /
-                                    maxV
-                                ) *
-                                100
-                            );
-
-
-                        return `
-
-                            <div
-                                class="flex items-center gap-3"
-                            >
-
-                                <div
-                                    class="flex-1 min-w-0"
-                                >
-
-                                    <p
-                                        class="font-label-caps text-label-caps text-on-surface truncate"
-                                        title="${escapeHTML(nombre)}"
-                                    >
-                                        ${escapeHTML(nombre)}
-                                    </p>
-
-
-                                    <div
-                                        class="w-full bg-surface-container-lowest h-1 rounded-full mt-1"
-                                    >
-
-                                        <div
-                                            class="bg-primary h-full rounded-full transition-all"
-                                            style="width:${porcentaje}%"
-                                        ></div>
-
-                                    </div>
-
-                                </div>
-
-
-                                <span
-                                    class="font-label-caps text-label-caps text-primary shrink-0"
-                                >
-                                    ${cantidad} uds
-                                </span>
-
-                            </div>
-
-                        `;
-
-                    }
-                )
-                .join("");
-
-    }
-
-
-    /* =========================================================
-       TABLA
-    ========================================================== */
-
-    function renderTabla() {
-
-        const tbody =
-            document.getElementById(
-                "tabla-tx"
-            );
-
-
-        const totalTx =
-            document.getElementById(
-                "total-tx"
-            );
-
-
-        totalTx.textContent =
-            todasLasVentas.length +
-            (
-                todasLasVentas.length === 1
-                    ? " registro"
-                    : " registros"
-            );
-
-
-        if (
-            !todasLasVentas.length
-        ) {
-
-            tbody.innerHTML = `
-
-                <tr>
-
-                    <td
-                        colspan="5"
-                        class="px-8 py-8 text-center text-on-surface-variant"
-                    >
-                        Sin transacciones en este período
-                    </td>
-
-                </tr>
-
-            `;
-
-            return;
-
-        }
-
-
-        tbody.innerHTML =
-            todasLasVentas
-                .slice(
-                    0,
-                    25
-                )
-                .map(
-                    (
-                        venta,
-                        index
-                    ) => {
-
-                        const productos =
-                            obtenerProductosVenta(
-                                venta
-                            );
-
-
-                        const nombres =
-                            productos
-                                .map(
-                                    (
-                                        producto
-                                    ) =>
-                                        producto.nombre ||
-                                        producto.name
-                                )
-                                .filter(
-                                    Boolean
-                                )
-                                .join(
-                                    ", "
-                                );
-
-
-                        const nombresFinal =
-                            nombres
-                                ? nombres
-                                    .slice(
-                                        0,
-                                        60
-                                    )
-                                : "—";
-
-
-                        const fecha =
-                            obtenerFecha(
-                                venta.fecha
-                            );
-
-
-                        let fechaStr =
-                            "Sin fecha";
-
-
-                        if (fecha) {
-
-                            fechaStr =
-                                fecha.toLocaleDateString(
-                                    "es-MX",
-                                    {
-                                        month:
-                                            "short",
-                                        day:
-                                            "numeric"
-                                    }
-                                ) +
-                                ", " +
-                                fecha.toLocaleTimeString(
-                                    "es-MX",
-                                    {
-                                        hour:
-                                            "2-digit",
-                                        minute:
-                                            "2-digit"
-                                    }
-                                );
-
-                        }
-
-
-                        const ventaId =
-                            venta.id ||
-                            String(
-                                index + 1
-                            );
-
-
-                        return `
-
-                            <tr
-                                class="hover:bg-surface-container-high transition-colors"
-                            >
-
-                                <td
-                                    class="px-8 py-5 text-on-surface font-label-caps text-label-caps"
-                                >
-                                    #${escapeHTML(
-                                        ventaId
-                                            .slice(
-                                                0,
-                                                8
-                                            )
-                                            .toUpperCase()
-                                    )}
-                                </td>
-
-
-                                <td
-                                    class="px-8 py-5 font-body-md text-on-surface-variant text-sm"
-                                    title="${escapeHTML(nombres)}"
-                                >
-                                    ${escapeHTML(
-                                        nombresFinal
-                                    )}
-                                </td>
-
-
-                                <td
-                                    class="px-8 py-5 font-body-md text-on-surface-variant"
-                                >
-                                    ${escapeHTML(
-                                        fechaStr
-                                    )}
-                                </td>
-
-
-                                <td
-                                    class="px-8 py-5 font-price-display text-[18px] text-primary"
-                                >
-                                    ${fmt(
-                                        venta.total
-                                    )}
-                                </td>
-
-
-                                <td
-                                    class="px-8 py-5"
-                                >
-
-                                    <span
-                                        class="px-3 py-1 rounded-full bg-green-900/30 text-green-400 text-[10px] font-label-caps"
-                                    >
-                                        Completado
-                                    </span>
-
-                                </td>
-
-                            </tr>
-
-                        `;
-
-                    }
-                )
-                .join("");
-
-    }
-
-
-    /* =========================================================
-       MOSTRAR ERROR
-    ========================================================== */
-
-    function mostrarError() {
-
-        document.getElementById(
-            "periodo-label"
-        ).textContent =
-            "No fue posible cargar los datos";
-
-
-        document.getElementById(
-            "chart-bars"
-        ).innerHTML = `
-
-            <div
-                class="text-red-400 text-sm w-full text-center pt-8"
-            >
-                Error al cargar la información
+        return `
+          <div class="flex-1 h-full flex flex-col items-center justify-end gap-1 min-w-0">
+
+            <span class="text-[9px] text-primary font-bold whitespace-nowrap">
+              ${fmt(numero)}
+            </span>
+
+            <div class="w-full flex-1 flex items-end">
+              <div
+                class="w-full bg-primary rounded-t-sm opacity-80 hover:opacity-100 transition-all duration-300"
+                style="height: ${altura}%"
+                title="${fmt(numero)}"
+              ></div>
             </div>
 
+          </div>
         `;
+      }).join("")}
+    </div>
+  `;
 
+  labelsEl.innerHTML = entries.map(([label]) => `
+    <span class="flex-1 text-center truncate">
+      ${label}
+    </span>
+  `).join("");
+}
 
-        document.getElementById(
-            "chart-labels"
-        ).innerHTML = "";
+function renderTopProductos() {
+  const conteo = {};
 
+  todasLasVentas.forEach(v => {
 
-        document.getElementById(
-            "top-productos"
-        ).innerHTML = `
+    const productos = Array.isArray(v.productos)
+      ? v.productos
+      : [];
 
-            <div
-                class="text-red-400 text-sm text-center pt-6"
-            >
-                Error al cargar los productos
+    productos.forEach(p => {
+
+      const nombre =
+        p.nombre ||
+        p.producto ||
+        "Producto sin nombre";
+
+      const cantidad =
+        Number(p.cantidad) || 1;
+
+      if (!conteo[nombre]) {
+        conteo[nombre] = 0;
+      }
+
+      conteo[nombre] += cantidad;
+    });
+
+  });
+
+  const top = Object.entries(conteo)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  const el = document.getElementById("top-productos");
+
+  if (!top.length) {
+    el.innerHTML = `
+      <div class="text-on-surface-variant text-sm text-center pt-6">
+        Sin ventas en este período
+      </div>
+    `;
+    return;
+  }
+
+  const maxV = Math.max(
+    Number(top[0][1]),
+    1
+  );
+
+  el.innerHTML = top.map(
+    ([nombre, cantidad], index) => {
+
+      const porcentaje =
+        (Number(cantidad) / maxV) * 100;
+
+      return `
+        <div class="flex items-center gap-3">
+
+          <div
+            class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] text-primary font-bold shrink-0"
+          >
+            ${index + 1}
+          </div>
+
+          <div class="flex-1 min-w-0">
+
+            <div class="flex justify-between items-center gap-2">
+
+              <p class="font-label-caps text-label-caps text-on-surface truncate">
+                ${nombre}
+              </p>
+
+              <span class="font-label-caps text-label-caps text-primary shrink-0">
+                ${cantidad} uds
+              </span>
+
             </div>
 
-        `;
+            <div class="w-full bg-surface-container-lowest h-1.5 rounded-full mt-2 overflow-hidden">
 
+              <div
+                class="bg-primary h-full rounded-full transition-all duration-500"
+                style="width: ${porcentaje}%"
+              ></div>
 
-        document.getElementById(
-            "tabla-tx"
-        ).innerHTML = `
+            </div>
 
-            <tr>
+          </div>
 
-                <td
-                    colspan="5"
-                    class="px-8 py-8 text-center text-red-400"
-                >
-                    Error al cargar las transacciones
-                </td>
-
-            </tr>
-
-        `;
-
+        </div>
+      `;
     }
+  ).join("");
+}
 
+async function actualizar() {
+  document.getElementById("kpi-ingresos").textContent = "...";
+  try {
+    await cargarVentas();
+    renderKPIs();
+    renderChart();
+    renderTopProductos();
+    renderTabla();
+  } catch (e) {
+    console.error(e);
+  }
+}
 
-    /* =========================================================
-       ACTUALIZAR TODO
-    ========================================================== */
+// Botones de período
+document.querySelectorAll(".periodo-btn").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll(".periodo-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    periodoActual = btn.dataset.p;
+    actualizar();
+  };
+});
 
-    async function actualizar() {
-
-        document.getElementById(
-            "kpi-ingresos"
-        ).textContent = "...";
-
-
-        document.getElementById(
-            "kpi-ticket"
-        ).textContent = "...";
-
-
-        document.getElementById(
-            "kpi-ventas"
-        ).textContent = "...";
-
-
-        document.getElementById(
-            "kpi-unidades"
-        ).textContent = "...";
-
-
-        document.getElementById(
-            "periodo-label"
-        ).textContent =
-            "Cargando...";
-
-
-        try {
-
-            await cargarVentas();
-
-
-            renderKPIs();
-
-            renderChart();
-
-            renderTopProductos();
-
-            renderTabla();
-
-
-        } catch (error) {
-
-            console.error(
-                "Error al cargar los reportes:",
-                error
-            );
-
-
-            mostrarError();
-
-        }
-
-    }
-
-
-    /* =========================================================
-       BOTONES DE PERIODO
-    ========================================================== */
-
-    document
-        .querySelectorAll(
-            ".periodo-btn"
-        )
-        .forEach(
-            (
-                btn
-            ) => {
-
-                btn.addEventListener(
-                    "click",
-                    () => {
-
-                        if (
-                            periodoActual ===
-                            btn.dataset.p
-                        ) {
-
-                            return;
-
-                        }
-
-
-                        document
-                            .querySelectorAll(
-                                ".periodo-btn"
-                            )
-                            .forEach(
-                                (
-                                    button
-                                ) => {
-
-                                    button
-                                        .classList
-                                        .remove(
-                                            "active"
-                                        );
-
-                                    button
-                                        .classList
-                                        .add(
-                                            "text-on-surface-variant"
-                                        );
-
-                                }
-                            );
-
-
-                        btn
-                            .classList
-                            .add(
-                                "active"
-                            );
-
-
-                        btn
-                            .classList
-                            .remove(
-                                "text-on-surface-variant"
-                            );
-
-
-                        periodoActual =
-                            btn.dataset.p;
-
-
-                        actualizar();
-
-                    }
-                );
-
-            }
-        );
-
-
+actualizar();
     /* =========================================================
        NOTIFICACIONES
     ========================================================== */

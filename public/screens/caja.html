@@ -321,6 +321,29 @@
 
         }
 
+        /* Los modales permanecen ocultos hasta que su botón los abre. */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: fade .15s ease-out;
+        }
+
+        .modal-overlay > div {
+            max-height: calc(100vh - 2rem);
+            overflow-y: auto;
+        }
+
 
         @keyframes fade {
 
@@ -787,7 +810,7 @@
 </div>
 
 <!-- Modal Ingreso -->
-<div id="modal-ingreso" class="modal-overlay">
+<div id="modal-ingreso" class="modal-overlay" aria-hidden="true">
   <div class="bg-surface-container border border-outline-variant rounded-2xl p-8 w-full max-w-md mx-4">
     <div class="flex justify-between items-center mb-6">
       <h3 class="font-title-md text-title-md text-on-surface">Ingreso de Efectivo</h3>
@@ -813,7 +836,7 @@
 </div>
 
 <!-- Modal Retiro -->
-<div id="modal-retiro" class="modal-overlay">
+<div id="modal-retiro" class="modal-overlay" aria-hidden="true">
   <div class="bg-surface-container border border-outline-variant rounded-2xl p-8 w-full max-w-md mx-4">
     <div class="flex justify-between items-center mb-6">
       <h3 class="font-title-md text-title-md text-on-surface">Retiro de Efectivo</h3>
@@ -838,21 +861,351 @@
   </div>
 </div>
 
+<!-- Modal Autorización de Ingreso o Retiro -->
+<div id="modal-autorizacion-movimiento" class="modal-overlay" aria-hidden="true">
+  <div class="bg-surface-container border border-primary/40 rounded-2xl p-8 w-full max-w-md mx-4">
+    <div class="flex justify-between items-center mb-2">
+      <div>
+        <h3 id="titulo-autorizacion-movimiento" class="font-title-md text-title-md text-on-surface">Autorizar movimiento</h3>
+        <p class="text-xs text-on-surface-variant mt-1">Ingresa tus credenciales para registrar la operación.</p>
+      </div>
+      <button type="button" class="modal-close text-on-surface-variant hover:text-primary transition-colors" aria-label="Cerrar autorización">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <form id="form-autorizacion-movimiento" class="space-y-4 mt-6">
+      <div>
+        <label for="movimiento-usuario" class="font-label-caps text-label-caps text-on-surface-variant block mb-2">
+          Usuario o correo
+        </label>
+        <input
+          id="movimiento-usuario"
+          name="usuario"
+          type="text"
+          autocomplete="username"
+          required
+          class="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:border-primary focus:ring-0 outline-none"
+          placeholder="Ej. Joshua o Joshua@gmail.com"
+        />
+      </div>
+
+      <div>
+        <label for="movimiento-password" class="font-label-caps text-label-caps text-on-surface-variant block mb-2">
+          Contraseña
+        </label>
+        <input
+          id="movimiento-password"
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          required
+          class="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:border-primary focus:ring-0 outline-none"
+          placeholder="Contraseña"
+        />
+      </div>
+
+      <p id="error-autorizacion-movimiento" class="hidden text-sm text-error" role="alert"></p>
+
+      <div class="flex gap-3 pt-2">
+        <button type="button" class="modal-close flex-1 py-3 border border-outline-variant text-on-surface-variant rounded-xl hover:bg-surface-container-high transition-colors font-label-caps">
+          Cancelar
+        </button>
+        <button id="confirmar-autorizacion-movimiento" type="submit" class="flex-1 py-3 gold-gradient text-on-primary-fixed rounded-xl font-label-caps font-bold transition-all active:scale-95">
+          Autorizar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Autorización de Corte -->
+<div id="modal-autorizacion-corte" class="modal-overlay" aria-hidden="true">
+  <div class="bg-surface-container border border-primary/40 rounded-2xl p-8 w-full max-w-md mx-4">
+    <div class="flex justify-between items-center mb-2">
+      <div>
+        <h3 class="font-title-md text-title-md text-on-surface">Autorizar cierre de caja</h3>
+        <p class="text-xs text-on-surface-variant mt-1">Ingresa tus credenciales para continuar.</p>
+      </div>
+      <button type="button" class="modal-close text-on-surface-variant hover:text-primary transition-colors" aria-label="Cerrar autorización">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <form id="form-autorizacion-corte" class="space-y-4 mt-6">
+      <div>
+        <label for="corte-usuario" class="font-label-caps text-label-caps text-on-surface-variant block mb-2">
+          Usuario o correo
+        </label>
+        <input
+          id="corte-usuario"
+          name="usuario"
+          type="text"
+          autocomplete="username"
+          required
+          class="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:border-primary focus:ring-0 outline-none"
+          placeholder="Ej. Joshua o Joshua@gmail.com"
+        />
+      </div>
+
+      <div>
+        <label for="corte-password" class="font-label-caps text-label-caps text-on-surface-variant block mb-2">
+          Contraseña
+        </label>
+        <input
+          id="corte-password"
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          required
+          class="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:border-primary focus:ring-0 outline-none"
+          placeholder="Contraseña"
+        />
+      </div>
+
+      <p id="error-autorizacion-corte" class="hidden text-sm text-error" role="alert"></p>
+
+      <div class="flex gap-3 pt-2">
+        <button type="button" class="modal-close flex-1 py-3 border border-outline-variant text-on-surface-variant rounded-xl hover:bg-surface-container-high transition-colors font-label-caps">
+          Cancelar
+        </button>
+        <button id="confirmar-autorizacion-corte" type="submit" class="flex-1 py-3 gold-gradient text-on-primary-fixed rounded-xl font-label-caps font-bold transition-all active:scale-95">
+          Autorizar y cerrar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!--
+  Este script contiene la lógica de la pantalla. No debe tener `src` y código
+  interno al mismo tiempo: el navegador ignoraría todo el código interno.
+-->
 <script type="module">
-import { registrarMovimiento, obtenerMovimientosHoy, obtenerCajaAbierta, cerrarCaja, actualizarEfectivoEsperado } from "/src/lib/movimientosCaja.js";
-import { getDocs, collection, query, where, orderBy, Timestamp } from "firebase/firestore";
-import { db } from "/src/lib/firebase.ts";
+import {
+  obtenerCajaAbierta,
+  obtenerMovimientosHoy,
+  obtenerVentasHoy,
+  obtenerResumenCaja,
+  validarUsuarioCaja,
+  registrarMovimiento,
+  actualizarEfectivoEsperado,
+  cerrarCaja
+} from "/src/lib/movimientosCaja.js";
 
 let cajaActual = null;
 let movimientosCache = [];
+let ventasCache = [];
+let operacionPendiente = null;
 
-const fmt = n => "$" + Number(n || 0).toFixed(2);
+const RUTA_APERTURA = "/screens/apertura.html";
+
+const numero = n => {
+  const valor = Number(n);
+  return Number.isFinite(valor) ? valor : 0;
+};
+const fmt = n => "$" + numero(n).toFixed(2);
 const hora = d => {
   try {
     const ts = d?.toDate ? d.toDate() : new Date(d?.seconds ? d.seconds * 1000 : d);
     return ts.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
   } catch { return "--:--"; }
 };
+
+function convertirFecha(valor) {
+  const fecha = valor?.toDate
+    ? valor.toDate()
+    : new Date(valor?.seconds ? valor.seconds * 1000 : valor);
+  return Number.isNaN(fecha.getTime()) ? null : fecha;
+}
+
+function fechaHora(valor) {
+  const fecha = convertirFecha(valor);
+  return fecha
+    ? fecha.toLocaleString("es-MX", {
+        dateStyle: "short",
+        timeStyle: "medium"
+      })
+    : "";
+}
+
+function escaparExcel(valor) {
+  return String(valor ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function filaExcel(valores, encabezado = false) {
+  const clase = encabezado ? ' class="encabezado"' : "";
+  return `<tr${clase}>${valores.map(valor => {
+    const esNumero = typeof valor === "number" && Number.isFinite(valor);
+    return `<td${esNumero ? ' class="numero"' : ""}>${
+      esNumero ? valor.toFixed(2) : escaparExcel(valor)
+    }</td>`;
+  }).join("")}</tr>`;
+}
+
+function descargarResumenExcel({
+  resumen,
+  cierre,
+  usuarioAutorizado,
+  denominaciones,
+  fechaCierre
+}) {
+  const caja = resumen.caja || cajaActual || {};
+  const usuarioCorte = usuarioAutorizado?.nombre || usuarioAutorizado?.correo || "";
+  const movimientos = [];
+
+  if (numero(resumen.fondoInicial) > 0) {
+    movimientos.push({
+      usuario: caja.usuarioApertura || "",
+      fecha: caja.fecha,
+      descripcion: "Apertura de caja",
+      tipo: "Fondo inicial",
+      monto: numero(resumen.fondoInicial),
+      cajaId: caja.id || ""
+    });
+  }
+
+  (resumen.ventas || []).forEach(venta => {
+    movimientos.push({
+      usuario: venta.usuario || venta.vendedor || "",
+      fecha: venta.fecha,
+      descripcion: `Venta ${venta.id ? "#" + venta.id : "#POS"}`,
+      tipo: "Venta",
+      monto: numero(venta.total),
+      cajaId: venta.cajaId || caja.id || "",
+      detalle: (venta.productos || [])
+        .map(producto => `${producto.nombre || "Producto"} x${producto.cantidad || 1}`)
+        .join(", ")
+    });
+  });
+
+  (resumen.movimientos || []).forEach(movimiento => {
+    movimientos.push({
+      usuario: movimiento.usuario || "",
+      fecha: movimiento.fecha,
+      descripcion: movimiento.descripcion || (movimiento.tipo === "ingreso" ? "Ingreso" : "Retiro"),
+      tipo: movimiento.tipo === "ingreso" ? "Ingreso" : "Retiro",
+      monto: movimiento.tipo === "retiro"
+        ? -numero(movimiento.monto)
+        : numero(movimiento.monto),
+      cajaId: movimiento.cajaId || caja.id || "",
+      detalle: ""
+    });
+  });
+
+  movimientos.sort((a, b) => {
+    const fechaA = convertirFecha(a.fecha)?.getTime() || 0;
+    const fechaB = convertirFecha(b.fecha)?.getTime() || 0;
+    return fechaA - fechaB;
+  });
+
+  const filasMovimientos = movimientos.length
+    ? movimientos.map(movimiento => filaExcel([
+        movimiento.usuario,
+        fechaHora(movimiento.fecha),
+        movimiento.descripcion,
+        movimiento.detalle || "",
+        movimiento.tipo,
+        movimiento.monto,
+        movimiento.cajaId
+      ])).join("")
+    : filaExcel(["", "", "Sin movimientos", "", "", 0, caja.id || ""]);
+
+  const filasDenominaciones = Object.entries(denominaciones || {}).length
+    ? Object.entries(denominaciones).map(([denominacion, cantidad]) =>
+        filaExcel([denominacion, Number(cantidad) || 0])
+      ).join("")
+    : filaExcel(["Sin denominaciones capturadas", 0]);
+
+  const cierreReal = cierre?.efectivoReal ?? 0;
+  const esperado = cierre?.efectivoEsperado ?? resumen.efectivoEsperado ?? 0;
+  const diferencia = cierre?.diferencia ?? (numero(cierreReal) - numero(esperado));
+  const nombreArchivo = `corte-caja-${convertirFecha(fechaCierre)?.toISOString().replace(/[:.]/g, "-") || Date.now()}.xls`;
+  const contenido = `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial, sans-serif; color: #222; }
+    h1, h2 { color: #8a6500; }
+    table { border-collapse: collapse; margin-bottom: 24px; min-width: 720px; }
+    th, td { border: 1px solid #b9b9b9; padding: 6px 8px; }
+    .encabezado { background: #f2ca50; font-weight: bold; }
+    .numero { mso-number-format: "0.00"; text-align: right; }
+  </style>
+</head>
+<body>
+  <h1>Resumen de Corte de Caja</h1>
+  <table>
+    ${filaExcel(["Dato", "Valor"], true)}
+    ${filaExcel(["Caja", caja.id || ""])}
+    ${filaExcel(["Usuario de corte", usuarioCorte])}
+    ${filaExcel(["Rol", usuarioAutorizado?.rol || ""])}
+    ${filaExcel(["Apertura", fechaHora(caja.fecha)])}
+    ${filaExcel(["Cierre", fechaHora(fechaCierre)])}
+    ${filaExcel(["Fondo inicial", numero(resumen.fondoInicial)])}
+    ${filaExcel(["Total ventas", numero(resumen.totalVentas)])}
+    ${filaExcel(["Total ingresos", numero(resumen.totalIngresos)])}
+    ${filaExcel(["Total retiros", numero(resumen.totalRetiros)])}
+    ${filaExcel(["Efectivo esperado", numero(esperado)])}
+    ${filaExcel(["Efectivo contado", numero(cierreReal)])}
+    ${filaExcel(["Diferencia", numero(diferencia)])}
+  </table>
+
+  <h2>Movimientos y ventas</h2>
+  <table>
+    ${filaExcel(["Usuario", "Fecha y hora", "Descripción", "Detalle", "Tipo", "Monto", "Caja"], true)}
+    ${filasMovimientos}
+  </table>
+
+  <h2>Desglose de efectivo contado</h2>
+  <table>
+    ${filaExcel(["Denominación", "Cantidad"], true)}
+    ${filasDenominaciones}
+  </table>
+</body>
+</html>`;
+
+  const blob = new Blob(["\ufeff", contenido], {
+    type: "application/vnd.ms-excel;charset=utf-8"
+  });
+  const url = URL.createObjectURL(blob);
+  const enlace = document.createElement("a");
+  enlace.href = url;
+  enlace.download = nombreArchivo;
+  enlace.style.display = "none";
+  document.body.appendChild(enlace);
+  enlace.click();
+  enlace.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function limpiarDatosTemporalesCaja() {
+  cajaActual = null;
+  movimientosCache = [];
+  ventasCache = [];
+  operacionPendiente = null;
+
+  document.querySelectorAll(".denom").forEach(input => {
+    input.value = "0";
+  });
+
+  ["ingreso-monto", "ingreso-desc", "retiro-monto", "retiro-desc"].forEach(id => {
+    const input = document.getElementById(id);
+    if (input) input.value = "";
+  });
+
+  cerrarModal(modalIngreso);
+  cerrarModal(modalRetiro);
+  cerrarModal(modalAutorizacionMovimiento);
+  cerrarModal(modalAutorizacion);
+  limpiarAutorizacion();
+  limpiarAutorizacionMovimiento();
+}
 
 function calcularContado() {
   let total = 0;
@@ -883,7 +1236,7 @@ function renderMovimientos(ventas, movimientos) {
       desc: "Venta #POS",
       detalle: (v.productos || []).map(p => p.nombre).join(", ").slice(0, 50) || "—",
       tipo: "venta",
-      monto: v.total || 0,
+      monto: numero(v.total),
       ts: v.fecha?.seconds || 0
     });
   });
@@ -894,7 +1247,7 @@ function renderMovimientos(ventas, movimientos) {
       desc: m.descripcion || (m.tipo === "ingreso" ? "Ingreso" : "Retiro"),
       detalle: "",
       tipo: m.tipo,
-      monto: m.monto || 0,
+      monto: numero(m.monto),
       ts: m.fecha?.seconds || 0
     });
   });
@@ -946,56 +1299,61 @@ function renderMovimientos(ventas, movimientos) {
   `).join("");
 }
 
-async function cargarVentasHoy() {
-  const hoy = new Date(); hoy.setHours(0,0,0,0);
-  try {
-    const snap = await getDocs(query(
-      collection(db, "ventas"),
-      where("fecha", ">=", Timestamp.fromDate(hoy)),
-      orderBy("fecha", "desc")
-    ));
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  } catch { return []; }
-}
-
 async function cargar() {
-  cajaActual = await obtenerCajaAbierta();
-
   const estadoEl = document.getElementById("estado-caja");
-  if (cajaActual) {
-    estadoEl.textContent = `Caja abierta | Fondo: ${fmt(cajaActual.fondoInicial)}`;
-    estadoEl.className = "text-xs mt-1 text-primary";
-  } else {
-    estadoEl.textContent = "No hay caja abierta hoy. Ve a Apertura para iniciar.";
+
+  try {
+    cajaActual = await obtenerCajaAbierta();
+
+    if (cajaActual) {
+      estadoEl.textContent = `Caja abierta | Fondo: ${fmt(cajaActual.fondoInicial)}`;
+      estadoEl.className = "text-xs mt-1 text-primary";
+    } else {
+      estadoEl.textContent = "No hay caja abierta hoy. Ve a Apertura para iniciar.";
+      estadoEl.className = "text-xs mt-1 text-error";
+    }
+
+    const [movimientos, ventas] = cajaActual
+      ? await Promise.all([
+          obtenerMovimientosHoy(cajaActual.id, cajaActual.fecha),
+          obtenerVentasHoy(cajaActual.id, cajaActual.fecha)
+        ])
+      : [[], []];
+
+    movimientosCache = movimientos;
+    ventasCache = ventas;
+
+    // Calcular KPIs. Number() evita concatenar texto si Firestore devuelve
+    // algún importe almacenado como string.
+    const fondoInicial = numero(cajaActual?.fondoInicial);
+    const totalVentas = ventas.reduce((a, v) => a + numero(v.total), 0);
+    const totalIngresos = movimientos
+      .filter(m => m.tipo === "ingreso")
+      .reduce((a, m) => a + numero(m.monto), 0);
+    const totalRetiros = movimientos
+      .filter(m => m.tipo === "retiro")
+      .reduce((a, m) => a + numero(m.monto), 0);
+    const entradas = fondoInicial + totalVentas + totalIngresos;
+    const saldo = entradas - totalRetiros;
+
+    document.getElementById("kpi-saldo").textContent = fmt(saldo);
+    document.getElementById("kpi-entradas").textContent = fmt(entradas);
+    document.getElementById("kpi-salidas").textContent = fmt(totalRetiros);
+    document.getElementById("kpi-hora").textContent = "Actualizado: " + new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+
+    if (cajaActual) {
+      cajaActual.efectivoEsperado = saldo;
+    }
+
+    actualizarCorteUI();
+    renderMovimientos(ventas, movimientos);
+  } catch (error) {
+    console.error("Error al cargar la caja:", error);
+    estadoEl.textContent = "No se pudo leer la caja. Revisa la consola y los permisos de Firestore.";
     estadoEl.className = "text-xs mt-1 text-error";
+    document.getElementById("tabla-movimientos").innerHTML =
+      `<tr><td colspan="4" class="px-6 py-8 text-center text-error text-sm">Error al cargar los datos de caja</td></tr>`;
   }
-
-  const [movimientos, ventas] = await Promise.all([
-    obtenerMovimientosHoy(),
-    cargarVentasHoy()
-  ]);
-
-  movimientosCache = movimientos;
-
-  // Calcular KPIs
-  const fondoInicial = cajaActual?.fondoInicial || 0;
-  const totalVentas = ventas.reduce((a, v) => a + (v.total || 0), 0);
-  const totalIngresos = movimientos.filter(m => m.tipo === "ingreso").reduce((a, m) => a + m.monto, 0);
-  const totalRetiros = movimientos.filter(m => m.tipo === "retiro").reduce((a, m) => a + m.monto, 0);
-  const entradas = fondoInicial + totalVentas + totalIngresos;
-  const saldo = entradas - totalRetiros;
-
-  document.getElementById("kpi-saldo").textContent = fmt(saldo);
-  document.getElementById("kpi-entradas").textContent = fmt(entradas);
-  document.getElementById("kpi-salidas").textContent = fmt(totalRetiros);
-  document.getElementById("kpi-hora").textContent = "Actualizado: " + new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
-
-  if (cajaActual) {
-    cajaActual.efectivoEsperado = saldo;
-  }
-
-  actualizarCorteUI();
-  renderMovimientos(ventas, movimientos);
 }
 
 // Denominaciones → actualizar diferencia al cambiar
@@ -1003,66 +1361,268 @@ document.querySelectorAll(".denom").forEach(inp => {
   inp.addEventListener("input", actualizarCorteUI);
 });
 
-// Modales
-document.getElementById("btn-ingreso").onclick = () => document.getElementById("modal-ingreso").classList.add("active");
-document.getElementById("btn-retiro").onclick = () => document.getElementById("modal-retiro").classList.add("active");
-document.querySelectorAll(".modal-close").forEach(b => {
-  b.onclick = () => b.closest(".modal-overlay").classList.remove("active");
+// =========================================================
+// MODALES
+// =========================================================
+
+const modalIngreso = document.getElementById("modal-ingreso");
+const modalRetiro = document.getElementById("modal-retiro");
+const modalAutorizacionMovimiento = document.getElementById("modal-autorizacion-movimiento");
+const modalAutorizacion = document.getElementById("modal-autorizacion-corte");
+const formularioAutorizacionMovimiento = document.getElementById("form-autorizacion-movimiento");
+const formularioAutorizacion = document.getElementById("form-autorizacion-corte");
+const errorAutorizacionMovimiento = document.getElementById("error-autorizacion-movimiento");
+const errorAutorizacion = document.getElementById("error-autorizacion-corte");
+const botonAutorizarMovimiento = document.getElementById("confirmar-autorizacion-movimiento");
+const botonAutorizarCorte = document.getElementById("confirmar-autorizacion-corte");
+
+function abrirModal(modal) {
+  if (!modal) return;
+  modal.classList.add("active");
+  modal.setAttribute("aria-hidden", "false");
+}
+
+function cerrarModal(modal) {
+  if (!modal) return;
+  modal.classList.remove("active");
+  modal.setAttribute("aria-hidden", "true");
+}
+
+function limpiarAutorizacion() {
+  formularioAutorizacion?.reset();
+  errorAutorizacion?.classList.add("hidden");
+  if (errorAutorizacion) errorAutorizacion.textContent = "";
+}
+
+function limpiarAutorizacionMovimiento() {
+  formularioAutorizacionMovimiento?.reset();
+  errorAutorizacionMovimiento?.classList.add("hidden");
+  if (errorAutorizacionMovimiento) errorAutorizacionMovimiento.textContent = "";
+}
+
+document.getElementById("btn-ingreso").addEventListener("click", () => {
+  if (!cajaActual?.id) {
+    alert("No hay caja abierta para registrar un ingreso.");
+    return;
+  }
+
+  cerrarModal(modalRetiro);
+  cerrarModal(modalAutorizacion);
+  abrirModal(modalIngreso);
 });
 
-// Confirmar ingreso
-document.getElementById("confirmar-ingreso").onclick = async () => {
+document.getElementById("btn-retiro").addEventListener("click", () => {
+  if (!cajaActual?.id) {
+    alert("No hay caja abierta para registrar un retiro.");
+    return;
+  }
+
+  cerrarModal(modalIngreso);
+  cerrarModal(modalAutorizacion);
+  abrirModal(modalRetiro);
+});
+
+document.querySelectorAll(".modal-close").forEach(boton => {
+  boton.addEventListener("click", () => {
+    const modal = boton.closest(".modal-overlay");
+    cerrarModal(modal);
+
+    if (modal?.id === "modal-autorizacion-corte") {
+      limpiarAutorizacion();
+    }
+
+    if (modal?.id === "modal-autorizacion-movimiento") {
+      operacionPendiente = null;
+      limpiarAutorizacionMovimiento();
+    }
+  });
+});
+
+function abrirAutorizacionMovimiento(tipo, monto, descripcion) {
+  operacionPendiente = { tipo, monto, descripcion };
+  document.getElementById("titulo-autorizacion-movimiento").textContent =
+    tipo === "ingreso"
+      ? "Autorizar ingreso de efectivo"
+      : "Autorizar retiro de efectivo";
+
+  cerrarModal(tipo === "ingreso" ? modalIngreso : modalRetiro);
+  limpiarAutorizacionMovimiento();
+  abrirModal(modalAutorizacionMovimiento);
+  document.getElementById("movimiento-usuario")?.focus();
+}
+
+// Solicitar credenciales antes de registrar un ingreso.
+document.getElementById("confirmar-ingreso").onclick = () => {
   const monto = Number(document.getElementById("ingreso-monto").value);
-  const desc = document.getElementById("ingreso-desc").value;
-  if (!monto || monto <= 0) { alert("Ingrese un monto válido"); return; }
-  try {
-    await registrarMovimiento({ tipo: "ingreso", monto, descripcion: desc, cajaId: cajaActual?.id });
-    if (cajaActual?.id) await actualizarEfectivoEsperado(cajaActual.id, monto);
-    document.getElementById("modal-ingreso").classList.remove("active");
-    document.getElementById("ingreso-monto").value = "";
-    document.getElementById("ingreso-desc").value = "";
-    await cargar();
-  } catch (e) { alert("Error al registrar: " + e.message); }
+  const descripcion = document.getElementById("ingreso-desc").value;
+
+  if (!monto || monto <= 0) {
+    alert("Ingrese un monto válido");
+    return;
+  }
+
+  abrirAutorizacionMovimiento("ingreso", monto, descripcion);
 };
 
-// Confirmar retiro
-document.getElementById("confirmar-retiro").onclick = async () => {
+// Solicitar credenciales antes de registrar un retiro.
+document.getElementById("confirmar-retiro").onclick = () => {
   const monto = Number(document.getElementById("retiro-monto").value);
-  const desc = document.getElementById("retiro-desc").value;
-  if (!monto || monto <= 0) { alert("Ingrese un monto válido"); return; }
+  const descripcion = document.getElementById("retiro-desc").value;
+
+  if (!monto || monto <= 0) {
+    alert("Ingrese un monto válido");
+    return;
+  }
+
+  abrirAutorizacionMovimiento("retiro", monto, descripcion);
+};
+
+formularioAutorizacionMovimiento.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const operacion = operacionPendiente;
+  if (!operacion || !cajaActual?.id) {
+    errorAutorizacionMovimiento.textContent = "La caja ya no está abierta.";
+    errorAutorizacionMovimiento.classList.remove("hidden");
+    return;
+  }
+
+  const usuario = document.getElementById("movimiento-usuario").value;
+  const password = document.getElementById("movimiento-password").value;
+
+  errorAutorizacionMovimiento.classList.add("hidden");
+  errorAutorizacionMovimiento.textContent = "";
+  botonAutorizarMovimiento.disabled = true;
+  botonAutorizarMovimiento.textContent = "Verificando...";
+
   try {
-    await registrarMovimiento({ tipo: "retiro", monto, descripcion: desc, cajaId: cajaActual?.id });
-    if (cajaActual?.id) await actualizarEfectivoEsperado(cajaActual.id, -monto);
-    document.getElementById("modal-retiro").classList.remove("active");
+    const usuarioAutorizado = await validarUsuarioCaja(usuario, password);
+
+    if (!usuarioAutorizado) {
+      errorAutorizacionMovimiento.textContent = "Usuario o contraseña incorrectos.";
+      errorAutorizacionMovimiento.classList.remove("hidden");
+      return;
+    }
+
+    await registrarMovimiento({
+      ...operacion,
+      cajaId: cajaActual.id,
+      usuario: usuarioAutorizado.nombre
+    });
+
+    if (operacion.tipo === "ingreso") {
+      await actualizarEfectivoEsperado(cajaActual.id, operacion.monto);
+    } else {
+      await actualizarEfectivoEsperado(cajaActual.id, -operacion.monto);
+    }
+
+    cerrarModal(modalAutorizacionMovimiento);
+    limpiarAutorizacionMovimiento();
+    operacionPendiente = null;
+    document.getElementById("ingreso-monto").value = "";
+    document.getElementById("ingreso-desc").value = "";
     document.getElementById("retiro-monto").value = "";
     document.getElementById("retiro-desc").value = "";
     await cargar();
-  } catch (e) { alert("Error al registrar: " + e.message); }
-};
+  } catch (error) {
+    console.error("Error al autorizar movimiento:", error);
+    errorAutorizacionMovimiento.textContent =
+      error?.code === "permission-denied"
+        ? "Firebase no permite registrar este movimiento. Revisa las reglas de Firestore."
+        : "No fue posible registrar el movimiento. Inténtalo de nuevo.";
+    errorAutorizacionMovimiento.classList.remove("hidden");
+  } finally {
+    botonAutorizarMovimiento.disabled = false;
+    botonAutorizarMovimiento.textContent = "Autorizar";
+  }
+});
 
-// Corte final
-document.getElementById("btn-corte").onclick = async () => {
-  if (!cajaActual?.id) { alert("No hay caja abierta para cerrar."); return; }
-  const contado = calcularContado();
-  if (!confirm(`¿Confirmar corte de caja?\nEfectivo contado: ${fmt(contado)}\n\nEsto cerrará el turno actual.`)) return;
+// Abrir autorización antes del corte final.
+document.getElementById("btn-corte").addEventListener("click", () => {
+  if (!cajaActual?.id) {
+    alert("No hay caja abierta para cerrar.");
+    return;
+  }
 
-  const denominaciones = {};
-  document.querySelectorAll(".denom").forEach(inp => {
-    if (Number(inp.value) > 0) denominaciones["$" + inp.dataset.val] = Number(inp.value);
-  });
+  cerrarModal(modalIngreso);
+  cerrarModal(modalRetiro);
+  limpiarAutorizacion();
+  abrirModal(modalAutorizacion);
+  document.getElementById("corte-usuario")?.focus();
+});
+
+// Validar usuario y contraseña, y solamente después cerrar la caja.
+formularioAutorizacion.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const usuario = document.getElementById("corte-usuario").value;
+  const password = document.getElementById("corte-password").value;
+
+  errorAutorizacion.classList.add("hidden");
+  errorAutorizacion.textContent = "";
+  botonAutorizarCorte.disabled = true;
+  botonAutorizarCorte.textContent = "Verificando...";
 
   try {
-    document.getElementById("btn-corte").disabled = true;
-    document.getElementById("btn-corte").textContent = "Cerrando...";
-    await cerrarCaja({ cajaId: cajaActual.id, efectivoReal: contado, denominaciones });
-    alert("✓ Caja cerrada correctamente.");
-    await cargar();
-  } catch (e) {
-    alert("Error al cerrar: " + e.message);
-    document.getElementById("btn-corte").disabled = false;
-    document.getElementById("btn-corte").innerHTML = `<span class="material-symbols-outlined">lock_open</span> Realizar Corte Final`;
+    const usuarioAutorizado = await validarUsuarioCaja(usuario, password);
+
+    if (!usuarioAutorizado) {
+      errorAutorizacion.textContent = "Usuario o contraseña incorrectos.";
+      errorAutorizacion.classList.remove("hidden");
+      return;
+    }
+
+    const resumenAntesCierre = await obtenerResumenCaja();
+    const contado = calcularContado();
+    if (!confirm(`¿Confirmar corte de caja?\nEfectivo contado: ${fmt(contado)}\n\nEsto cerrará el turno actual.`)) {
+      return;
+    }
+
+    const denominaciones = {};
+    document.querySelectorAll(".denom").forEach(inp => {
+      if (Number(inp.value) > 0) {
+        denominaciones["$" + inp.dataset.val] = Number(inp.value);
+      }
+    });
+
+    botonAutorizarCorte.textContent = "Cerrando...";
+    const resultadoCierre = await cerrarCaja({
+      cajaId: cajaActual.id,
+      efectivoReal: contado,
+      denominaciones,
+      usuarioCierre: usuarioAutorizado.nombre,
+      rolCierre: usuarioAutorizado.rol
+    });
+
+    const fechaCierre = new Date();
+    descargarResumenExcel({
+      resumen: resumenAntesCierre,
+      cierre: resultadoCierre,
+      usuarioAutorizado,
+      denominaciones,
+      fechaCierre
+    });
+
+    cerrarModal(modalAutorizacion);
+    limpiarAutorizacion();
+    limpiarDatosTemporalesCaja();
+    alert(`Caja cerrada correctamente por ${usuarioAutorizado.nombre}. Se descargó el resumen en Excel.`);
+    window.location.assign(RUTA_APERTURA);
+  } catch (error) {
+    console.error("Error al autorizar o cerrar la caja:", error);
+    const codigoError = error?.code || "";
+    errorAutorizacion.textContent =
+      codigoError === "permission-denied"
+        ? "Firebase no permite leer el usuario o actualizar la caja. Revisa las reglas de Firestore."
+        : codigoError === "failed-precondition"
+          ? "Firestore requiere un índice para esta operación. Actualiza la página e inténtalo de nuevo."
+          : "No fue posible validar el usuario o cerrar la caja. Revisa la consola para ver el detalle.";
+    errorAutorizacion.classList.remove("hidden");
+  } finally {
+    botonAutorizarCorte.disabled = false;
+    botonAutorizarCorte.textContent = "Autorizar y cerrar";
   }
-};
+});
 
 cargar();
 
