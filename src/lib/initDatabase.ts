@@ -1,3 +1,4 @@
+/*
 import {
 doc,
 setDoc,
@@ -100,3 +101,4 @@ console.log(
 );
 
 }
+*/

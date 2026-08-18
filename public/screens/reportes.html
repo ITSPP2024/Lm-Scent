@@ -849,18 +849,52 @@
 <div class="flex-1 overflow-y-auto p-10 space-y-gutter scroll-smooth">
 
   <!-- Filters -->
-  <section class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <section class="flex flex-col xl:flex-row xl:items-end justify-between gap-4">
     <div>
       <h3 class="font-headline-lg text-headline-lg text-on-surface">Panel de Analítica</h3>
       <p id="periodo-label" class="text-on-surface-variant font-body-md">Cargando...</p>
     </div>
-    <div class="flex items-center gap-3">
+    <div class="flex flex-col sm:flex-row sm:items-end gap-3">
       <div class="flex items-center bg-surface-container-high rounded-lg p-1 gap-1">
         <button class="periodo-btn active px-4 py-2 font-label-caps text-label-caps rounded-lg shadow-sm transition-all" data-p="hoy">Hoy</button>
         <button class="periodo-btn px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-all" data-p="semana">Semana</button>
         <button class="periodo-btn px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-all" data-p="mes">Mes</button>
       </div>
+
+      <div class="flex flex-wrap items-end gap-2">
+        <label class="flex flex-col gap-1 text-on-surface-variant font-label-caps text-[10px]">
+          Desde
+          <input
+            id="filtro-desde"
+            type="date"
+            class="bg-surface-container-high border border-outline-variant rounded-lg px-3 py-2 text-sm text-on-surface outline-none focus:border-primary"
+          />
+        </label>
+        <label class="flex flex-col gap-1 text-on-surface-variant font-label-caps text-[10px]">
+          Hasta
+          <input
+            id="filtro-hasta"
+            type="date"
+            class="bg-surface-container-high border border-outline-variant rounded-lg px-3 py-2 text-sm text-on-surface outline-none focus:border-primary"
+          />
+        </label>
+        <button
+          id="aplicar-filtro-fechas"
+          type="button"
+          class="px-4 py-2 bg-surface-container-high border border-primary/40 text-primary rounded-lg font-label-caps text-label-caps hover:bg-primary/10 transition-all"
+        >
+          Aplicar
+        </button>
+        <button
+          id="exportar-excel"
+          type="button"
+          class="px-4 py-2 gold-gradient text-on-primary-fixed rounded-lg font-label-caps text-label-caps font-bold hover:brightness-110 transition-all"
+        >
+          Exportar Excel
+        </button>
+      </div>
     </div>
+    <p id="error-filtro-fechas" class="hidden text-error text-xs" role="alert"></p>
   </section>
 
   <!-- KPI Cards -->

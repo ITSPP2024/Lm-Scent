@@ -686,6 +686,20 @@
             <div class="flex gap-3">
 
                 <button
+                    id="btnExportarExcel"
+                    type="button"
+                    class="px-6 py-3 bg-primary text-on-primary font-label-caps text-label-caps hover:brightness-110 transition-all rounded-lg flex items-center gap-2 group tactile-press"
+                >
+
+                    <span class="material-symbols-outlined">
+                        download
+                    </span>
+
+                    Exportar a Excel
+
+                </button>
+
+                <button
                     id="btnAgregarProducto"
                     type="button"
                     class="px-6 py-3 border border-primary text-primary font-label-caps text-label-caps hover:bg-primary hover:text-on-primary transition-all rounded-lg flex items-center gap-2 group tactile-press"
@@ -1101,6 +1115,61 @@
     class="campo"
 />
 
+<div class="space-y-3">
+
+    <div>
+        <label
+            for="imagenProducto"
+            class="block text-sm text-on-surface mb-2"
+        >
+            Imagen del producto
+        </label>
+
+        <input
+            id="imagenProducto"
+            name="imagen"
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            class="campo file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:font-semibold file:text-on-primary hover:file:brightness-110"
+        />
+
+        <p class="text-xs text-on-surface-variant mt-2">
+            Selecciona una imagen para subirla a Cloudinary al guardar el producto.
+            Máximo 5 MB.
+        </p>
+    </div>
+
+    <div
+        id="vistaPreviaImagen"
+        class="hidden rounded-lg border border-outline-variant bg-surface p-3"
+    >
+        <div class="flex items-center gap-4">
+            <img
+                id="imagenPrevia"
+                src=""
+                alt="Vista previa del producto"
+                class="h-20 w-20 rounded-lg object-cover border border-outline-variant"
+            />
+            <div class="min-w-0">
+                <p class="text-sm text-on-surface font-semibold truncate" id="nombreImagen">
+                    Imagen seleccionada
+                </p>
+                <p class="text-xs text-on-surface-variant mt-1">
+                    Vista previa local
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <input
+        id="imagenUrl"
+        name="imagenUrl"
+        type="hidden"
+        value=""
+    />
+
+</div>
+
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
@@ -1300,7 +1369,8 @@ import {
 
     agregarProducto,
     obtenerProductos,
-    eliminarProducto
+    eliminarProducto,
+    subirImagenCloudinary
 
 } from "/src/lib/inventario.js";
 
@@ -1356,6 +1426,34 @@ const btnRecargar =
         "btnRecargar"
     );
 
+const btnExportarExcel =
+    document.getElementById(
+        "btnExportarExcel"
+    );
+
+const imagenProducto =
+    document.getElementById(
+        "imagenProducto"
+    );
+
+const vistaPreviaImagen =
+    document.getElementById(
+        "vistaPreviaImagen"
+    );
+
+const imagenPrevia =
+    document.getElementById(
+        "imagenPrevia"
+    );
+
+const nombreImagen =
+    document.getElementById(
+        "nombreImagen"
+    );
+
+let imagenSeleccionada = null;
+let imagenPreviaUrl = null;
+
 
 const buscarProducto =
     document.getElementById(
@@ -1404,6 +1502,73 @@ const resumenProductos =
 /* ========================================================= */
 
 let productos = [];
+
+function limpiarImagenSeleccionada() {
+
+    imagenSeleccionada = null;
+
+    if (imagenPreviaUrl) {
+        URL.revokeObjectURL(imagenPreviaUrl);
+        imagenPreviaUrl = null;
+    }
+
+    if (imagenProducto) {
+        imagenProducto.value = "";
+    }
+
+    vistaPreviaImagen?.classList.add("hidden");
+
+    if (imagenPrevia) {
+        imagenPrevia.removeAttribute("src");
+    }
+
+    if (nombreImagen) {
+        nombreImagen.textContent = "Imagen seleccionada";
+    }
+
+}
+
+imagenProducto?.addEventListener(
+    "change",
+    () => {
+        const archivo = imagenProducto.files?.[0];
+
+        if (!archivo) {
+            limpiarImagenSeleccionada();
+            return;
+        }
+
+        if (!archivo.type.startsWith("image/")) {
+            alert("Selecciona un archivo de imagen válido.");
+            limpiarImagenSeleccionada();
+            return;
+        }
+
+        if (archivo.size > 5 * 1024 * 1024) {
+            alert("La imagen no puede superar los 5 MB.");
+            limpiarImagenSeleccionada();
+            return;
+        }
+
+        imagenSeleccionada = archivo;
+
+        if (imagenPreviaUrl) {
+            URL.revokeObjectURL(imagenPreviaUrl);
+        }
+
+        imagenPreviaUrl = URL.createObjectURL(archivo);
+
+        if (imagenPrevia) {
+            imagenPrevia.src = imagenPreviaUrl;
+        }
+
+        if (nombreImagen) {
+            nombreImagen.textContent = archivo.name;
+        }
+
+        vistaPreviaImagen?.classList.remove("hidden");
+    }
+);
 
 
 /* ========================================================= */
@@ -1473,6 +1638,8 @@ function cerrarModal() {
         stockMinimo.value = "5";
 
     }
+
+    limpiarImagenSeleccionada();
 
 }
 
@@ -1551,7 +1718,6 @@ form?.addEventListener(
                 form
             );
 
-
         const producto = {
 
             nombre:
@@ -1567,6 +1733,12 @@ form?.addEventListener(
             codigoBarras:
                 String(
                     data.get("codigoBarras") || ""
+                ).trim(),
+
+            // Cloudinary devuelve esta URL antes de guardar el producto.
+            imagenUrl:
+                String(
+                    data.get("imagenUrl") || ""
                 ).trim(),
 
             precioCompra:
@@ -1624,6 +1796,29 @@ form?.addEventListener(
 
             return;
 
+        }
+
+        if (imagenSeleccionada) {
+            try {
+                producto.imagenUrl =
+                    await subirImagenCloudinary(
+                        imagenSeleccionada,
+                        producto.nombre
+                    );
+            }
+            catch (error) {
+                console.error(
+                    "Error al subir imagen a Cloudinary:",
+                    error
+                );
+
+                alert(
+                    error?.message ||
+                    "No se pudo subir la imagen a Cloudinary."
+                );
+
+                return;
+            }
         }
 
 
@@ -1708,6 +1903,183 @@ function moneda(valor) {
     ).format(
         Number(valor) || 0
     );
+
+}
+
+function escaparExcel(valor) {
+
+    return String(valor ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+
+}
+
+function fechaExcel(valor) {
+
+    if (!valor) {
+        return "";
+    }
+
+    const fecha = valor?.toDate
+        ? valor.toDate()
+        : new Date(valor?.seconds ? valor.seconds * 1000 : valor);
+
+    return Number.isNaN(fecha.getTime())
+        ? ""
+        : fecha.toLocaleString("es-MX");
+
+}
+
+function celdaExcel(valor, encabezado = false) {
+
+    const esNumero =
+        typeof valor === "number" &&
+        Number.isFinite(valor);
+
+    const clases = [
+        encabezado ? "encabezado" : "",
+        esNumero ? "numero" : ""
+    ].filter(Boolean).join(" ");
+
+    return `<td${clases ? ` class="${clases}"` : ""}>${
+        esNumero
+            ? valor.toFixed(2)
+            : escaparExcel(valor)
+    }</td>`;
+
+}
+
+function filaExcel(valores, encabezado = false) {
+
+    return `<tr>${
+        valores
+            .map(valor => celdaExcel(valor, encabezado))
+            .join("")
+    }</tr>`;
+
+}
+
+function exportarExcel() {
+
+    const fechaExportacion =
+        new Date().toLocaleString("es-MX");
+
+    const valorStock =
+        productos.reduce(
+            (total, producto) =>
+                total +
+                (Number(producto.precioVenta) || 0) *
+                (Number(producto.stock) || 0),
+            0
+        );
+
+    const alertas =
+        productos.filter(producto =>
+            (Number(producto.stock) || 0) <=
+            (Number(producto.stockMinimo) || 0)
+        ).length;
+
+    const filasProductos =
+        productos.length
+            ? productos.map(producto => {
+                const stock =
+                    Number(producto.stock) || 0;
+                const stockMinimo =
+                    Number(producto.stockMinimo) || 0;
+                const precioCompra =
+                    Number(producto.precioCompra) || 0;
+                const precioVenta =
+                    Number(producto.precioVenta) || 0;
+
+                return filaExcel([
+                    producto.id || "",
+                    producto.nombre || "",
+                    producto.sku || "",
+                    producto.codigoBarras || "",
+                    producto.categoria || "",
+                    precioCompra,
+                    precioVenta,
+                    stock,
+                    stockMinimo,
+                    stock * precioCompra,
+                    stock * precioVenta,
+                    stock <= stockMinimo ? "Bajo stock" : "En stock",
+                    producto.activo ? "Activo" : "Inactivo",
+                    producto.ventas24h ?? 0,
+                    fechaExcel(producto.fechaCreacion || producto.createdAt),
+                    producto.imagenUrl || ""
+                ]);
+            }).join("")
+            : filaExcel(["Sin productos registrados"]);
+
+    const contenido = `<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; color: #222; }
+        h1, h2 { color: #8a6500; }
+        table { border-collapse: collapse; margin-bottom: 24px; min-width: 1200px; }
+        th, td { border: 1px solid #b9b9b9; padding: 6px 8px; }
+        .encabezado { background: #f2ca50; font-weight: bold; }
+        .numero { mso-number-format: "0.00"; text-align: right; }
+    </style>
+</head>
+<body>
+    <h1>Inventario de productos</h1>
+    <table>
+        ${filaExcel(["Dato", "Valor"], true)}
+        ${filaExcel(["Fecha de exportación", fechaExportacion])}
+        ${filaExcel(["Productos registrados", productos.length])}
+        ${filaExcel(["Productos con alerta de stock", alertas])}
+        ${filaExcel(["Valor total de compra", productos.reduce((total, producto) => total + (Number(producto.precioCompra) || 0) * (Number(producto.stock) || 0), 0)])}
+        ${filaExcel(["Valor total de venta", valorStock])}
+    </table>
+
+    <h2>Detalle completo</h2>
+    <table>
+        ${filaExcel([
+            "ID",
+            "Producto",
+            "SKU",
+            "Código de barras",
+            "Categoría",
+            "Precio de compra",
+            "Precio de venta",
+            "Stock",
+            "Stock mínimo",
+            "Valor de compra",
+            "Valor de venta",
+            "Estado de stock",
+            "Estado del producto",
+            "Ventas últimas 24 h",
+            "Fecha de creación",
+            "URL de imagen"
+        ], true)}
+        ${filasProductos}
+    </table>
+</body>
+</html>`;
+
+    const blob = new Blob(["\ufeff", contenido], {
+        type: "application/vnd.ms-excel;charset=utf-8"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const enlace = document.createElement("a");
+    const fechaArchivo = new Date()
+        .toISOString()
+        .replace(/[:.]/g, "-");
+
+    enlace.href = url;
+    enlace.download = `inventario-${fechaArchivo}.xls`;
+    enlace.style.display = "none";
+    document.body.appendChild(enlace);
+    enlace.click();
+    enlace.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
 
 }
 
@@ -1930,6 +2302,11 @@ function renderizar(lista) {
                 producto.codigoBarras
             );
 
+        const imagenUrl =
+            escaparHTML(
+                producto.imagenUrl || ""
+            );
+
 
         const fila =
             document.createElement(
@@ -1948,6 +2325,22 @@ function renderizar(lista) {
             <td class="px-gutter py-5">
 
                 <div>
+
+                    ${
+                        imagenUrl
+                            ? `
+                            <img
+                                src="${imagenUrl}"
+                                alt="Imagen de ${nombre}"
+                                class="h-12 w-12 rounded-lg object-cover border border-outline-variant mb-2"
+                            />
+                            `
+                            : `
+                            <div class="h-12 w-12 rounded-lg border border-dashed border-outline-variant flex items-center justify-center mb-2 text-on-surface-variant">
+                                <span class="material-symbols-outlined text-[20px]">image</span>
+                            </div>
+                            `
+                    }
 
                     <p class="font-medium text-on-surface">
 
@@ -2276,6 +2669,18 @@ btnRecargar?.addEventListener(
 
     }
 
+);
+
+btnExportarExcel?.addEventListener(
+    "click",
+    () => {
+        if (!productos.length) {
+            alert("No hay productos para exportar.");
+            return;
+        }
+
+        exportarExcel();
+    }
 );
 
 

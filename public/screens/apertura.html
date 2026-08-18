@@ -153,6 +153,44 @@ opacity:.6;
 cursor:not-allowed;
 }
 
+.modal-overlay{
+display:none;
+position:fixed;
+inset:0;
+z-index:1000;
+align-items:center;
+justify-content:center;
+padding:1rem;
+background:rgba(0,0,0,.72);
+backdrop-filter:blur(4px);
+}
+
+.modal-overlay.active{
+display:flex;
+animation:fade-in .15s ease-out;
+}
+
+@keyframes fade-in{
+from{opacity:0;transform:translateY(10px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+.auth-field{
+background:#0f0f10;
+border:1px solid #2a2a2e;
+border-radius:8px;
+width:100%;
+padding:12px 14px;
+color:#e5e2e1;
+font-size:13px;
+outline:none;
+}
+
+.auth-field:focus{
+border-color:#f2ca50;
+box-shadow:0 0 15px rgba(242,202,80,.16);
+}
+
 </style>
 
 </head>
@@ -272,12 +310,73 @@ Esta acción registrará la apertura oficial y permitirá procesar ventas.
 
 </div>
 
+<div id="modal-autorizacion-apertura" class="modal-overlay" aria-hidden="true">
+  <div class="modal rounded-2xl w-full max-w-md p-7">
+    <div class="flex items-start justify-between mb-2">
+      <div>
+        <div class="eyebrow gold mb-2">Autorización requerida</div>
+        <h2 class="font-display text-2xl font-bold">Autorizar apertura</h2>
+        <p class="text-on-surface-variant text-sm leading-relaxed mt-2">
+          Ingresa tu usuario y contraseña para registrar el inicio de caja.
+        </p>
+      </div>
+      <button id="cerrar-autorizacion-apertura" type="button" class="text-on-surface-variant hover:text-primary transition-colors" aria-label="Cerrar autorización">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <form id="form-autorizacion-apertura" class="space-y-4 mt-6">
+      <div>
+        <label for="apertura-usuario" class="eyebrow block mb-2">Usuario o correo</label>
+        <input
+          id="apertura-usuario"
+          name="usuario"
+          type="text"
+          autocomplete="username"
+          required
+          class="auth-field"
+          placeholder="Usuario"
+        />
+      </div>
+
+      <div>
+        <label for="apertura-password" class="eyebrow block mb-2">Contraseña</label>
+        <input
+          id="apertura-password"
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          required
+          class="auth-field"
+          placeholder="Contraseña"
+        />
+      </div>
+
+      <p id="error-autorizacion-apertura" class="hidden text-sm text-red-300" role="alert"></p>
+
+      <div class="flex gap-3 pt-2">
+        <button id="cancelar-autorizacion-apertura" type="button" class="flex-1 py-3 border border-outline text-on-surface-variant rounded-xl hover:bg-surface transition-colors font-semibold">
+          Cancelar
+        </button>
+        <button id="confirmar-autorizacion-apertura" type="submit" class="flex-1 btn-primary">
+          Autorizar y abrir
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script type="module">
 
 import {
 abrirCaja
 }
 from "/src/lib/caja.ts";
+
+import {
+validarUsuarioCaja
+}
+from "/src/lib/movimientosCaja.js";
 
 const input =
 document.getElementById("amount");
@@ -287,6 +386,55 @@ document.getElementById("notes");
 
 const button =
 document.getElementById("open-cash");
+
+const modalAutorizacion =
+document.getElementById("modal-autorizacion-apertura");
+
+const formularioAutorizacion =
+document.getElementById("form-autorizacion-apertura");
+
+const botonCerrarAutorizacion =
+document.getElementById("cerrar-autorizacion-apertura");
+
+const botonCancelarAutorizacion =
+document.getElementById("cancelar-autorizacion-apertura");
+
+const botonConfirmarAutorizacion =
+document.getElementById("confirmar-autorizacion-apertura");
+
+const errorAutorizacion =
+document.getElementById("error-autorizacion-apertura");
+
+function abrirModalAutorizacion(){
+  modalAutorizacion.classList.add("active");
+  modalAutorizacion.setAttribute("aria-hidden", "false");
+  document.getElementById("apertura-usuario")?.focus();
+}
+
+function cerrarModalAutorizacion(){
+  modalAutorizacion.classList.remove("active");
+  modalAutorizacion.setAttribute("aria-hidden", "true");
+  formularioAutorizacion.reset();
+  errorAutorizacion.classList.add("hidden");
+  errorAutorizacion.textContent = "";
+  botonConfirmarAutorizacion.disabled = false;
+  botonConfirmarAutorizacion.textContent = "Autorizar y abrir";
+}
+
+botonCerrarAutorizacion.addEventListener("click", cerrarModalAutorizacion);
+botonCancelarAutorizacion.addEventListener("click", cerrarModalAutorizacion);
+
+modalAutorizacion.addEventListener("click", event => {
+  if(event.target === modalAutorizacion){
+    cerrarModalAutorizacion();
+  }
+});
+
+document.addEventListener("keydown", event => {
+  if(event.key === "Escape" && modalAutorizacion.classList.contains("active")){
+    cerrarModalAutorizacion();
+  }
+});
 
 document
 .querySelectorAll(".chip")
@@ -326,47 +474,53 @@ return;
 
 }
 
-try{
+abrirModalAutorizacion();
 
-button.disabled =
-true;
+});
 
-button.innerHTML =
-"GUARDANDO...";
+formularioAutorizacion.addEventListener("submit", async event => {
+  event.preventDefault();
 
-await abrirCaja(
-fondo,
-notes.value
-);
+  const usuario = document.getElementById("apertura-usuario").value;
+  const password = document.getElementById("apertura-password").value;
 
-alert(
-"Caja abierta correctamente"
-);
+  errorAutorizacion.classList.add("hidden");
+  errorAutorizacion.textContent = "";
+  botonConfirmarAutorizacion.disabled = true;
+  botonConfirmarAutorizacion.textContent = "Verificando...";
 
-window.location.href =
-"/ventas";
+  try{
+    const usuarioAutorizado = await validarUsuarioCaja(usuario, password);
 
-}catch(error){
+    if(!usuarioAutorizado){
+      errorAutorizacion.textContent = "Usuario o contraseña incorrectos.";
+      errorAutorizacion.classList.remove("hidden");
+      return;
+    }
 
-console.error(error);
+    botonConfirmarAutorizacion.textContent = "Guardando...";
 
-alert(
-"No se pudo guardar"
-);
+    await abrirCaja(
+      Number(input.value),
+      notes.value,
+      usuarioAutorizado.nombre,
+      usuarioAutorizado.rol
+    );
 
-button.disabled =
-false;
-
-button.innerHTML =
-`
-<span class="material-symbols-outlined">
-lock
-</span>
-CONFIRMAR E INICIAR
-`;
-
-}
-
+    cerrarModalAutorizacion();
+    alert(`Caja abierta correctamente por ${usuarioAutorizado.nombre}`);
+    window.location.href = "/ventas";
+  }catch(error){
+    console.error("Error al autorizar la apertura:", error);
+    errorAutorizacion.textContent =
+      error?.code === "permission-denied"
+        ? "Firebase no permite validar el usuario o abrir la caja. Revisa las reglas de Firestore."
+        : "No se pudo autorizar o guardar la apertura. Inténtalo de nuevo.";
+    errorAutorizacion.classList.remove("hidden");
+  }finally{
+    botonConfirmarAutorizacion.disabled = false;
+    botonConfirmarAutorizacion.textContent = "Autorizar y abrir";
+  }
 });
 
 </script>

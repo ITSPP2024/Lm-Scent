@@ -668,20 +668,7 @@
                                 </button>
 
 
-                                <!-- IMPRIMIR -->
-
-                                <button
-                                    id="btnImprimir"
-                                    type="button"
-                                    class="px-6 border border-outline-variant text-on-surface-variant hover:text-on-surface rounded-xl transition-colors flex items-center justify-center"
-                                    title="Imprimir ticket"
-                                >
-
-                                    <span class="material-symbols-outlined">
-                                        print
-                                    </span>
-
-                                </button>
+                               
 
                             </div>
 
@@ -700,52 +687,6 @@
 </div>
 
 
-
-<!-- ========================================================= -->
-<!-- UTILIDADES -->
-<!-- ========================================================= -->
-
-<div class="fixed bottom-gutter right-6 flex flex-col gap-4 z-40">
-
-
-    <!-- CONSULTAR PRECIO -->
-
-    <button
-        id="btnConsultarPrecio"
-        type="button"
-        class="w-14 h-14 bg-surface-container-highest border border-primary text-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all gold-glow tactile-press"
-        title="Consultar precio"
-    >
-
-        <span class="material-symbols-outlined">
-            price_check
-        </span>
-
-    </button>
-
-
-    <!-- CORTE DE CAJA -->
-
-    <button
-        id="btnCorteCaja"
-        type="button"
-        class="w-14 h-14 bg-error-container text-on-error-container rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all tactile-press group"
-        title="Corte de caja"
-    >
-
-        <span class="material-symbols-outlined group-hover:rotate-45 transition-transform">
-            lock_person
-        </span>
-
-        <span
-            class="absolute right-16 bg-error-container text-on-error-container px-3 py-1 rounded-lg text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity"
-        >
-            CORTE
-        </span>
-
-    </button>
-
-</div>
 
 
 
@@ -802,15 +743,6 @@ const btnNuevaVenta =
 
 const btnCatalogo =
     document.getElementById("btnCatalogo");
-
-const btnConsultarPrecio =
-    document.getElementById("btnConsultarPrecio");
-
-const btnCorteCaja =
-    document.getElementById("btnCorteCaja");
-
-const btnImprimir =
-    document.getElementById("btnImprimir");
 
 const btnNotificaciones =
     document.getElementById("btnNotificaciones");
@@ -1424,54 +1356,6 @@ btnCatalogo.onclick = () => {
 
     window.location.href =
         "/catalogo.html";
-
-};
-
-
-
-/* =========================================================
-   CONSULTAR PRECIO
-========================================================= */
-
-btnConsultarPrecio.onclick = () => {
-
-    window.location.href =
-        "/consultar-precio.html";
-
-};
-
-
-
-/* =========================================================
-   CORTE DE CAJA
-========================================================= */
-
-btnCorteCaja.onclick = () => {
-
-    window.location.href =
-        "/caja.html";
-
-};
-
-
-
-/* =========================================================
-   IMPRIMIR TICKET
-========================================================= */
-
-btnImprimir.onclick = () => {
-
-    if (!carrito.length) {
-
-        alert(
-            "No hay una venta para imprimir."
-        );
-
-        return;
-
-    }
-
-    window.print();
 
 };
 
