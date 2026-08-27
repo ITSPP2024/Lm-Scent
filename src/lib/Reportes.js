@@ -1,133 +1,55 @@
 import {
     getDocs,
-    collection,
-    query,
-    where,
-    orderBy,
-    Timestamp
-}
-from "firebase/firestore";
-
+    collection
+} from "firebase/firestore";
 
 import { db } from "./firebase";
 
-
 /* ========================================================= */
-/* CONFIGURACIÓN */
+/* CONFIGURACIÓN Y ESTADO */
 /* ========================================================= */
 
 const tablaVentas = "ventas";
 
-
 let todasLasVentas = [];
-
-
 let periodoActual = "hoy";
 let filtroFechaDesde = null;
 let filtroFechaHasta = null;
-
 
 /* ========================================================= */
 /* FORMATO MONEDA */
 /* ========================================================= */
 
 function fmt(valor) {
-
-    return new Intl.NumberFormat(
-        "es-MX",
-        {
-            style: "currency",
-            currency: "MXN",
-            minimumFractionDigits: 2
-        }
-    ).format(
-        Number(valor) || 0
-    );
-
+    return new Intl.NumberFormat("es-MX", {
+        style: "currency",
+        currency: "MXN",
+        minimumFractionDigits: 2
+    }).format(Number(valor) || 0);
 }
-
 
 /* ========================================================= */
 /* FECHA INICIAL */
 /* ========================================================= */
 
 function fechaDesde(periodo) {
+    const fecha = new Date();
 
-    const fecha =
-        new Date();
-
-
-    /* ===================================================== */
-    /* HOY */
-    /* ===================================================== */
-
-    if (
-        periodo === "hoy"
-    ) {
-
-        fecha.setHours(
-            0,
-            0,
-            0,
-            0
-        );
-
+    if (periodo === "hoy") {
+        fecha.setHours(0, 0, 0, 0);
+    } else if (periodo === "semana") {
+        fecha.setDate(fecha.getDate() - 6);
+        fecha.setHours(0, 0, 0, 0);
+    } else if (periodo === "mes") {
+        fecha.setDate(1);
+        fecha.setHours(0, 0, 0, 0);
     }
-
-
-    /* ===================================================== */
-    /* ÚLTIMOS 7 DÍAS */
-/* ===================================================== */
-
-    else if (
-        periodo === "semana"
-    ) {
-
-        fecha.setDate(
-            fecha.getDate() - 6
-        );
-
-        fecha.setHours(
-            0,
-            0,
-            0,
-            0
-        );
-
-    }
-
-
-    /* ===================================================== */
-    /* MES ACTUAL */
-    /* ===================================================== */
-
-    else if (
-        periodo === "mes"
-    ) {
-
-        fecha.setDate(
-            1
-        );
-
-        fecha.setHours(
-            0,
-            0,
-            0,
-            0
-        );
-
-    }
-
 
     return fecha;
-
 }
 
-
 function convertirFechaInput(valor, finDelDia = false) {
-    if (!valor) {
-        return null;
-    }
+    if (!valor) return null;
 
     const partes = valor.split("-").map(Number);
     if (partes.length !== 3 || partes.some(Number.isNaN)) {
@@ -148,9 +70,7 @@ function convertirFechaInput(valor, finDelDia = false) {
 }
 
 function formatoFechaInput(fecha) {
-    if (!fecha) {
-        return "";
-    }
+    if (!fecha) return "";
 
     return [
         fecha.getFullYear(),
@@ -160,849 +80,333 @@ function formatoFechaInput(fecha) {
 }
 
 function obtenerRangoActual() {
-    if (
-        filtroFechaDesde &&
-        filtroFechaHasta
-    ) {
+    if (filtroFechaDesde && filtroFechaHasta) {
         return {
             inicio: filtroFechaDesde,
             fin: filtroFechaHasta
         };
     }
 
+    const fin = new Date();
+    fin.setHours(23, 59, 59, 999);
+
     return {
         inicio: fechaDesde(periodoActual),
-        fin: new Date()
+        fin: fin
     };
 }
 
 function actualizarEtiquetaPeriodo() {
-    const etiqueta =
-        document.getElementById(
-            "periodo-label"
-        );
+    const etiqueta = document.getElementById("periodo-label");
+    if (!etiqueta) return;
 
-    if (!etiqueta) {
-        return;
-    }
-
-    if (
-        filtroFechaDesde &&
-        filtroFechaHasta
-    ) {
-        etiqueta.textContent =
-            `Del ${filtroFechaDesde.toLocaleDateString("es-MX")} al ` +
-            `${filtroFechaHasta.toLocaleDateString("es-MX")}`;
+    if (filtroFechaDesde && filtroFechaHasta) {
+        etiqueta.textContent = `Del ${filtroFechaDesde.toLocaleDateString("es-MX")} al ${filtroFechaHasta.toLocaleDateString("es-MX")}`;
         return;
     }
 
     const hoy = new Date();
 
     if (periodoActual === "hoy") {
-        etiqueta.textContent =
-            `Hoy, ${hoy.toLocaleDateString("es-MX", {
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            })}`;
+        etiqueta.textContent = `Hoy, ${hoy.toLocaleDateString("es-MX", {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        })}`;
     } else if (periodoActual === "semana") {
         etiqueta.textContent = "Últimos 7 días";
     } else {
-        etiqueta.textContent =
-            `Mes de ${hoy.toLocaleDateString("es-MX", {
-                month: "long",
-                year: "numeric"
-            })}`;
+        etiqueta.textContent = `Mes de ${hoy.toLocaleDateString("es-MX", {
+            month: "long",
+            year: "numeric"
+        })}`;
     }
 }
 
-
 /* ========================================================= */
-/* CONVERTIR FECHA */
+/* CONVERTIR FECHA ROBUSTO */
 /* ========================================================= */
 
 function convertirFecha(fecha) {
+    if (!fecha) return null;
 
-    if (
-        !fecha
-    ) {
-
-        return null;
-
-    }
-
-
-    /* ===================================================== */
-    /* FIREBASE TIMESTAMP */
-    /* ===================================================== */
-
-    if (
-        typeof fecha.toDate === "function"
-    ) {
-
+    if (typeof fecha.toDate === "function") {
         return fecha.toDate();
-
     }
 
-
-    /* ===================================================== */
-    /* DATE */
-    /* ===================================================== */
-
-    if (
-        fecha instanceof Date
-    ) {
-
-        return fecha;
-
+    if (fecha instanceof Date) {
+        return Number.isNaN(fecha.getTime()) ? null : fecha;
     }
 
-
-    /* ===================================================== */
-    /* TIMESTAMP SERIALIZADO */
-/* ===================================================== */
-
-    if (
-        typeof fecha === "object" &&
-        typeof fecha.seconds === "number"
-    ) {
-
-        return new Date(
-            fecha.seconds * 1000
-        );
-
+    if (typeof fecha === "object" && typeof fecha.seconds === "number") {
+        return new Date(fecha.seconds * 1000);
     }
 
-
-    /* ===================================================== */
-    /* STRING / NUMBER */
-/* ===================================================== */
-
-    const resultado =
-        new Date(
-            fecha
-        );
-
-
-    if (
-        Number.isNaN(
-            resultado.getTime()
-        )
-    ) {
-
-        return null;
-
+    if (typeof fecha === "number") {
+        const d = new Date(fecha);
+        return Number.isNaN(d.getTime()) ? null : d;
     }
 
-
-    return resultado;
-
+    const resultado = new Date(fecha);
+    return Number.isNaN(resultado.getTime()) ? null : resultado;
 }
 
+function obtenerFechaVenta(venta) {
+    // Para pedidos de la app móvil entregados, preferir la fecha de entrega o actualización si existe
+    if (venta.esVentaApp || venta.origen === "app" || venta.canal === "app_movil") {
+        return (
+            convertirFecha(venta.fechaEntrega) ||
+            convertirFecha(venta.fechaActualizacion) ||
+            convertirFecha(venta.fecha) ||
+            convertirFecha(venta.timestamp) ||
+            convertirFecha(venta.createdAt) ||
+            null
+        );
+    }
+
+    return (
+        convertirFecha(venta.fecha) ||
+        convertirFecha(venta.timestamp) ||
+        convertirFecha(venta.createdAt) ||
+        convertirFecha(venta.fechaActualizacion) ||
+        null
+    );
+}
 
 /* ========================================================= */
 /* ESCAPAR HTML */
 /* ========================================================= */
 
 function escaparHTML(valor) {
-
-    return String(
-        valor ?? ""
-    )
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-        .replaceAll(
-            '"',
-            "&quot;"
-        )
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
-
+    return String(valor ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 }
-
 
 /* ========================================================= */
 /* PRODUCTOS DE UNA VENTA */
 /* ========================================================= */
 
 function obtenerProductosVenta(venta) {
-
-    if (
-        Array.isArray(
-            venta.productos
-        )
-    ) {
-
+    if (Array.isArray(venta.productos)) {
         return venta.productos;
-
     }
-
-
-    if (
-        Array.isArray(
-            venta.items
-        )
-    ) {
-
+    if (Array.isArray(venta.items)) {
         return venta.items;
-
     }
-
-
     return [];
-
 }
 
-
 /* ========================================================= */
-/* CARGAR VENTAS */
+/* CARGAR VENTAS (POS + APP MÓVIL ENTREGADOS) */
 /* ========================================================= */
 
 async function cargarVentas() {
+    const rango = obtenerRangoActual();
+    const fechaInicio = rango.inicio;
+    const fechaFin = rango.fin;
 
-    const rango =
-        obtenerRangoActual();
+    try {
+        const snapshot = await getDocs(collection(db, tablaVentas));
+        const docs = snapshot.docs
+            .filter(d => d.id !== "base")
+            .map(d => ({
+                id: d.id,
+                ...d.data()
+            }));
 
-    const fechaInicio =
-        rango.inicio;
-
-    const fechaFin =
-        rango.fin;
-
-
-    console.log(
-        "Reportes - db:",
-        db
-    );
-
-
-    console.log(
-        "Reportes - periodo:",
-        periodoActual
-    );
-
-
-    console.log(
-        "Reportes - desde:",
-        fechaInicio
-    );
-
-
-    /* ===================================================== */
-    /* REFERENCIA COLECCIÓN */
-/* ===================================================== */
-
-    const ventasRef =
-        collection(
-            db,
-            tablaVentas
-        );
-
-
-    /* ===================================================== */
-    /* CONSULTA */
-/* ===================================================== */
-
-    const consulta =
-        query(
-
-            ventasRef,
-
-            where(
-                "fecha",
-                ">=",
-                Timestamp.fromDate(
-                    fechaInicio
-                )
-            ),
-
-            orderBy(
-                "fecha",
-                "desc"
-            )
-
-        );
-
-
-    /* ===================================================== */
-    /* OBTENER DOCUMENTOS */
-/* ===================================================== */
-
-    const snapshot =
-        await getDocs(
-            consulta
-        );
-
-
-    /* ===================================================== */
-    /* CONVERTIR DATOS */
-/* ===================================================== */
-
-    todasLasVentas =
-
-        snapshot.docs
-
-            .filter(
-                documento =>
-                    documento.id !== "base"
-            )
-
-            .map(
-                documento => ({
-
-                    id:
-                        documento.id,
-
-                    ...documento.data()
-
-                })
+        // Filtrar y procesar ventas
+        todasLasVentas = docs.filter(v => {
+            const esApp = (
+                v.origen === "app" ||
+                v.origen === "app_movil" ||
+                v.canal === "app_movil" ||
+                v.canal === "app" ||
+                v.esVentaApp === true ||
+                Boolean(v.metodoEntrega) ||
+                Boolean(v.clienteMovil)
             );
 
-    // La fecha final se filtra en memoria para evitar
-    // depender de un índice compuesto de Firestore.
-    todasLasVentas =
-        todasLasVentas.filter(
-            venta => {
-                const fecha =
-                    convertirFecha(
-                        venta.fecha
-                    );
-
-                return (
-                    fecha &&
-                    fecha <= fechaFin
+            // Si es pedido de la App Móvil, solo se contabiliza en reportes si está ENTREGADO/COMPLETADO
+            if (esApp) {
+                const estado = String(v.estado || v.estadoEntrega || v.estadoPedido || "").toLowerCase();
+                const esEntregado = (
+                    estado === "entregado" ||
+                    estado === "completado" ||
+                    estado === "despachado" ||
+                    v.entregado === true ||
+                    v.completado === true
                 );
+
+                if (!esEntregado) {
+                    return false; // Pedidos aún pendientes o cancelados no cuentan como venta realizada
+                }
             }
-        );
 
+            // Validar fecha dentro del rango del período
+            const fecha = obtenerFechaVenta(v);
+            if (!fecha) return false;
 
-    /* ===================================================== */
-    /* ORDENAR NUEVAMENTE */
-/* ===================================================== */
+            return fecha >= fechaInicio && fecha <= fechaFin;
+        });
 
-    todasLasVentas.sort(
-
-        (
-            a,
-            b
-        ) => {
-
-            const fechaA =
-                convertirFecha(
-                    a.fecha
-                )?.getTime() || 0;
-
-
-            const fechaB =
-                convertirFecha(
-                    b.fecha
-                )?.getTime() || 0;
-
-
+        // Ordenar por fecha descendente
+        todasLasVentas.sort((a, b) => {
+            const fechaA = obtenerFechaVenta(a)?.getTime() || 0;
+            const fechaB = obtenerFechaVenta(b)?.getTime() || 0;
             return fechaB - fechaA;
+        });
 
-        }
-
-    );
-
-
-    return todasLasVentas;
-
+        return todasLasVentas;
+    } catch (error) {
+        console.error("Error al cargar ventas en Reportes:", error);
+        todasLasVentas = [];
+        return [];
+    }
 }
-
 
 /* ========================================================= */
 /* CALCULAR UNIDADES */
 /* ========================================================= */
 
 function calcularUnidades() {
+    return todasLasVentas.reduce((acumulado, venta) => {
+        const productos = obtenerProductosVenta(venta);
+        const unidadesVenta = productos.reduce((suma, producto) => {
+            const cantidad = Number(producto.cantidad ?? producto.qty ?? 1);
+            return suma + (Number.isFinite(cantidad) && cantidad > 0 ? cantidad : 1);
+        }, 0);
 
-    return todasLasVentas.reduce(
-
-        (
-            acumulado,
-            venta
-        ) => {
-
-            const productos =
-                obtenerProductosVenta(
-                    venta
-                );
-
-
-            const unidadesVenta =
-                productos.reduce(
-
-                    (
-                        suma,
-                        producto
-                    ) => {
-
-                        const cantidad =
-                            Number(
-                                producto.cantidad ??
-                                producto.qty ??
-                                1
-                            );
-
-
-                        return suma +
-                            (
-                                Number.isFinite(
-                                    cantidad
-                                )
-                                    ? cantidad
-                                    : 1
-                            );
-
-                    },
-
-                    0
-
-                );
-
-
-            return acumulado +
-                unidadesVenta;
-
-        },
-
-        0
-
-    );
-
+        return acumulado + (unidadesVenta > 0 ? unidadesVenta : (Number(venta.numArticulos) || 1));
+    }, 0);
 }
-
 
 /* ========================================================= */
 /* RENDERIZAR KPIs */
 /* ========================================================= */
 
 function renderKPIs() {
+    const total = todasLasVentas.reduce((acumulado, venta) => {
+        return acumulado + (Number(venta.total) || 0);
+    }, 0);
 
-    /* ===================================================== */
-    /* INGRESOS */
-/* ===================================================== */
+    const ventas = todasLasVentas.length;
+    const ticket = ventas > 0 ? total / ventas : 0;
+    const unidades = calcularUnidades();
 
-    const total =
-        todasLasVentas.reduce(
+    const kpiIngresos = document.getElementById("kpi-ingresos");
+    const kpiTicket = document.getElementById("kpi-ticket");
+    const kpiVentas = document.getElementById("kpi-ventas");
+    const kpiUnidades = document.getElementById("kpi-unidades");
 
-            (
-                acumulado,
-                venta
-            ) => {
+    if (kpiIngresos) kpiIngresos.textContent = fmt(total);
+    if (kpiTicket) kpiTicket.textContent = fmt(ticket);
+    if (kpiVentas) kpiVentas.textContent = String(ventas);
+    if (kpiUnidades) kpiUnidades.textContent = String(unidades);
 
-                return acumulado +
-                    (
-                        Number(
-                            venta.total
-                        ) || 0
-                    );
-
-            },
-
-            0
-
-        );
-
-
-    /* ===================================================== */
-    /* VENTAS */
-/* ===================================================== */
-
-    const ventas =
-        todasLasVentas.length;
-
-
-    /* ===================================================== */
-    /* TICKET */
-/* ===================================================== */
-
-    const ticket =
-        ventas > 0
-            ? total / ventas
-            : 0;
-
-
-    /* ===================================================== */
-    /* UNIDADES */
-/* ===================================================== */
-
-    const unidades =
-        calcularUnidades();
-
-
-    /* ===================================================== */
-    /* ELEMENTOS */
-/* ===================================================== */
-
-    const kpiIngresos =
-        document.getElementById(
-            "kpi-ingresos"
-        );
-
-
-    const kpiTicket =
-        document.getElementById(
-            "kpi-ticket"
-        );
-
-
-    const kpiVentas =
-        document.getElementById(
-            "kpi-ventas"
-        );
-
-
-    const kpiUnidades =
-        document.getElementById(
-            "kpi-unidades"
-        );
-
-
-    /* ===================================================== */
-    /* ACTUALIZAR */
-/* ===================================================== */
-
-    if (
-        kpiIngresos
-    ) {
-
-        kpiIngresos.textContent =
-            fmt(
-                total
-            );
-
+    const totalTxLabel = document.getElementById("total-tx");
+    if (totalTxLabel) {
+        totalTxLabel.textContent = `${ventas} transacción${ventas === 1 ? '' : 'es'}`;
     }
-
-
-    if (
-        kpiTicket
-    ) {
-
-        kpiTicket.textContent =
-            fmt(
-                ticket
-            );
-
-    }
-
-
-    if (
-        kpiVentas
-    ) {
-
-        kpiVentas.textContent =
-            String(
-                ventas
-            );
-
-    }
-
-
-    if (
-        kpiUnidades
-    ) {
-
-        kpiUnidades.textContent =
-            String(
-                unidades
-            );
-
-    }
-
 }
 
-
 /* ========================================================= */
-/* RENDERIZAR TABLA */
+/* RENDERIZAR TABLA DE TRANSACCIONES */
 /* ========================================================= */
 
 function renderTabla() {
+    const tabla = document.getElementById("tabla-tx");
+    if (!tabla) return;
 
-    const tabla =
-        document.getElementById(
-            "tabla-tx"
-        );
-
-
-    if (
-        !tabla
-    ) {
-
-        console.warn(
-            "No se encontró #tabla-tx"
-        );
-
-        return;
-
-    }
-
-
-    /* ===================================================== */
-    /* SIN VENTAS */
-/* ===================================================== */
-
-    if (
-        todasLasVentas.length === 0
-    ) {
-
+    if (todasLasVentas.length === 0) {
         tabla.innerHTML = `
-
             <tr>
-
-                <td
-                    colspan="5"
-                    class="px-8 py-8 text-center text-on-surface-variant"
-                >
-
-                    No hay ventas en este periodo.
-
+                <td colspan="5" class="px-8 py-8 text-center text-on-surface-variant">
+                    No hay ventas o pedidos entregados en este periodo.
                 </td>
-
             </tr>
-
         `;
-
         return;
-
     }
 
-
-    /* ===================================================== */
-    /* TABLA */
-/* ===================================================== */
-
-    tabla.innerHTML =
-
-        todasLasVentas
-
-            .slice(
-                0,
-                25
-            )
-
-            .map(
-
-                (
-                    venta,
-                    indice
-                ) => {
-
-                    /* ===================================== */
-                    /* FECHA */
-/* ===================================== */
-
-                    const fecha =
-                        convertirFecha(
-                            venta.fecha
-                        );
-
-
-                    const fechaTexto =
-
-                        fecha
-
-                            ? fecha.toLocaleString(
-                                "es-MX",
-                                {
-                                    dateStyle:
-                                        "short",
-                                    timeStyle:
-                                        "short"
-                                }
-                            )
-
-                            : "Sin fecha";
-
-
-                    /* ===================================== */
-                    /* PRODUCTOS */
-/* ===================================== */
-
-                    const productos =
-                        obtenerProductosVenta(
-                            venta
-                        );
-
-
-                    const productosTexto =
-
-                        productos.length
-
-                            ? productos
-
-                                .map(
-
-                                    producto => {
-
-                                        const nombre =
-                                            escaparHTML(
-                                                producto.nombre ||
-                                                producto.name ||
-                                                "Producto"
-                                            );
-
-
-                                        const cantidad =
-                                            Number(
-                                                producto.cantidad ??
-                                                producto.qty ??
-                                                1
-                                            ) || 1;
-
-
-                                        return `${nombre} ×${cantidad}`;
-
-                                    }
-
-                                )
-
-                                .join(
-                                    ", "
-                                )
-
-                            : "—";
-
-
-                    /* ===================================== */
-                    /* TOTAL */
-/* ===================================== */
-
-                    const total =
-                        Number(
-                            venta.total
-                        ) || 0;
-
-
-                    /* ===================================== */
-                    /* ID */
-/* ===================================== */
-
-                    const ventaId =
-                        String(
-                            venta.id ||
-                            indice + 1
-                        );
-
-
-                    /* ===================================== */
-                    /* FILA */
-/* ===================================== */
-
-                    return `
-
-                        <tr
-                            class="
-                                hover:bg-surface-container-high
-                                transition-colors
-                            "
-                        >
-
-                            <td class="px-8 py-5">
-
-                                #${escaparHTML(
-                                    ventaId
-                                        .slice(
-                                            0,
-                                            8
-                                        )
-                                        .toUpperCase()
-                                )}
-
-                            </td>
-
-
-                            <td class="px-8 py-5">
-
-                                ${productosTexto}
-
-                            </td>
-
-
-                            <td class="px-8 py-5">
-
-                                ${escaparHTML(
-                                    fechaTexto
-                                )}
-
-                            </td>
-
-
-                            <td
-                                class="
-                                    px-8
-                                    py-5
-                                    text-primary
-                                    font-semibold
-                                "
-                            >
-
-                                ${fmt(
-                                    total
-                                )}
-
-                            </td>
-
-
-                            <td class="px-8 py-5">
-
-                                <span
-                                    class="
-                                        px-3
-                                        py-1
-                                        bg-green-900/30
-                                        text-green-400
-                                        rounded-full
-                                        text-[10px]
-                                        font-label-caps
-                                    "
-                                >
-
-                                    Completado
-
-                                </span>
-
-                            </td>
-
-                        </tr>
-
-                    `;
-
-                }
-
-            )
-
-            .join(
-                ""
-            );
-
+    tabla.innerHTML = todasLasVentas.slice(0, 35).map((venta, indice) => {
+        const fecha = obtenerFechaVenta(venta);
+        const fechaTexto = fecha
+            ? fecha.toLocaleString("es-MX", { dateStyle: "short", timeStyle: "short" })
+            : "Sin fecha";
+
+        const productos = obtenerProductosVenta(venta);
+        const productosTexto = productos.length
+            ? productos.map(p => {
+                const nombre = escaparHTML(p.nombre || p.name || "Producto");
+                const cantidad = Number(p.cantidad ?? p.qty ?? 1) || 1;
+                return `${nombre} ×${cantidad}`;
+            }).join(", ")
+            : (venta.cliente ? `Pedido de ${escaparHTML(venta.cliente)}` : "—");
+
+        const total = Number(venta.total) || 0;
+        const ventaId = String(venta.id || indice + 1);
+
+        const esApp = (
+            venta.origen === "app" ||
+            venta.origen === "app_movil" ||
+            venta.canal === "app_movil" ||
+            venta.canal === "app" ||
+            venta.esVentaApp === true
+        );
+
+        const esEfectivo = (
+            venta.esEfectivo === true ||
+            String(venta.metodoPago || "").toLowerCase().includes("efectivo") ||
+            String(venta.tipoPago || "").toLowerCase().includes("efectivo")
+        );
+
+        const metodoTexto = esEfectivo ? "Efectivo" : (venta.metodoPago || "Tarjeta");
+
+        const badgeHtml = esApp
+            ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full text-[10px] font-label-caps font-bold">
+                <span class="material-symbols-outlined text-[12px]">smartphone</span>
+                App Móvil (${metodoTexto})
+               </span>`
+            : `<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-[10px] font-label-caps font-bold">
+                <span class="material-symbols-outlined text-[12px]">point_of_sale</span>
+                Mostrador POS (${metodoTexto})
+               </span>`;
+
+        return `
+            <tr class="hover:bg-surface-container-high transition-colors">
+                <td class="px-8 py-5 font-medium text-on-surface">
+                    #${escaparHTML(ventaId.slice(0, 8).toUpperCase())}
+                </td>
+                <td class="px-8 py-5 max-w-xs truncate text-on-surface-variant" title="${escaparHTML(productosTexto)}">
+                    ${productosTexto}
+                </td>
+                <td class="px-8 py-5 text-on-surface-variant font-label-caps text-xs">
+                    ${escaparHTML(fechaTexto)}
+                </td>
+                <td class="px-8 py-5 text-primary font-bold font-price-display text-base">
+                    ${fmt(total)}
+                </td>
+                <td class="px-8 py-5">
+                    ${badgeHtml}
+                </td>
+            </tr>
+        `;
+    }).join("");
 }
 
-
 /* ========================================================= */
-/* RENDERIZAR GRÁFICAS */
+/* RENDERIZAR GRÁFICA DE VENTAS */
 /* ========================================================= */
 
 function renderChart() {
     const barras = document.getElementById("chart-bars");
     const etiquetas = document.getElementById("chart-labels");
 
-    if (!barras || !etiquetas) {
-        return;
-    }
+    if (!barras || !etiquetas) return;
 
     if (!todasLasVentas.length) {
         barras.innerHTML = `
@@ -1017,10 +421,8 @@ function renderChart() {
     const grupos = new Map();
 
     todasLasVentas.forEach(venta => {
-        const fecha = convertirFecha(venta.fecha);
-        if (!fecha) {
-            return;
-        }
+        const fecha = obtenerFechaVenta(venta);
+        if (!fecha) return;
 
         let clave;
         let etiqueta;
@@ -1049,10 +451,7 @@ function renderChart() {
             });
         }
 
-        const grupo = grupos.get(clave) || {
-            etiqueta,
-            valor: 0
-        };
+        const grupo = grupos.get(clave) || { etiqueta, valor: 0 };
         grupo.valor += Number(venta.total) || 0;
         grupos.set(clave, grupo);
     });
@@ -1072,18 +471,12 @@ function renderChart() {
         return;
     }
 
-    const maximo = Math.max(
-        ...entradas.map(grupo => grupo.valor),
-        1
-    );
+    const maximo = Math.max(...entradas.map(g => g.valor), 1);
 
     barras.innerHTML = `
         <div class="w-full h-full flex items-end gap-3">
             ${entradas.map(grupo => {
-                const altura = Math.max(
-                    8,
-                    (grupo.valor / maximo) * 100
-                );
+                const altura = Math.max(10, (grupo.valor / maximo) * 100);
 
                 return `
                     <div class="flex-1 h-full flex flex-col items-center justify-end gap-1 min-w-0">
@@ -1092,7 +485,7 @@ function renderChart() {
                         </span>
                         <div class="w-full flex-1 flex items-end">
                             <div
-                                class="w-full bg-primary rounded-t-sm opacity-80 hover:opacity-100 transition-all duration-300"
+                                class="w-full bg-primary rounded-t-sm opacity-80 hover:opacity-100 transition-all duration-300 shadow-sm shadow-primary/20"
                                 style="height: ${altura}%"
                                 title="${escaparHTML(fmt(grupo.valor))}"
                             ></div>
@@ -1104,17 +497,19 @@ function renderChart() {
     `;
 
     etiquetas.innerHTML = entradas.map(grupo => `
-        <span class="flex-1 text-center truncate">
+        <span class="flex-1 text-center truncate text-[10px] text-on-surface-variant font-label-caps">
             ${escaparHTML(grupo.etiqueta)}
         </span>
     `).join("");
 }
 
+/* ========================================================= */
+/* RENDERIZAR PRODUCTOS TOP */
+/* ========================================================= */
+
 function renderTopProductos() {
     const contenedor = document.getElementById("top-productos");
-    if (!contenedor) {
-        return;
-    }
+    if (!contenedor) return;
 
     const conteo = {};
 
@@ -1176,151 +571,82 @@ function renderTopProductos() {
     }).join("");
 }
 
-
 /* ========================================================= */
-/* ACTUALIZAR */
+/* ACTUALIZAR TODO EL REPORTE */
 /* ========================================================= */
 
 async function actualizar() {
+    const kpiIngresos = document.getElementById("kpi-ingresos");
+    if (kpiIngresos) kpiIngresos.textContent = "...";
 
     try {
-
         await cargarVentas();
-
         actualizarEtiquetaPeriodo();
-
         renderKPIs();
-
         renderChart();
-
         renderTopProductos();
-
         renderTabla();
-
         return todasLasVentas;
-
-    }
-
-    catch (
-        error
-    ) {
-
-        console.error(
-            "ERROR AL CARGAR REPORTES:",
-            error
-        );
-
-
-        const tabla =
-            document.getElementById(
-                "tabla-tx"
-            );
-
-
-        if (
-            tabla
-        ) {
-
+    } catch (error) {
+        console.error("ERROR AL CARGAR REPORTES:", error);
+        const tabla = document.getElementById("tabla-tx");
+        if (tabla) {
             tabla.innerHTML = `
-
                 <tr>
-
-                    <td
-                        colspan="5"
-                        class="
-                            px-8
-                            py-8
-                            text-center
-                            text-error
-                        "
-                    >
-
-                        Error al cargar los reportes.
-
+                    <td colspan="5" class="px-8 py-8 text-center text-error">
+                        Error al cargar los reportes de ventas.
                     </td>
-
                 </tr>
-
             `;
-
         }
-
-
         return [];
-
     }
-
 }
-
 
 /* ========================================================= */
 /* EXPORTAR REPORTE A EXCEL */
 /* ========================================================= */
 
 function exportarExcel() {
-    const rango =
-        obtenerRangoActual();
+    const rango = obtenerRangoActual();
+    const total = todasLasVentas.reduce((acumulado, venta) => acumulado + (Number(venta.total) || 0), 0);
+    const unidades = calcularUnidades();
 
-    const total =
-        todasLasVentas.reduce(
-            (acumulado, venta) =>
-                acumulado +
-                (Number(venta.total) || 0),
-            0
-        );
+    const filas = todasLasVentas.length
+        ? todasLasVentas.map((venta, indice) => {
+            const fecha = obtenerFechaVenta(venta);
+            const productos = obtenerProductosVenta(venta)
+                .map(p => `${p.nombre || p.producto || p.name || "Producto"} x${Number(p.cantidad ?? p.qty ?? 1) || 1}`)
+                .join(", ");
 
-    const unidades =
-        calcularUnidades();
+            const esApp = (
+                venta.origen === "app" ||
+                venta.origen === "app_movil" ||
+                venta.canal === "app_movil" ||
+                venta.canal === "app" ||
+                venta.esVentaApp === true
+            );
 
-    const filas =
-        todasLasVentas.length
-            ? todasLasVentas.map(
-                (venta, indice) => {
-                    const fecha =
-                        convertirFecha(
-                            venta.fecha
-                        );
+            const canalTexto = esApp ? "App Móvil (Entregado)" : "Mostrador POS";
+            const metodoTexto = (venta.esEfectivo || String(venta.metodoPago || '').toLowerCase().includes('efectivo')) ? 'Efectivo' : (venta.metodoPago || 'Tarjeta');
 
-                    const productos =
-                        obtenerProductosVenta(
-                            venta
-                        )
-                            .map(
-                                producto =>
-                                    `${producto.nombre || producto.producto || producto.name || "Producto"} x${Number(producto.cantidad ?? producto.qty ?? 1) || 1}`
-                            )
-                            .join(
-                                ", "
-                            );
-
-                    return `
-                        <tr>
-                            <td>${escaparHTML(venta.id || indice + 1)}</td>
-                            <td>${escaparHTML(productos || "Sin productos")}</td>
-                            <td>${escaparHTML(
-                                fecha
-                                    ? fecha.toLocaleString("es-MX", {
-                                        dateStyle: "short",
-                                        timeStyle: "short"
-                                    })
-                                    : "Sin fecha"
-                            )}</td>
-                            <td class="numero">${(Number(venta.total) || 0).toFixed(2)}</td>
-                            <td>Completado</td>
-                        </tr>
-                    `;
-                }
-            ).join("")
-            : `
+            return `
                 <tr>
-                    <td colspan="5">No hay ventas en este periodo.</td>
+                    <td>${escaparHTML(venta.id || indice + 1)}</td>
+                    <td>${escaparHTML(canalTexto)}</td>
+                    <td>${escaparHTML(metodoTexto)}</td>
+                    <td>${escaparHTML(productos || "Sin productos")}</td>
+                    <td>${escaparHTML(fecha ? fecha.toLocaleString("es-MX") : "Sin fecha")}</td>
+                    <td class="numero">${(Number(venta.total) || 0).toFixed(2)}</td>
+                    <td>Completado</td>
                 </tr>
             `;
+        }).join("")
+        : `<tr><td colspan="7">No hay ventas en este periodo.</td></tr>`;
 
-    const rangoTexto =
-        filtroFechaDesde && filtroFechaHasta
-            ? `Del ${filtroFechaDesde.toLocaleDateString("es-MX")} al ${filtroFechaHasta.toLocaleDateString("es-MX")}`
-            : document.getElementById("periodo-label")?.textContent || periodoActual;
+    const rangoTexto = filtroFechaDesde && filtroFechaHasta
+        ? `Del ${filtroFechaDesde.toLocaleDateString("es-MX")} al ${filtroFechaHasta.toLocaleDateString("es-MX")}`
+        : document.getElementById("periodo-label")?.textContent || periodoActual;
 
     const contenido = `<!doctype html>
         <html>
@@ -1329,31 +655,33 @@ function exportarExcel() {
             <style>
                 body { font-family: Arial, sans-serif; color: #222; }
                 h1, h2 { color: #8a6500; }
-                table { border-collapse: collapse; margin-bottom: 24px; min-width: 760px; }
+                table { border-collapse: collapse; margin-bottom: 24px; min-width: 800px; }
                 th, td { border: 1px solid #b9b9b9; padding: 7px 9px; }
                 th { background: #f2ca50; font-weight: bold; }
                 .numero { mso-number-format: "0.00"; text-align: right; }
             </style>
         </head>
         <body>
-            <h1>Reporte de Ventas</h1>
+            <h1>Reporte Integral de Ventas (Tienda y App Móvil)</h1>
             <table>
                 <tr><th>Periodo</th><td>${escaparHTML(rangoTexto)}</td></tr>
                 <tr><th>Generado</th><td>${escaparHTML(new Date().toLocaleString("es-MX"))}</td></tr>
-                <tr><th>Ventas realizadas</th><td>${todasLasVentas.length}</td></tr>
-                <tr><th>Unidades vendidas</th><td>${unidades}</td></tr>
-                <tr><th>Ingresos totales</th><td class="numero">${total.toFixed(2)}</td></tr>
-                <tr><th>Ticket promedio</th><td class="numero">${(todasLasVentas.length ? total / todasLasVentas.length : 0).toFixed(2)}</td></tr>
+                <tr><th>Ventas y Pedidos Entregados</th><td>${todasLasVentas.length}</td></tr>
+                <tr><th>Unidades Vendidas</th><td>${unidades}</td></tr>
+                <tr><th>Ingresos Totales</th><td class="numero">${total.toFixed(2)}</td></tr>
+                <tr><th>Ticket Promedio</th><td class="numero">${(todasLasVentas.length ? total / todasLasVentas.length : 0).toFixed(2)}</td></tr>
             </table>
 
-            <h2>Detalle de ventas</h2>
+            <h2>Detalle Consolidado de Ventas</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>ID / Folio</th>
+                        <th>Canal</th>
+                        <th>Método Pago</th>
                         <th>Productos</th>
-                        <th>Fecha</th>
-                        <th>Monto</th>
+                        <th>Fecha y Hora</th>
+                        <th>Monto Total</th>
                         <th>Estado</th>
                     </tr>
                 </thead>
@@ -1362,283 +690,109 @@ function exportarExcel() {
         </body>
         </html>`;
 
-    const inicioArchivo =
-        formatoFechaInput(
-            rango.inicio
-        );
+    const inicioArchivo = formatoFechaInput(rango.inicio);
+    const finArchivo = formatoFechaInput(rango.fin);
 
-    const finArchivo =
-        formatoFechaInput(
-            rango.fin
-        );
-
-    const blob =
-        new Blob(
-            ["\ufeff", contenido],
-            {
-                type: "application/vnd.ms-excel;charset=utf-8"
-            }
-        );
-
-    const url =
-        URL.createObjectURL(
-            blob
-        );
-
-    const enlace =
-        document.createElement(
-            "a"
-        );
-
+    const blob = new Blob(["\ufeff", contenido], { type: "application/vnd.ms-excel;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const enlace = document.createElement("a");
     enlace.href = url;
     enlace.download = `reporte-ventas-${inicioArchivo}-${finArchivo}.xls`;
     enlace.style.display = "none";
     document.body.appendChild(enlace);
     enlace.click();
     enlace.remove();
-
-    setTimeout(
-        () => URL.revokeObjectURL(url),
-        1000
-    );
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-
 /* ========================================================= */
-/* FILTRO PERSONALIZADO */
+/* INICIALIZAR CONTROLES */
 /* ========================================================= */
 
 function inicializarFiltroFechas() {
-    const inputDesde =
-        document.getElementById(
-            "filtro-desde"
-        );
+    const inputDesde = document.getElementById("filtro-desde");
+    const inputHasta = document.getElementById("filtro-hasta");
+    const botonAplicar = document.getElementById("aplicar-filtro-fechas");
+    const botonExportar = document.getElementById("exportar-excel");
+    const error = document.getElementById("error-filtro-fechas");
 
-    const inputHasta =
-        document.getElementById(
-            "filtro-hasta"
-        );
+    if (botonAplicar) {
+        botonAplicar.addEventListener("click", async () => {
+            const inicio = convertirFechaInput(inputDesde?.value);
+            const fin = convertirFechaInput(inputHasta?.value, true);
 
-    const botonAplicar =
-        document.getElementById(
-            "aplicar-filtro-fechas"
-        );
-
-    const botonExportar =
-        document.getElementById(
-            "exportar-excel"
-        );
-
-    const error =
-        document.getElementById(
-            "error-filtro-fechas"
-        );
-
-    if (
-        botonAplicar
-    ) {
-        botonAplicar.addEventListener(
-            "click",
-            async () => {
-                const inicio =
-                    convertirFechaInput(
-                        inputDesde?.value
-                    );
-
-                const fin =
-                    convertirFechaInput(
-                        inputHasta?.value,
-                        true
-                    );
-
-                if (
-                    !inicio ||
-                    !fin
-                ) {
-                    error.textContent =
-                        "Selecciona una fecha inicial y una fecha final.";
-                    error.classList.remove(
-                        "hidden"
-                    );
-                    return;
+            if (!inicio || !fin) {
+                if (error) {
+                    error.textContent = "Selecciona una fecha inicial y una fecha final.";
+                    error.classList.remove("hidden");
                 }
-
-                if (
-                    inicio > fin
-                ) {
-                    error.textContent =
-                        "La fecha inicial no puede ser posterior a la fecha final.";
-                    error.classList.remove(
-                        "hidden"
-                    );
-                    return;
-                }
-
-                filtroFechaDesde =
-                    inicio;
-
-                filtroFechaHasta =
-                    fin;
-
-                periodoActual =
-                    "personalizado";
-
-                document.querySelectorAll(
-                    ".periodo-btn"
-                ).forEach(
-                    boton => boton.classList.remove(
-                        "active"
-                    )
-                );
-
-                error.classList.add(
-                    "hidden"
-                );
-
-                await actualizar();
+                return;
             }
-        );
+
+            if (inicio > fin) {
+                if (error) {
+                    error.textContent = "La fecha inicial no puede ser posterior a la fecha final.";
+                    error.classList.remove("hidden");
+                }
+                return;
+            }
+
+            filtroFechaDesde = inicio;
+            filtroFechaHasta = fin;
+            periodoActual = "personalizado";
+
+            document.querySelectorAll(".periodo-btn").forEach(b => b.classList.remove("active"));
+            if (error) error.classList.add("hidden");
+
+            await actualizar();
+        });
     }
 
-    if (
-        botonExportar
-    ) {
-        botonExportar.addEventListener(
-            "click",
-            exportarExcel
-        );
+    if (botonExportar) {
+        botonExportar.addEventListener("click", exportarExcel);
     }
 }
-
-
-/* ========================================================= */
-/* BOTONES DE PERIODO */
-/* ========================================================= */
 
 function inicializarBotonesPeriodo() {
+    const botones = document.querySelectorAll(".periodo-btn");
 
-    const botones =
-        document.querySelectorAll(
-            ".periodo-btn"
-        );
+    botones.forEach(boton => {
+        boton.addEventListener("click", async () => {
+            const periodo = boton.dataset.p;
+            if (!periodo || periodoActual === periodo) return;
 
+            botones.forEach(b => b.classList.remove("active"));
+            boton.classList.add("active");
 
-    botones.forEach(
+            filtroFechaDesde = null;
+            filtroFechaHasta = null;
 
-        boton => {
+            const inputDesde = document.getElementById("filtro-desde");
+            const inputHasta = document.getElementById("filtro-hasta");
+            if (inputDesde) inputDesde.value = "";
+            if (inputHasta) inputHasta.value = "";
 
-            boton.addEventListener(
-
-                "click",
-
-                async () => {
-
-                    const periodo =
-                        boton.dataset.p;
-
-
-                    if (
-                        !periodo
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    if (
-                        periodoActual ===
-                        periodo
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    botones.forEach(
-                        b => {
-
-                            b.classList.remove(
-                                "active"
-                            );
-
-                        }
-                    );
-
-
-                    boton.classList.add(
-                        "active"
-                    );
-
-
-                    filtroFechaDesde = null;
-                    filtroFechaHasta = null;
-
-                    const inputDesde = document.getElementById("filtro-desde");
-                    const inputHasta = document.getElementById("filtro-hasta");
-
-                    if (inputDesde) inputDesde.value = "";
-                    if (inputHasta) inputHasta.value = "";
-
-                    periodoActual =
-                        periodo;
-
-
-                    await actualizar();
-
-                }
-
-            );
-
-        }
-
-    );
-
+            periodoActual = periodo;
+            await actualizar();
+        });
+    });
 }
 
-
-/* ========================================================= */
-/* EXPORTACIONES */
-/* ========================================================= */
-
 export {
-
     actualizar,
-
     cargarVentas,
-
     renderKPIs,
-
     renderChart,
-
     renderTopProductos,
-
     renderTabla,
-
     exportarExcel,
-
     convertirFecha,
-
     fechaDesde,
-
     calcularUnidades
-
 };
 
-
-/* ========================================================= */
-/* INICIO */
-/* ========================================================= */
-
-if (
-    typeof document !== "undefined"
-) {
-
+if (typeof document !== "undefined") {
     inicializarFiltroFechas();
-
     inicializarBotonesPeriodo();
-
     actualizar();
-
 }

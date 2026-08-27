@@ -1036,32 +1036,34 @@
 
 <div
     id="modalAgregar"
-    class="hidden fixed inset-0 z-[999] items-center justify-center bg-black/60 backdrop-blur-md p-6"
+    class="hidden fixed inset-0 z-[999] items-center justify-center bg-black/60 backdrop-blur-md p-4 md:p-6"
 >
 
     <div
-        class="w-full max-w-2xl bg-surface-container border border-outline-variant rounded-xl overflow-hidden shadow-2xl animate-[fade_.2s]"
+        class="w-full max-w-3xl max-h-[90vh] flex flex-col bg-surface-container border border-outline-variant rounded-xl overflow-hidden shadow-2xl animate-[fade_.2s]"
     >
 
 
         <!-- HEADER MODAL -->
 
         <div
-            class="flex justify-between items-center px-8 py-6 border-b border-outline-variant"
+            class="flex justify-between items-center px-8 py-5 border-b border-outline-variant bg-surface-container-high/40 shrink-0"
         >
 
             <div>
 
                 <h3
+                    id="modalTitulo"
                     class="text-2xl text-primary font-headline-lg"
                 >
                     Nuevo Producto
                 </h3>
 
                 <p
-                    class="text-sm text-on-surface-variant"
+                    id="modalSubtitulo"
+                    class="text-xs text-on-surface-variant mt-0.5"
                 >
-                    Agregar producto al inventario
+                    Inventario sincronizado con la aplicación móvil y punto de venta
                 </p>
 
             </div>
@@ -1070,7 +1072,7 @@
             <button
                 id="cerrarModal"
                 type="button"
-                class="hover:text-error transition-colors"
+                class="hover:text-error transition-colors p-1"
                 title="Cerrar"
             >
 
@@ -1083,255 +1085,323 @@
         </div>
 
 
-        <!-- FORMULARIO -->
+        <!-- FORMULARIO CON SCROLL -->
 
         <form
             id="formProducto"
-            class="p-8 space-y-6"
+            class="p-6 md:p-8 space-y-6 overflow-y-auto custom-scrollbar flex-1"
         >
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- SECCIÓN: DATOS GENERALES -->
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-primary mb-3 flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm">info</span>
+                    Información Básica
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-    <input
-        name="nombre"
-        required
-        placeholder="Nombre del producto"
-        class="campo"
-    />
+                    <div>
+                        <label class="block text-xs text-on-surface-variant mb-1">Nombre del producto *</label>
+                        <input
+                            name="nombre"
+                            required
+                            placeholder="Ej. Camisa de verano"
+                            class="campo"
+                        />
+                    </div>
 
-    <input
-        name="sku"
-        required
-        placeholder="SKU"
-        class="campo"
-    />
+                    <div>
+                        <label class="block text-xs text-on-surface-variant mb-1">SKU *</label>
+                        <input
+                            name="sku"
+                            required
+                            placeholder="Ej. LMS-CAM-001"
+                            class="campo"
+                        />
+                    </div>
 
-</div>
-
-
-<input
-    name="codigoBarras"
-    placeholder="Código de Barras"
-    class="campo"
-/>
-
-<div class="space-y-3">
-
-    <div>
-        <label
-            for="imagenProducto"
-            class="block text-sm text-on-surface mb-2"
-        >
-            Imagen del producto
-        </label>
-
-        <input
-            id="imagenProducto"
-            name="imagen"
-            type="file"
-            accept="image/png,image/jpeg,image/webp,image/gif"
-            class="campo file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:font-semibold file:text-on-primary hover:file:brightness-110"
-        />
-
-        <p class="text-xs text-on-surface-variant mt-2">
-            Selecciona una imagen para subirla a Cloudinary al guardar el producto.
-            Máximo 5 MB.
-        </p>
-    </div>
-
-    <div
-        id="vistaPreviaImagen"
-        class="hidden rounded-lg border border-outline-variant bg-surface p-3"
-    >
-        <div class="flex items-center gap-4">
-            <img
-                id="imagenPrevia"
-                src=""
-                alt="Vista previa del producto"
-                class="h-20 w-20 rounded-lg object-cover border border-outline-variant"
-            />
-            <div class="min-w-0">
-                <p class="text-sm text-on-surface font-semibold truncate" id="nombreImagen">
-                    Imagen seleccionada
-                </p>
-                <p class="text-xs text-on-surface-variant mt-1">
-                    Vista previa local
-                </p>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <input
-        id="imagenUrl"
-        name="imagenUrl"
-        type="hidden"
-        value=""
-    />
-
-</div>
 
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-    <input
-        type="number"
-        name="precioCompra"
-        required
-        min="0"
-        step="0.01"
-        placeholder="Precio de compra"
-        class="campo"
-    />
+                <div>
+                    <label class="block text-xs text-on-surface-variant mb-1">Código de Barras</label>
+                    <input
+                        name="codigoBarras"
+                        placeholder="Escanea o escribe el código"
+                        class="campo"
+                    />
+                </div>
 
-    <input
-        type="number"
-        name="precioVenta"
-        required
-        min="0"
-        step="0.01"
-        placeholder="Precio de venta"
-        class="campo"
-    />
+                <div>
+                    <label class="block text-xs text-on-surface-variant mb-1">Categoría *</label>
+                    <select
+                        name="categoria"
+                        id="selectCategoria"
+                        required
+                        class="campo"
+                    >
+                        <option value="" disabled selected>Seleccionar categoría</option>
+                        <option value="Camisas">Camisas</option>
+                        <option value="Playeras">Playeras</option>
+                        <option value="Camisetas">Camisetas</option>
+                        <option value="Pantalones">Pantalones</option>
+                        <option value="Jeans">Jeans</option>
+                        <option value="Shorts">Shorts</option>
+                        <option value="Chamarras">Chamarras</option>
+                        <option value="Sudaderas">Sudaderas</option>
+                        <option value="Vestidos">Vestidos</option>
+                        <option value="Blusas">Blusas</option>
+                        <option value="Faldas">Faldas</option>
+                        <option value="Ropa Interior">Ropa Interior</option>
+                        <option value="Calcetines">Calcetines</option>
+                        <option value="Gorras">Gorras</option>
+                        <option value="Cinturones">Cinturones</option>
+                        <option value="Perfumes">Perfumes / Fragancias</option>
+                        <option value="Accesorios">Accesorios</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                </div>
 
-</div>
-
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-    <input
-        type="number"
-        name="stock"
-        required
-        min="0"
-        step="1"
-        placeholder="Stock"
-        class="campo"
-    />
-
-    <input
-        type="number"
-        name="stockMinimo"
-        min="0"
-        step="1"
-        placeholder="Stock mínimo"
-        class="campo"
-    />
-
-</div>
+            </div>
 
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- SECCIÓN: APP MOVIL METADATA (ESTRELLAS, DESCRIPCIÓN, CARACTERÍSTICAS) -->
+            <div class="border-t border-outline-variant/50 pt-5">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-primary mb-3 flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm">stars</span>
+                    Datos de la App Móvil (Estrellas, Descripción y Atributos)
+                </h4>
 
-    <select
-        name="categoria"
-        required
-        class="campo"
-    >
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                    <div>
+                        <label class="block text-xs text-on-surface-variant mb-1">Estrellas / Calificación</label>
+                        <div class="relative">
+                            <input
+                                type="number"
+                                name="rating"
+                                min="1"
+                                max="5"
+                                step="0.1"
+                                value="5.0"
+                                placeholder="5.0"
+                                class="campo pr-10"
+                            />
+                            <span class="material-symbols-outlined text-amber-400 absolute right-3 top-1/2 -translate-y-1/2 text-sm pointer-events-none">star</span>
+                        </div>
+                    </div>
 
-        <option
-            value=""
-            disabled
-            selected
-        >
-            Seleccionar categoría
-        </option>
+                    <div class="md:col-span-3">
+                        <label class="block text-xs text-on-surface-variant mb-1">Características (separadas por comas)</label>
+                        <input
+                            name="caracteristicas"
+                            id="inputCaracteristicas"
+                            placeholder=""
+                            class="campo"
+                        />
+                        <p class="text-[11px] text-on-surface-variant mt-1">
+                            Se mostrarán como etiquetas y atributos en el detalle del producto de la app móvil.
+                        </p>
+                    </div>
+                </div>
 
-        <option value="Gorras">
-            Gorras
-        </option>
-
-        <option value="Camisas">
-            Camisas
-        </option>
-
-        <option value="Camisetas">
-            Camisetas
-        </option>
-
-        <option value="Playeras">
-            Playeras
-        </option>
-
-        <option value="Blusas">
-            Blusas
-        </option>
-
-        <option value="Vestidos">
-            Vestidos
-        </option>
-
-        <option value="Faldas">
-            Faldas
-        </option>
-
-        <option value="Pantalones">
-            Pantalones
-        </option>
-
-        <option value="Jeans">
-            Perfumes
-        </option>
-
-        <option value="Shorts">
-            Shorts
-        </option>
-
-        <option value="Cinturones">
-            Cinturones
-        </option>
-
-        <option value="Chamarras">
-            Chamarras
-        </option>
-
-        <option value="Sudaderas">
-            Sudaderas
-        </option>
-
-        <option value="Ropa Interior">
-            Ropa Interior
-        </option>
-
-        <option value="Calcetines">
-            Calcetines
-        </option>
-
-        <option value="Accesorios">
-            Accesorios
-        </option>
-
-        <option value="Otros">
-            Otros
-        </option>
-
-    </select>
-
-    <div></div>
-
-</div>
+                <div>
+                    <label class="block text-xs text-on-surface-variant mb-1">Descripción del producto</label>
+                    <textarea
+                        name="descripcion"
+                        rows="2"
+                        placeholder="Descripción atractiva para el cliente en la aplicación móvil..."
+                        class="campo resize-none"
+                    ></textarea>
+                </div>
+            </div>
 
 
-<label
-    class="flex items-center gap-3 cursor-pointer"
->
+            <!-- SECCIÓN: TALLAS / PRESENTACIONES (SIZES) -->
+            <div class="border-t border-outline-variant/50 pt-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                    <div>
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-sm">straighten</span>
+                            <span id="tituloSeccionTallas">Tallas / Presentaciones (Sizes)</span>
+                        </h4>
+                        <p class="text-[11px] text-on-surface-variant" id="subtituloSeccionTallas">
+                            Configura las tallas (CH, M, G, XL...) o volúmenes (ml) que el cliente puede seleccionar en la app móvil.
+                        </p>
+                    </div>
 
-    <input
-        type="checkbox"
-        name="activo"
-        checked
-        class="accent-yellow-500 w-5 h-5"
-    />
+                    <div class="flex items-center gap-2">
+                        <button
+                            type="button"
+                            id="btnAgregarTalla"
+                            class="px-3 py-1.5 text-xs bg-surface-container-high border border-primary/40 text-primary hover:bg-primary hover:text-on-primary rounded-lg transition-colors flex items-center gap-1 font-semibold"
+                        >
+                            <span class="material-symbols-outlined text-sm">add</span>
+                            Agregar Talla
+                        </button>
+                    </div>
+                </div>
 
-    <span class="text-on-surface">
-        Producto activo
-    </span>
+                <!-- Botones de sugerencias rápidas -->
+                <div class="flex flex-wrap items-center gap-1.5 mb-3 p-2 bg-surface-container-lowest border border-outline-variant/50 rounded-lg">
+                    <span class="text-[11px] text-on-surface-variant font-semibold shrink-0 mr-1" id="labelSugerenciasTallas">
+                        Agregar rápido:
+                    </span>
+                    <div id="contenedorSugerenciasTallas" class="flex flex-wrap gap-1.5">
+                        <!-- Botones dinámicos según categoría -->
+                    </div>
+                </div>
 
-</label>
+                <div id="contenedorTallas" class="space-y-2.5">
+                    <!-- Filas dinámicas de tallas añadidas por JS -->
+                </div>
+            </div>
+
+
+            <!-- SECCIÓN: PRECIOS & STOCK BASE -->
+            <div class="border-t border-outline-variant/50 pt-5">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-primary mb-3 flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm">payments</span>
+                    Precios e Inventario Base
+                </h4>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-xs text-on-surface-variant mb-1">Precio de Compra ($)</label>
+                        <input
+                            type="number"
+                            name="precioCompra"
+                            required
+                            min="0"
+                            step="0.01"
+                            placeholder="0.00"
+                            class="campo"
+                        />
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-on-surface-variant mb-1">Precio de Venta Base ($) *</label>
+                        <input
+                            type="number"
+                            name="precioVenta"
+                            required
+                            min="0"
+                            step="0.01"
+                            placeholder="0.00"
+                            class="campo"
+                        />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs text-on-surface-variant mb-1">Stock Total *</label>
+                        <input
+                            type="number"
+                            name="stock"
+                            required
+                            min="0"
+                            step="1"
+                            placeholder="0"
+                            class="campo"
+                        />
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-on-surface-variant mb-1">Stock Mínimo (Alerta)</label>
+                        <input
+                            type="number"
+                            name="stockMinimo"
+                            min="0"
+                            step="1"
+                            value="5"
+                            placeholder="5"
+                            class="campo"
+                        />
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- SECCIÓN: IMAGEN -->
+            <div class="border-t border-outline-variant/50 pt-5 space-y-3">
+                <div>
+                    <label
+                        for="imagenProducto"
+                        class="block text-xs text-on-surface-variant mb-2"
+                    >
+                        Imagen del producto
+                    </label>
+
+                    <input
+                        id="imagenProducto"
+                        name="imagen"
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp,image/gif"
+                        class="campo file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:font-semibold file:text-on-primary hover:file:brightness-110"
+                    />
+
+                    <p class="text-xs text-on-surface-variant mt-2">
+                        Selecciona una imagen para subirla a Cloudinary al guardar el producto.
+                        Máximo 5 MB.
+                    </p>
+                </div>
+
+                <div
+                    id="vistaPreviaImagen"
+                    class="hidden rounded-lg border border-outline-variant bg-surface p-3"
+                >
+                    <div class="flex items-center gap-4">
+                        <img
+                            id="imagenPrevia"
+                            src=""
+                            alt="Vista previa del producto"
+                            class="h-20 w-20 rounded-lg object-cover border border-outline-variant"
+                        />
+                        <div class="min-w-0">
+                            <p class="text-sm text-on-surface font-semibold truncate" id="nombreImagen">
+                                Imagen seleccionada
+                            </p>
+                            <p class="text-xs text-on-surface-variant mt-1">
+                                Vista previa local
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <input
+                    id="imagenUrl"
+                    name="imagenUrl"
+                    type="hidden"
+                    value=""
+                />
+            </div>
+
+
+            <!-- SECCIÓN: ESTADO -->
+            <div class="border-t border-outline-variant/50 pt-4 flex items-center justify-between">
+                <label
+                    class="flex items-center gap-3 cursor-pointer"
+                >
+                    <input
+                        type="checkbox"
+                        name="activo"
+                        checked
+                        class="accent-yellow-500 w-5 h-5"
+                    />
+                    <span class="text-on-surface text-sm font-medium">
+                        Producto activo y visible para la venta
+                    </span>
+                </label>
+            </div>
+
 
             <!-- BOTONES -->
 
             <div
-                class="flex justify-end gap-3 pt-4"
+                class="flex justify-end gap-3 pt-4 border-t border-outline-variant"
             >
 
                 <button
@@ -1345,8 +1415,10 @@
 
                 <button
                     type="submit"
-                    class="px-8 py-3 bg-primary text-on-primary rounded-lg shine-button font-bold"
+                    id="btnGuardarProductoSubmit"
+                    class="px-8 py-3 bg-primary text-on-primary rounded-lg shine-button font-bold flex items-center gap-2"
                 >
+                    <span class="material-symbols-outlined text-sm">save</span>
                     Guardar Producto
                 </button>
 
@@ -1370,6 +1442,7 @@ import {
     agregarProducto,
     obtenerProductos,
     eliminarProducto,
+    editarProducto,
     subirImagenCloudinary
 
 } from "/src/lib/inventario.js";
@@ -1388,6 +1461,21 @@ const tbody =
 const modal =
     document.getElementById(
         "modalAgregar"
+    );
+
+const modalTitulo =
+    document.getElementById(
+        "modalTitulo"
+    );
+
+const modalSubtitulo =
+    document.getElementById(
+        "modalSubtitulo"
+    );
+
+const btnGuardarProductoSubmit =
+    document.getElementById(
+        "btnGuardarProductoSubmit"
     );
 
 
@@ -1451,8 +1539,184 @@ const nombreImagen =
         "nombreImagen"
     );
 
+const contenedorTallas =
+    document.getElementById(
+        "contenedorTallas"
+    );
+
+const btnAgregarTalla =
+    document.getElementById(
+        "btnAgregarTalla"
+    );
+
 let imagenSeleccionada = null;
 let imagenPreviaUrl = null;
+
+
+/* ========================================================= */
+/* GESTIÓN DINÁMICA DE TALLAS / PRESENTACIONES */
+/* ========================================================= */
+
+const selectCategoria = document.getElementById("selectCategoria");
+const contenedorSugerenciasTallas = document.getElementById("contenedorSugerenciasTallas");
+const tituloSeccionTallas = document.getElementById("tituloSeccionTallas");
+const subtituloSeccionTallas = document.getElementById("subtituloSeccionTallas");
+
+const SUGERENCIAS_ROPA = ["CH", "M", "G", "XL", "XXL", "Unitalla"];
+const SUGERENCIAS_PERFUMES = ["30 ml", "50 ml", "100 ml", "200 ml"];
+
+function esCategoriaPerfume(cat = "") {
+    const c = String(cat).toLowerCase();
+    return c.includes("perfume") || c.includes("fragancia");
+}
+
+function obtenerPlaceholderTalla(cat = "") {
+    return esCategoriaPerfume(cat) ? "Ej. 50 ml, 100 ml" : "Ej. CH, M, G, XL";
+}
+
+function crearFilaTalla(label = "", price = "", inStock = true) {
+
+    const catActual = selectCategoria?.value || "";
+    const placeholder = obtenerPlaceholderTalla(catActual);
+
+    const div = document.createElement("div");
+    div.className = "fila-talla flex items-center gap-2 bg-surface-container-low border border-outline-variant/60 p-2 rounded-lg animate-[fade_.15s]";
+
+    div.innerHTML = `
+        <div class="flex-1">
+            <input
+                type="text"
+                name="tallaLabel"
+                value="${escaparHTML(label)}"
+                placeholder="${placeholder}"
+                class="campo !p-2 !text-xs"
+                required
+            />
+        </div>
+        <div class="w-32">
+            <input
+                type="number"
+                name="tallaPrecio"
+                value="${price !== "" && price !== undefined ? price : ""}"
+                min="0"
+                step="0.01"
+                placeholder="Precio $"
+                class="campo !p-2 !text-xs"
+                required
+            />
+        </div>
+        <label class="flex items-center gap-1.5 text-xs text-on-surface-variant cursor-pointer shrink-0 px-2">
+            <input
+                type="checkbox"
+                name="tallaInStock"
+                ${inStock ? "checked" : ""}
+                class="accent-yellow-500 w-4 h-4 rounded"
+            />
+            <span class="text-[11px]">En Stock</span>
+        </label>
+        <button
+            type="button"
+            class="btn-eliminar-talla p-1.5 text-on-surface-variant hover:text-error hover:bg-surface-container-high rounded transition-colors"
+            title="Eliminar talla/presentación"
+        >
+            <span class="material-symbols-outlined text-[18px]">delete</span>
+        </button>
+    `;
+
+    div.querySelector(".btn-eliminar-talla")?.addEventListener("click", () => {
+        div.remove();
+    });
+
+    return div;
+
+}
+
+function agregarFilaTalla(label = "", price = "", inStock = true) {
+
+    if (!contenedorTallas) return;
+    const fila = crearFilaTalla(label, price, inStock);
+    contenedorTallas.appendChild(fila);
+
+}
+
+function renderizarSugerenciasTallas() {
+    if (!contenedorSugerenciasTallas) return;
+    contenedorSugerenciasTallas.innerHTML = "";
+
+    const cat = selectCategoria?.value || "";
+    const esPerfume = esCategoriaPerfume(cat);
+    const sugerencias = esPerfume ? SUGERENCIAS_PERFUMES : SUGERENCIAS_ROPA;
+
+    if (tituloSeccionTallas) {
+        tituloSeccionTallas.textContent = esPerfume ? "Presentaciones y Volúmenes (ml)" : "Tallas de la Prenda (Sizes)";
+    }
+    if (subtituloSeccionTallas) {
+        subtituloSeccionTallas.textContent = esPerfume
+            ? "Configura las presentaciones en mililitros (ml) y sus precios para la app móvil."
+            : "Configura las tallas (CH, M, G, XL...) y sus precios para la app móvil.";
+    }
+
+    sugerencias.forEach(sug => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "px-2 py-1 bg-surface-container border border-outline-variant/70 text-on-surface hover:border-primary hover:text-primary text-[11px] font-semibold rounded transition-all";
+        btn.innerHTML = `<span class="text-primary font-bold mr-0.5">+</span> ${sug}`;
+        btn.addEventListener("click", () => {
+            // Si ya existe una fila con este label exacto, no duplicar vacía
+            const existentes = Array.from(contenedorTallas?.querySelectorAll('input[name="tallaLabel"]') || []).map(i => i.value.trim());
+            if (existentes.includes(sug)) {
+                return;
+            }
+            // Obtener precio base si el usuario ya lo escribió
+            const precioBase = form?.querySelector('input[name="precioVenta"]')?.value || "";
+            agregarFilaTalla(sug, precioBase, true);
+        });
+        contenedorSugerenciasTallas.appendChild(btn);
+    });
+}
+
+function actualizarOpcionesPorCategoria(forzarInicializacion = false) {
+    renderizarSugerenciasTallas();
+
+    const cat = selectCategoria?.value || "";
+    const esPerfume = esCategoriaPerfume(cat);
+
+    // Si el contenedor está vacío o se pide forzar, inicializar según el tipo
+    const numFilas = contenedorTallas?.children.length || 0;
+    if (numFilas === 0 || forzarInicializacion) {
+        if (contenedorTallas) contenedorTallas.innerHTML = "";
+        const precioBase = form?.querySelector('input[name="precioVenta"]')?.value || "";
+        if (esPerfume) {
+            agregarFilaTalla("50 ml", precioBase, true);
+            agregarFilaTalla("100 ml", precioBase, true);
+        } else {
+            agregarFilaTalla("CH", precioBase, true);
+            agregarFilaTalla("M", precioBase, true);
+            agregarFilaTalla("G", precioBase, true);
+            agregarFilaTalla("XL", precioBase, true);
+        }
+    }
+}
+
+selectCategoria?.addEventListener("change", () => {
+    // Si el usuario cambia de categoría y las tallas actuales no tienen precio asignado o está vacío, reiniciamos inteligentemente
+    const filas = Array.from(contenedorTallas?.querySelectorAll(".fila-talla") || []);
+    const algunConPrecio = filas.some(f => {
+        const p = f.querySelector('input[name="tallaPrecio"]')?.value;
+        return p && Number(p) > 0;
+    });
+
+    if (!algunConPrecio) {
+        actualizarOpcionesPorCategoria(true);
+    } else {
+        renderizarSugerenciasTallas();
+    }
+});
+
+btnAgregarTalla?.addEventListener("click", () => {
+    const precioBase = form?.querySelector('input[name="precioVenta"]')?.value || "";
+    agregarFilaTalla("", precioBase, true);
+});
 
 
 const buscarProducto =
@@ -1571,11 +1835,30 @@ imagenProducto?.addEventListener(
 );
 
 
+let productoEnEdicionId = null;
+
 /* ========================================================= */
 /* MODAL */
 /* ========================================================= */
 
 function abrirModal() {
+
+    productoEnEdicionId = null;
+
+    if (modalTitulo) {
+        modalTitulo.textContent = "Nuevo Producto";
+    }
+
+    if (modalSubtitulo) {
+        modalSubtitulo.textContent = "Inventario sincronizado con la aplicación móvil y punto de venta";
+    }
+
+    if (btnGuardarProductoSubmit) {
+        btnGuardarProductoSubmit.innerHTML = `
+            <span class="material-symbols-outlined text-sm">save</span>
+            Guardar Producto
+        `;
+    }
 
     modal.classList.remove(
         "hidden"
@@ -1587,6 +1870,9 @@ function abrirModal() {
 
     document.body.style.overflow =
         "hidden";
+
+    // Inicializar sugerencias y tallas por defecto si está vacío
+    actualizarOpcionesPorCategoria(false);
 
     setTimeout(() => {
 
@@ -1602,7 +1888,112 @@ function abrirModal() {
 }
 
 
+function abrirModalEdicion(producto) {
+
+    if (!producto) return;
+
+    productoEnEdicionId = producto.id;
+
+    if (modalTitulo) {
+        modalTitulo.textContent = "Editar Producto";
+    }
+
+    if (modalSubtitulo) {
+        modalSubtitulo.textContent = `Actualizando: ${producto.nombre || "Producto"}`;
+    }
+
+    if (btnGuardarProductoSubmit) {
+        btnGuardarProductoSubmit.innerHTML = `
+            <span class="material-symbols-outlined text-sm">edit</span>
+            Actualizar Producto
+        `;
+    }
+
+    // Llenar campos
+    const inputNombre = form.querySelector('input[name="nombre"]');
+    if (inputNombre) inputNombre.value = producto.nombre || "";
+
+    const inputSku = form.querySelector('input[name="sku"]');
+    if (inputSku) inputSku.value = producto.sku || "";
+
+    const inputCodigoBarras = form.querySelector('input[name="codigoBarras"]');
+    if (inputCodigoBarras) inputCodigoBarras.value = producto.codigoBarras || "";
+
+    if (selectCategoria) {
+        selectCategoria.value = producto.categoria || "";
+    }
+
+    const inputRating = form.querySelector('input[name="rating"]');
+    if (inputRating) inputRating.value = producto.rating ?? "5.0";
+
+    const inputDesc = form.querySelector('textarea[name="descripcion"]');
+    if (inputDesc) inputDesc.value = producto.descripcion || producto.description || "";
+
+    const inputCaract = form.querySelector('input[name="caracteristicas"]');
+    if (inputCaract) {
+        const caracts = Array.isArray(producto.caracteristicas)
+            ? producto.caracteristicas
+            : (Array.isArray(producto.scentNotes) ? producto.scentNotes : []);
+        inputCaract.value = caracts.join(", ");
+    }
+
+    const inputPrecioCompra = form.querySelector('input[name="precioCompra"]');
+    if (inputPrecioCompra) inputPrecioCompra.value = producto.precioCompra ?? "";
+
+    const inputPrecioVenta = form.querySelector('input[name="precioVenta"]');
+    if (inputPrecioVenta) inputPrecioVenta.value = producto.precioVenta ?? "";
+
+    const inputStock = form.querySelector('input[name="stock"]');
+    if (inputStock) inputStock.value = producto.stock ?? "";
+
+    const inputStockMinimo = form.querySelector('input[name="stockMinimo"]');
+    if (inputStockMinimo) inputStockMinimo.value = producto.stockMinimo ?? "5";
+
+    const inputActivo = form.querySelector('input[name="activo"]');
+    if (inputActivo) inputActivo.checked = producto.activo !== false;
+
+    const inputImagenUrl = form.querySelector('input[name="imagenUrl"]');
+    if (inputImagenUrl) inputImagenUrl.value = producto.imagenUrl || "";
+
+    // Manejar imagen previa
+    limpiarImagenSeleccionada();
+    if (producto.imagenUrl && imagenPrevia && vistaPreviaImagen) {
+        imagenPrevia.src = producto.imagenUrl;
+        if (nombreImagen) nombreImagen.textContent = "Imagen guardada en el producto";
+        vistaPreviaImagen.classList.remove("hidden");
+    }
+
+    // Configurar sección de tallas
+    actualizarOpcionesPorCategoria(false);
+
+    if (contenedorTallas) {
+        contenedorTallas.innerHTML = "";
+    }
+
+    if (Array.isArray(producto.sizes) && producto.sizes.length > 0) {
+        producto.sizes.forEach(s => {
+            agregarFilaTalla(s.label, s.price, s.inStock !== false);
+        });
+    } else {
+        // Generar una fila inicial con el precio del producto
+        const precioBase = Number(producto.precioVenta) || 0;
+        agregarFilaTalla("M", precioBase, true);
+    }
+
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    document.body.style.overflow = "hidden";
+
+    setTimeout(() => {
+        inputNombre?.focus();
+    }, 100);
+
+}
+
+
 function cerrarModal() {
+
+    productoEnEdicionId = null;
 
     modal.classList.add(
         "hidden"
@@ -1616,6 +2007,10 @@ function cerrarModal() {
         "auto";
 
     form.reset();
+
+    if (contenedorTallas) {
+        contenedorTallas.innerHTML = "";
+    }
 
     const activo =
         form.querySelector(
@@ -1637,6 +2032,15 @@ function cerrarModal() {
 
         stockMinimo.value = "5";
 
+    }
+
+    const ratingInput =
+        form.querySelector(
+            'input[name="rating"]'
+        );
+
+    if (ratingInput) {
+        ratingInput.value = "5.0";
     }
 
     limpiarImagenSeleccionada();
@@ -1702,7 +2106,7 @@ document.addEventListener(
 
 
 /* ========================================================= */
-/* AGREGAR PRODUCTO */
+/* GUARDAR / EDITAR PRODUCTO */
 /* ========================================================= */
 
 form?.addEventListener(
@@ -1717,6 +2121,24 @@ form?.addEventListener(
             new FormData(
                 form
             );
+
+        // Extraer tallas dinámicas
+        const filasTallas = Array.from(
+            contenedorTallas?.querySelectorAll(".fila-talla") || []
+        );
+
+        const sizes = filasTallas.map(f => {
+            const label = String(f.querySelector('input[name="tallaLabel"]')?.value || "").trim();
+            const price = Number(f.querySelector('input[name="tallaPrecio"]')?.value) || 0;
+            const inStock = f.querySelector('input[name="tallaInStock"]')?.checked ?? true;
+            return { label, price, inStock };
+        }).filter(s => Boolean(s.label));
+
+        // Extraer características y notas
+        const rawCaracteristicas = String(data.get("caracteristicas") || "").trim();
+        const caracteristicas = rawCaracteristicas
+            ? rawCaracteristicas.split(",").map(c => c.trim()).filter(Boolean)
+            : [];
 
         const producto = {
 
@@ -1734,6 +2156,35 @@ form?.addEventListener(
                 String(
                     data.get("codigoBarras") || ""
                 ).trim(),
+
+            categoria:
+                String(
+                    data.get("categoria") || ""
+                ).trim(),
+
+            rating:
+                Number(
+                    data.get("rating")
+                ) || 5.0,
+
+            descripcion:
+                String(
+                    data.get("descripcion") || ""
+                ).trim(),
+
+            description:
+                String(
+                    data.get("descripcion") || ""
+                ).trim(),
+
+            caracteristicas:
+                caracteristicas,
+
+            scentNotes:
+                caracteristicas,
+
+            sizes:
+                sizes,
 
             // Cloudinary devuelve esta URL antes de guardar el producto.
             imagenUrl:
@@ -1762,9 +2213,7 @@ form?.addEventListener(
                 ),
 
             activo:
-                data.get("activo") === "on",
-
-            ventas24h: 0
+                data.get("activo") === "on"
 
         };
 
@@ -1775,7 +2224,7 @@ form?.addEventListener(
         ) {
 
             alert(
-                "Completa los campos obligatorios."
+                "Completa los campos obligatorios (Nombre y SKU)."
             );
 
             return;
@@ -1791,7 +2240,7 @@ form?.addEventListener(
         ) {
 
             alert(
-                "Los valores no pueden ser negativos."
+                "Los valores de precio y stock no pueden ser negativos."
             );
 
             return;
@@ -1824,9 +2273,20 @@ form?.addEventListener(
 
         try {
 
-            await agregarProducto(
-                producto
-            );
+            if (productoEnEdicionId) {
+
+                await editarProducto(
+                    productoEnEdicionId,
+                    producto
+                );
+
+            } else {
+
+                await agregarProducto(
+                    producto
+                );
+
+            }
 
 
             cerrarModal();
@@ -1845,7 +2305,9 @@ form?.addEventListener(
 
 
             alert(
-                "No se pudo guardar el producto."
+                productoEnEdicionId
+                    ? "No se pudo actualizar el producto."
+                    : "No se pudo guardar el producto."
             );
 
         }
@@ -1993,12 +2455,30 @@ function exportarExcel() {
                 const precioVenta =
                     Number(producto.precioVenta) || 0;
 
+                const rating =
+                    Number(producto.rating) || 5.0;
+
+                const concentracion =
+                    producto.concentracion || producto.concentration || "";
+
+                const caracteristicas = Array.isArray(producto.caracteristicas)
+                    ? producto.caracteristicas.join(", ")
+                    : (Array.isArray(producto.scentNotes) ? producto.scentNotes.join(", ") : "");
+
+                const tallasPresentaciones = Array.isArray(producto.sizes)
+                    ? producto.sizes.map(s => `${s.label}: $${s.price}${s.inStock === false ? ' (Agotado)' : ''}`).join(" | ")
+                    : "";
+
                 return filaExcel([
                     producto.id || "",
                     producto.nombre || "",
                     producto.sku || "",
                     producto.codigoBarras || "",
                     producto.categoria || "",
+                    rating,
+                    caracteristicas,
+                    tallasPresentaciones,
+                    producto.descripcion || producto.description || "",
                     precioCompra,
                     precioVenta,
                     stock,
@@ -2008,7 +2488,7 @@ function exportarExcel() {
                     stock <= stockMinimo ? "Bajo stock" : "En stock",
                     producto.activo ? "Activo" : "Inactivo",
                     producto.ventas24h ?? 0,
-                    fechaExcel(producto.fechaCreacion || producto.createdAt),
+                    fechaExcel(producto.fechaCreacion || producto.creado || producto.createdAt),
                     producto.imagenUrl || ""
                 ]);
             }).join("")
@@ -2021,14 +2501,14 @@ function exportarExcel() {
     <style>
         body { font-family: Arial, sans-serif; color: #222; }
         h1, h2 { color: #8a6500; }
-        table { border-collapse: collapse; margin-bottom: 24px; min-width: 1200px; }
+        table { border-collapse: collapse; margin-bottom: 24px; min-width: 1400px; }
         th, td { border: 1px solid #b9b9b9; padding: 6px 8px; }
         .encabezado { background: #f2ca50; font-weight: bold; }
         .numero { mso-number-format: "0.00"; text-align: right; }
     </style>
 </head>
 <body>
-    <h1>Inventario de productos</h1>
+    <h1>Inventario de productos | LM Scents & Fashion</h1>
     <table>
         ${filaExcel(["Dato", "Valor"], true)}
         ${filaExcel(["Fecha de exportación", fechaExportacion])}
@@ -2038,7 +2518,7 @@ function exportarExcel() {
         ${filaExcel(["Valor total de venta", valorStock])}
     </table>
 
-    <h2>Detalle completo</h2>
+    <h2>Detalle completo de productos y tallas móviles</h2>
     <table>
         ${filaExcel([
             "ID",
@@ -2046,12 +2526,16 @@ function exportarExcel() {
             "SKU",
             "Código de barras",
             "Categoría",
-            "Precio de compra",
-            "Precio de venta",
+            "Calificación / Estrellas",
+            "Características / Atributos",
+            "Tallas y Precios (App Móvil)",
+            "Descripción",
+            "Precio de compra base",
+            "Precio de venta base",
             "Stock",
             "Stock mínimo",
-            "Valor de compra",
-            "Valor de venta",
+            "Valor de compra total",
+            "Valor de venta total",
             "Estado de stock",
             "Estado del producto",
             "Ventas últimas 24 h",
@@ -2074,7 +2558,7 @@ function exportarExcel() {
         .replace(/[:.]/g, "-");
 
     enlace.href = url;
-    enlace.download = `inventario-${fechaArchivo}.xls`;
+    enlace.download = `inventario-lmscents-${fechaArchivo}.xls`;
     enlace.style.display = "none";
     document.body.appendChild(enlace);
     enlace.click();
@@ -2308,6 +2792,20 @@ function renderizar(lista) {
             );
 
 
+        const rating =
+            Number(producto.rating) || 5.0;
+
+        const concentracion =
+            escaparHTML(producto.concentracion || producto.concentration || "");
+
+        const caracteristicas = Array.isArray(producto.caracteristicas)
+            ? producto.caracteristicas
+            : (Array.isArray(producto.scentNotes) ? producto.scentNotes : []);
+
+        const sizes = Array.isArray(producto.sizes)
+            ? producto.sizes
+            : [];
+
         const fila =
             document.createElement(
                 "tr"
@@ -2322,9 +2820,9 @@ function renderizar(lista) {
 
         fila.innerHTML = `
 
-            <td class="px-gutter py-5">
+            <td class="px-gutter py-4">
 
-                <div>
+                <div class="flex items-start gap-3">
 
                     ${
                         imagenUrl
@@ -2332,28 +2830,66 @@ function renderizar(lista) {
                             <img
                                 src="${imagenUrl}"
                                 alt="Imagen de ${nombre}"
-                                class="h-12 w-12 rounded-lg object-cover border border-outline-variant mb-2"
+                                class="h-14 w-14 rounded-lg object-cover border border-outline-variant shrink-0"
                             />
                             `
                             : `
-                            <div class="h-12 w-12 rounded-lg border border-dashed border-outline-variant flex items-center justify-center mb-2 text-on-surface-variant">
+                            <div class="h-14 w-14 rounded-lg border border-dashed border-outline-variant flex items-center justify-center shrink-0 text-on-surface-variant bg-surface-container-low">
                                 <span class="material-symbols-outlined text-[20px]">image</span>
                             </div>
                             `
                     }
 
-                    <p class="font-medium text-on-surface">
+                    <div class="min-w-0 flex-1">
 
-                        ${nombre}
+                        <div class="flex flex-wrap items-center gap-1.5 mb-1">
 
-                    </p>
+                            <p class="font-medium text-on-surface text-sm">
+                                ${nombre}
+                            </p>
 
-                    <p class="text-xs text-on-surface-variant">
+                            <span class="inline-flex items-center gap-0.5 text-xs text-amber-400 font-bold bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/20">
+                                <span class="material-symbols-outlined text-[13px]">star</span>
+                                ${rating.toFixed(1)}
+                            </span>
 
-                        SKU:
-                        ${sku}
+                        </div>
 
-                    </p>
+                        <p class="text-xs text-on-surface-variant font-mono">
+                            SKU: ${sku}
+                        </p>
+
+                        ${
+                            caracteristicas.length
+                                ? `
+                                <div class="flex flex-wrap gap-1 mt-1.5">
+                                    ${caracteristicas.slice(0, 4).map(c => `
+                                        <span class="px-1.5 py-0.5 bg-surface-container-high text-on-surface-variant text-[10px] rounded border border-outline-variant/40">
+                                            ${escaparHTML(c)}
+                                        </span>
+                                    `).join("")}
+                                </div>
+                                `
+                                : ""
+                        }
+
+                        ${
+                            sizes.length
+                                ? `
+                                <div class="flex flex-wrap items-center gap-1.5 mt-1.5">
+                                    <span class="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold">Presentaciones:</span>
+                                    ${sizes.map(s => `
+                                        <span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-surface-container-lowest border border-outline-variant/60 text-[10px] rounded ${s.inStock === false ? 'opacity-50 line-through' : 'text-on-surface'}">
+                                            <span class="font-semibold">${escaparHTML(s.label)}</span>
+                                            <span class="text-primary font-bold">${moneda(s.price)}</span>
+                                        </span>
+                                    `).join("")}
+                                </div>
+                                `
+                                : ""
+                        }
+
+                    </div>
 
                 </div>
 
@@ -2450,24 +2986,51 @@ function renderizar(lista) {
                 "
             >
 
-                <button
-                    type="button"
-                    class="
-                        eliminar
-                        p-2
-                        text-on-surface-variant
-                        hover:text-error
-                        transition-all
-                    "
-                    data-id="${escaparHTML(producto.id)}"
-                    title="Eliminar producto"
-                >
+                <div class="flex items-center justify-end gap-1">
 
-                    <span class="material-symbols-outlined text-[20px]">
-                        delete
-                    </span>
+                    <button
+                        type="button"
+                        class="
+                            editar
+                            p-2
+                            text-on-surface-variant
+                            hover:text-primary
+                            hover:bg-primary/10
+                            rounded-lg
+                            transition-all
+                        "
+                        data-id="${escaparHTML(producto.id)}"
+                        title="Editar producto"
+                    >
 
-                </button>
+                        <span class="material-symbols-outlined text-[20px]">
+                            edit
+                        </span>
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="
+                            eliminar
+                            p-2
+                            text-on-surface-variant
+                            hover:text-error
+                            hover:bg-error/10
+                            rounded-lg
+                            transition-all
+                        "
+                        data-id="${escaparHTML(producto.id)}"
+                        title="Eliminar producto"
+                    >
+
+                        <span class="material-symbols-outlined text-[20px]">
+                            delete
+                        </span>
+
+                    </button>
+
+                </div>
 
             </td>
 
@@ -2479,6 +3042,44 @@ function renderizar(lista) {
         );
 
     }
+
+
+    /* ===================================================== */
+    /* EVENTOS EDITAR */
+    /* ===================================================== */
+
+    tbody
+        .querySelectorAll(
+            ".editar"
+        )
+        .forEach(
+            boton => {
+
+                boton.addEventListener(
+                    "click",
+
+                    () => {
+
+                        const id =
+                            boton.dataset.id;
+
+                        const producto =
+                            productos.find(
+                                item =>
+                                    String(item.id) ===
+                                    String(id)
+                            );
+
+                        if (producto) {
+                            abrirModalEdicion(producto);
+                        }
+
+                    }
+
+                );
+
+            }
+        );
 
 
     /* ===================================================== */

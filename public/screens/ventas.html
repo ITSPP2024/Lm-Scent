@@ -207,6 +207,50 @@
 
         }
 
+        @media print {
+            body * {
+                visibility: hidden !important;
+            }
+            #modalTicketDespacho,
+            #modalTicketDespacho * {
+                visibility: visible !important;
+            }
+            #modalTicketDespacho {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                display: block !important;
+                z-index: 99999 !important;
+            }
+            #modalTicketDespacho > div {
+                border: none !important;
+                box-shadow: none !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                background: white !important;
+            }
+            #modalTicketDespacho .border-b,
+            #modalTicketDespacho .border-t,
+            #modalTicketDespacho button,
+            #btnCerrarTicketDespacho,
+            #btnImprimirTicket,
+            #btnCerrarTicketBtn {
+                display: none !important;
+            }
+            #cuerpoTicketDespacho {
+                display: block !important;
+                visibility: visible !important;
+                padding: 10px !important;
+                color: black !important;
+                background: white !important;
+            }
+        }
+
     </style>
 
 </head>
@@ -453,7 +497,11 @@
 
     <main class="flex-1 flex overflow-hidden bg-background">
 
-        <section class="flex-1 flex flex-col overflow-hidden bg-background relative">
+        <!-- ========================================================= -->
+        <!-- PANTALLA 1: PUNTO DE VENTA (VENTA EN CURSO) -->
+        <!-- ========================================================= -->
+
+        <section id="vistaVenta" class="flex-1 flex flex-col overflow-hidden bg-background relative">
 
 
             <!-- ENCABEZADO -->
@@ -464,53 +512,16 @@
 
                 <div class="flex items-center justify-between">
 
-                    <h2 class="font-headline-lg text-headline-lg text-on-surface">
-                        Venta en Curso
-                    </h2>
-
-
-                    <div class="flex gap-4">
-
-
-                        <!-- NUEVA VENTA -->
-
-                        <button
-                            id="btnNuevaVenta"
-                            type="button"
-                            class="flex items-center gap-2 px-6 py-2 bg-primary-container/10 border border-primary/30 text-primary rounded-full hover:bg-primary/20 transition-all font-label-caps text-[10px] tactile-press"
-                        >
-
-                            <span class="material-symbols-outlined text-[18px]">
-                                add
-                            </span>
-
-                            NUEVA VENTA
-
-                        </button>
-
-
-                        <!-- CATALOGO -->
-
-                        <button
-                            id="btnCatalogo"
-                            type="button"
-                            class="flex items-center gap-2 px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary/10 transition-all font-label-caps text-[10px] tactile-press"
-                        >
-
-                            <span class="material-symbols-outlined text-[18px]">
-                                grid_view
-                            </span>
-
-                            CONSULTAR CATÁLOGO
-
-                        </button>
-
+                    <div class="flex items-center gap-3">
+                        
+                        <div>
+                            <h2 class="font-headline-lg text-headline-lg text-on-surface">
+                                Venta en Curso
+                            </h2>
+                            <p class="text-xs text-on-surface-variant">Punto de venta y facturación directa</p>
+                        </div>
                     </div>
-
-                </div>
-
-
-                <!-- BUSCADOR -->
+<!-- BUSCADOR -->
 
                 <div class="relative group max-w-5xl mx-auto w-full">
 
@@ -529,6 +540,58 @@
                     />
 
                 </div>
+
+                    <div class="flex flex-wrap items-center gap-3">
+
+
+                        <!-- BOTÓN IR A PANTALLA DE PEDIDOS APP MÓVIL -->
+
+                        <button
+                            id="btnIrAPedidosMoviles"
+                            type="button"
+                            onclick="window.irAPedidosMoviles && window.irAPedidosMoviles()"
+                            class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500/20 via-primary/20 to-primary-container/25 border border-primary/60 text-primary rounded-full hover:bg-primary/30 transition-all font-label-caps text-[10px] font-bold tracking-wider tactile-press shadow-md shadow-amber-500/10 hover:shadow-amber-500/20 cursor-pointer"
+                            title="Ir a la pantalla de pedidos realizados desde la App Móvil"
+                        >
+
+                            <span class="material-symbols-outlined text-[18px]">
+                                local_shipping
+                            </span>
+
+                            <span>PEDIDOS APP MÓVIL</span>
+
+                            <span
+                                id="badgePedidosPendientes"
+                                class="px-2 py-0.5 bg-primary text-on-primary text-[10px] font-bold rounded-full"
+                            >
+                                0
+                            </span>
+
+                        </button>
+
+
+                        <!-- NUEVA VENTA -->
+
+                        <button
+                            id="btnNuevaVenta"
+                            type="button"
+                            class="flex items-center gap-2 px-5 py-2.5 bg-primary-container/10 border border-primary/30 text-primary rounded-full hover:bg-primary/20 transition-all font-label-caps text-[10px] font-bold tracking-wider tactile-press"
+                        >
+
+                            <span class="material-symbols-outlined text-[18px]">
+                                add
+                            </span>
+
+                            NUEVA VENTA
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                
 
             </div>
 
@@ -610,14 +673,16 @@
                             </div>
 
 
+                            <!-- NUMERO DE ARTÍCULOS EN LUGAR DE IVA -->
+
                             <div class="flex justify-between text-body-md text-on-surface-variant">
 
                                 <span>
-                                    IVA (16%)
+                                    Num. Art
                                 </span>
 
-                                <span id="iva">
-                                    $0.00
+                                <span id="numArticulos" class="font-bold text-on-surface">
+                                    0
                                 </span>
 
                             </div>
@@ -667,9 +732,6 @@
 
                                 </button>
 
-
-                               
-
                             </div>
 
                         </div>
@@ -682,12 +744,253 @@
 
         </section>
 
+
+        <!-- ========================================================= -->
+        <!-- PANTALLA 2: PEDIDOS DE LA APP MÓVIL (PANTALLA NORMAL COMPLETA) -->
+        <!-- ========================================================= -->
+
+        <section id="vistaPedidosMoviles" class="hidden flex-1 flex-col overflow-hidden bg-background relative">
+
+            <!-- ENCABEZADO DE PANTALLA DE PEDIDOS -->
+            <div class="px-container-desktop py-gutter bg-surface/70 backdrop-blur-md border-b border-outline-variant/50 sticky top-0 z-10 flex flex-col gap-4">
+
+                <div class="flex flex-wrap items-center justify-between gap-4">
+
+                    <div class="flex items-center gap-3">
+
+                        <div class="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary shadow-sm">
+                            <span class="material-symbols-outlined text-[28px]">smartphone</span>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="font-headline-lg text-xl md:text-2xl text-on-surface font-bold tracking-tight">
+                                    Pedidos de la App Móvil
+                                </h2>
+                                <span class="px-2.5 py-0.5 bg-primary/20 text-primary border border-primary/30 text-[10px] font-bold rounded-full uppercase tracking-wider">
+                                    En Vivo
+                                </span>
+                            </div>
+                            <p class="text-xs text-on-surface-variant mt-0.5">
+                                Control y despacho de pedidos para recoger en tienda (Pick-up) y entrega a domicilio (Delivery).
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="flex items-center gap-3">
+
+                        <!-- BOTÓN RECARGAR -->
+                        <button
+                            id="btnRecargarPedidos"
+                            type="button"
+                            class="flex items-center gap-1.5 px-4 py-2.5 bg-surface-container-high hover:bg-surface-container-highest text-on-surface border border-outline-variant rounded-xl text-xs font-semibold transition-all shadow-sm tactile-press"
+                            title="Actualizar listado de pedidos"
+                        >
+                            <span class="material-symbols-outlined text-[18px]">refresh</span>
+                            <span>Actualizar</span>
+                        </button>
+
+                        <!-- BOTÓN VOLVER AL PUNTO DE VENTA -->
+                        <button
+                            id="btnVolverAPuntoVenta"
+                            type="button"
+                            onclick="window.volverAPuntoVenta && window.volverAPuntoVenta()"
+                            class="flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-full hover:brightness-110 transition-all font-label-caps text-[10px] font-bold tracking-wider shadow-md shadow-primary/20 tactile-press cursor-pointer"
+                            title="Regresar al punto de venta en curso"
+                        >
+                            <span class="material-symbols-outlined text-[18px]">point_of_sale</span>
+                            <span>VOLVER A PUNTO DE VENTA</span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- MÉTRICAS DE PEDIDOS MÓVILES -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+
+                    <div class="p-3.5 bg-surface-container-low rounded-xl border border-outline-variant/40 flex items-center gap-3.5 shadow-sm">
+                        <div class="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+                            <span class="material-symbols-outlined text-[22px]">shopping_bag</span>
+                        </div>
+                        <div>
+                            <p class="text-[11px] font-medium text-on-surface-variant">Total Pedidos</p>
+                            <p id="statTotalPedidos" class="text-xl font-bold text-on-surface">0</p>
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 bg-surface-container-low rounded-xl border border-outline-variant/40 flex items-center gap-3.5 shadow-sm">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
+                            <span class="material-symbols-outlined text-[22px]">storefront</span>
+                        </div>
+                        <div>
+                            <p class="text-[11px] font-medium text-on-surface-variant">Recoger en Tienda</p>
+                            <p id="statRecogerTienda" class="text-xl font-bold text-amber-400">0</p>
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 bg-surface-container-low rounded-xl border border-outline-variant/40 flex items-center gap-3.5 shadow-sm">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
+                            <span class="material-symbols-outlined text-[22px]">two_wheeler</span>
+                        </div>
+                        <div>
+                            <p class="text-[11px] font-medium text-on-surface-variant">Para Llevar / Envío</p>
+                            <p id="statLlevarDomicilio" class="text-xl font-bold text-cyan-400">0</p>
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 bg-surface-container-low rounded-xl border border-outline-variant/40 flex items-center gap-3.5 shadow-sm">
+                        <div class="w-10 h-10 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-400 shrink-0">
+                            <span class="material-symbols-outlined text-[22px]">pending_actions</span>
+                        </div>
+                        <div>
+                            <p class="text-[11px] font-medium text-on-surface-variant">Por Despachar</p>
+                            <p id="statPendientes" class="text-xl font-bold text-yellow-400">0</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- FILTROS Y BÚSQUEDA DE PEDIDOS -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+
+                    <!-- Pestañas de filtro -->
+                    <div class="flex flex-wrap items-center gap-1.5">
+
+                        <button
+                            type="button"
+                            class="tab-filtro-pedido px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-primary text-on-primary transition-all shadow-sm"
+                            data-filtro="todos"
+                        >
+                            Todos
+                        </button>
+
+                        <button
+                            type="button"
+                            class="tab-filtro-pedido px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-surface-container text-on-surface-variant hover:text-on-surface transition-all"
+                            data-filtro="pendiente"
+                        >
+                            ⏳ Por Entregar
+                        </button>
+
+                        <button
+                            type="button"
+                            class="tab-filtro-pedido px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-surface-container text-on-surface-variant hover:text-on-surface transition-all"
+                            data-filtro="tienda"
+                        >
+                            🏪 Recoger en Tienda
+                        </button>
+
+                        <button
+                            type="button"
+                            class="tab-filtro-pedido px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-surface-container text-on-surface-variant hover:text-on-surface transition-all"
+                            data-filtro="domicilio"
+                        >
+                            🛵 Envío a Domicilio
+                        </button>
+
+                        <button
+                            type="button"
+                            class="tab-filtro-pedido px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-surface-container text-on-surface-variant hover:text-on-surface transition-all"
+                            data-filtro="entregado"
+                        >
+                            ✅ Entregados
+                        </button>
+
+                    </div>
+
+                    <!-- Buscador en tiempo real de pedidos -->
+                    <div class="relative min-w-[280px] flex-1 max-w-sm">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+                        <input
+                            id="inputBuscarPedidos"
+                            type="text"
+                            placeholder="Buscar cliente, folio, teléfono, destino..."
+                            class="w-full bg-surface-container border border-outline-variant rounded-xl pl-9 pr-4 py-2 text-xs text-on-surface placeholder:text-on-surface-variant/50 focus:border-primary focus:ring-0 transition-all"
+                        />
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- LISTA DE PEDIDOS MÓVILES EN PANTALLA COMPLETA -->
+            <div
+                id="contenedorPedidosMoviles"
+                class="flex-1 overflow-y-auto custom-scrollbar p-container-desktop space-y-4 bg-background/50"
+            >
+                <div class="text-center py-16 text-on-surface-variant">
+                    <span class="material-symbols-outlined text-[40px] text-primary animate-spin">sync</span>
+                    <p class="text-sm mt-3">Cargando pedidos de la app móvil...</p>
+                </div>
+            </div>
+
+        </section>
+
     </main>
 
 </div>
 
 
 
+<!-- ========================================================= -->
+<!-- MODAL: TICKET / COMPROBANTE DE COMPRA & DESPACHO -->
+<!-- ========================================================= -->
+
+<div
+    id="modalTicketDespacho"
+    class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4"
+>
+
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden shadow-2xl text-on-surface">
+
+        <!-- CABECERA -->
+        <div class="px-5 py-4 bg-surface-container-low border-b border-outline-variant flex items-center justify-between">
+            <h4 class="font-bold text-sm text-primary flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">receipt_long</span>
+                <span id="textoTituloModalTicket">Comprobante de Venta</span>
+            </h4>
+            <button
+                id="btnCerrarTicketDespacho"
+                type="button"
+                onclick="window.cerrarTicketDespacho && window.cerrarTicketDespacho()"
+                class="p-1 rounded-lg hover:bg-surface-container-highest text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer"
+                title="Cerrar modal"
+            >
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+        </div>
+
+        <!-- CUERPO DEL TICKET (IMPRIMIBLE) -->
+        <div id="cuerpoTicketDespacho" class="p-5 overflow-y-auto custom-scrollbar bg-white text-black font-mono text-xs space-y-3">
+            <!-- Se llena dinámicamente -->
+        </div>
+
+        <!-- BOTONES -->
+        <div class="p-4 bg-surface-container-low border-t border-outline-variant flex gap-3">
+            <button
+                id="btnImprimirTicket"
+                type="button"
+                onclick="window.print()"
+                class="flex-1 py-2.5 bg-primary text-on-primary font-bold text-xs rounded-xl flex items-center justify-center gap-2 hover:brightness-110 transition-all shadow-sm active:scale-95 cursor-pointer"
+            >
+                <span class="material-symbols-outlined text-[18px]">print</span>
+                Imprimir Ticket
+            </button>
+            <button
+                id="btnCerrarTicketBtn"
+                type="button"
+                onclick="window.cerrarTicketDespacho && window.cerrarTicketDespacho()"
+                class="px-4 py-2.5 bg-surface-container border border-outline-variant text-on-surface text-xs font-semibold rounded-xl hover:bg-surface-container-high transition-all active:scale-95 cursor-pointer"
+            >
+                No Imprimir / Cerrar
+            </button>
+        </div>
+
+    </div>
+
+</div>
 
 
 <!-- ========================================================= -->
@@ -702,7 +1005,10 @@ import {
 } from "/src/lib/inventario.js";
 
 import {
-    registrarVenta
+    registrarVenta,
+    obtenerPedidosMoviles,
+    actualizarEstadoPedido,
+    crearPedidoMovil
 } from "/src/lib/ventas.js";
 
 
@@ -713,6 +1019,10 @@ import {
 
 let inventario = [];
 let carrito = [];
+let pedidosMoviles = [];
+let filtroPedidoActivo = "todos";
+let busquedaPedidoTexto = "";
+let pedidoParaTicket = null;
 
 
 
@@ -729,8 +1039,8 @@ const contenedor =
 const subtotalUI =
     document.getElementById("subtotal");
 
-const ivaUI =
-    document.getElementById("iva");
+const numArticulosUI =
+    document.getElementById("numArticulos");
 
 const totalUI =
     document.getElementById("total");
@@ -740,9 +1050,6 @@ const btnPagar =
 
 const btnNuevaVenta =
     document.getElementById("btnNuevaVenta");
-
-const btnCatalogo =
-    document.getElementById("btnCatalogo");
 
 const btnNotificaciones =
     document.getElementById("btnNotificaciones");
@@ -762,6 +1069,60 @@ const btnPerfil =
 const btnCerrarSesion =
     document.getElementById("btnCerrarSesion");
 
+// VISTAS DE PANTALLA
+const vistaVenta =
+    document.getElementById("vistaVenta");
+
+const vistaPedidosMoviles =
+    document.getElementById("vistaPedidosMoviles");
+
+// SELECTORES PEDIDOS APP MÓVIL
+const btnIrAPedidosMoviles =
+    document.getElementById("btnIrAPedidosMoviles");
+
+const btnVolverAPuntoVenta =
+    document.getElementById("btnVolverAPuntoVenta");
+
+const badgePedidosPendientes =
+    document.getElementById("badgePedidosPendientes");
+
+const btnRecargarPedidos =
+    document.getElementById("btnRecargarPedidos");
+
+const contenedorPedidosMoviles =
+    document.getElementById("contenedorPedidosMoviles");
+
+const inputBuscarPedidos =
+    document.getElementById("inputBuscarPedidos");
+
+const statTotalPedidos =
+    document.getElementById("statTotalPedidos");
+
+const statRecogerTienda =
+    document.getElementById("statRecogerTienda");
+
+const statLlevarDomicilio =
+    document.getElementById("statLlevarDomicilio");
+
+const statPendientes =
+    document.getElementById("statPendientes");
+
+// SELECTORES TICKET DESPACHO
+const modalTicketDespacho =
+    document.getElementById("modalTicketDespacho");
+
+const cuerpoTicketDespacho =
+    document.getElementById("cuerpoTicketDespacho");
+
+const btnCerrarTicketDespacho =
+    document.getElementById("btnCerrarTicketDespacho");
+
+const btnCerrarTicketBtn =
+    document.getElementById("btnCerrarTicketBtn");
+
+const btnImprimirTicket =
+    document.getElementById("btnImprimirTicket");
+
 
 
 /* =========================================================
@@ -776,6 +1137,14 @@ async function iniciar() {
             await obtenerProductos();
 
         render();
+
+        // Cargar y actualizar pedidos móviles en segundo plano
+        cargarPedidosMoviles();
+
+        // Auto-actualizar contador de pedidos móviles periódicamente (cada 45s)
+        setInterval(() => {
+            cargarPedidosMoviles(false);
+        }, 45000);
 
     } catch (error) {
 
@@ -1076,20 +1445,24 @@ function render() {
     eventos();
 
 
-    const iva =
-        subtotal * 0.16;
+    const totalArticulos =
+        carrito.reduce(
+            (a, b) => a + Number(b.cantidad || 0),
+            0
+        );
 
     const total =
-        subtotal + iva;
+        subtotal;
 
 
     subtotalUI.textContent =
         "$" +
         subtotal.toFixed(2);
 
-    ivaUI.textContent =
-        "$" +
-        iva.toFixed(2);
+    if (numArticulosUI) {
+        numArticulosUI.textContent =
+            totalArticulos.toString();
+    }
 
     totalUI.textContent =
         "$" +
@@ -1230,262 +1603,827 @@ btnNuevaVenta.onclick = () => {
    PAGAR
 ========================================================= */
 
-btnPagar.onclick =
-    async () => {
+btnPagar.onclick = async () => {
 
-        if (!carrito.length) {
-
-            alert(
-                "El carrito está vacío."
-            );
-
-            return;
-
-        }
-
-
-        const confirmar =
-            confirm(
-                "¿Confirmar la venta?"
-            );
-
-        if (!confirmar)
-            return;
-
-
-        try {
-
-
-            for (const p of carrito) {
-
-                await editarProducto(
-
-                    p.id,
-
-                    {
-
-                        stock:
-                            p.stock -
-                            p.cantidad,
-
-                        ventas24h:
-                            (p.ventas24h || 0) +
-                            (
-                                p.precioVenta *
-                                p.cantidad
-                            )
-
-                    }
-
-                );
-
-            }
-
-
-            const subtotal =
-                carrito.reduce(
-
-                    (a, b) =>
-                        a +
-                        (
-                            b.precioVenta *
-                            b.cantidad
-                        ),
-
-                    0
-
-                );
-
-
-            await registrarVenta({
-
-                productos:
-                    carrito,
-
-                subtotal:
-                    subtotal,
-
-                iva:
-                    16,
-
-                total:
-                    subtotal * 1.16
-
-            });
-
-
-            alert(
-                "Venta completada correctamente."
-            );
-
-
-            carrito = [];
-
-
-            inventario =
-                await obtenerProductos();
-
-
-            render();
-
-            buscador.focus();
-
-
-        } catch (error) {
-
-            console.error(
-                "Error al registrar venta:",
-                error
-            );
-
-            alert(
-                "No se pudo completar la venta."
-            );
-
-        }
-
-    };
-
-
-
-/* =========================================================
-   CATALOGO
-========================================================= */
-
-btnCatalogo.onclick = () => {
-
-    window.location.href =
-        "/catalogo.html";
-
-};
-
-
-
-/* =========================================================
-   NOTIFICACIONES
-========================================================= */
-
-btnNotificaciones.onclick =
-    event => {
-
-        event.stopPropagation();
-
-        accountMenu.classList.add(
-            "hidden"
-        );
-
-        notificationMenu.classList.toggle(
-            "hidden"
-        );
-
-    };
-
-
-
-/* =========================================================
-   CUENTA
-========================================================= */
-
-btnCuenta.onclick =
-    event => {
-
-        event.stopPropagation();
-
-        notificationMenu.classList.add(
-            "hidden"
-        );
-
-        accountMenu.classList.toggle(
-            "hidden"
-        );
-
-    };
-
-
-
-/* =========================================================
-   MI CUENTA
-========================================================= */
-
-btnPerfil.onclick = () => {
-
-    window.location.href =
-        "/perfil.html";
-
-};
-
-
-
-/* =========================================================
-   CERRAR SESIÓN
-========================================================= */
-
-btnCerrarSesion.onclick = () => {
-
-    const confirmar =
-        confirm(
-            "¿Deseas cerrar sesión?"
-        );
-
-    if (!confirmar)
+    if (!carrito.length) {
+        alert("El carrito está vacío. Agrega productos para realizar una venta.");
         return;
+    }
 
-    /*
-        Aquí puedes agregar posteriormente
-        la función de Firebase Auth para
-        cerrar la sesión.
-    */
+    const confirmar = confirm("¿Confirmar y procesar la venta?");
+    if (!confirmar) return;
 
-    window.location.href =
-        "/login.html";
+    try {
+        // Descontar inventario
+        for (const p of carrito) {
+            await editarProducto(
+                p.id,
+                {
+                    stock: p.stock - p.cantidad,
+                    ventas24h: (p.ventas24h || 0) + (p.precioVenta * p.cantidad)
+                }
+            );
+        }
+
+        const subtotal = carrito.reduce(
+            (a, b) => a + (b.precioVenta * b.cantidad),
+            0
+        );
+        const totalArts = carrito.reduce((a, b) => a + Number(b.cantidad || 1), 0);
+
+        // Copia de productos para el ticket
+        const productosVendidos = carrito.map(item => ({ ...item }));
+
+        const resultadoVenta = await registrarVenta({
+            productos: productosVendidos,
+            subtotal: subtotal,
+            total: subtotal,
+            numArticulos: totalArts,
+            metodoPago: "Efectivo",
+            origen: "tienda_fisica"
+        });
+
+        // Limpiar carrito y actualizar vista
+        carrito = [];
+        inventario = await obtenerProductos();
+        render();
+
+        // Previsualizar Ticket de compra inmediatamente
+        abrirTicketVentaDirecta({
+            id: resultadoVenta?.id || ("VTA-" + Date.now().toString().slice(-6)),
+            productos: productosVendidos,
+            subtotal: subtotal,
+            total: subtotal,
+            numArticulos: totalArts,
+            fecha: new Date(),
+            metodoPago: "Efectivo / Mostrador"
+        });
+
+    } catch (error) {
+        console.error("Error al registrar venta:", error);
+        alert("No se pudo completar la venta. Por favor intenta de nuevo.");
+    }
 
 };
 
 
+
+/* =========================================================
+   NOTIFICACIONES & CUENTA
+========================================================= */
+
+btnNotificaciones?.addEventListener("click", event => {
+    event.stopPropagation();
+    accountMenu?.classList.add("hidden");
+    notificationMenu?.classList.toggle("hidden");
+});
+
+btnCuenta?.addEventListener("click", event => {
+    event.stopPropagation();
+    notificationMenu?.classList.add("hidden");
+    accountMenu?.classList.toggle("hidden");
+});
+
+btnPerfil?.addEventListener("click", () => {
+    window.location.href = "/perfil.html";
+});
+
+btnCerrarSesion?.addEventListener("click", () => {
+    const confirmar = confirm("¿Deseas cerrar sesión?");
+    if (!confirmar) return;
+    window.location.href = "/login.html";
+});
 
 /* =========================================================
    CERRAR MENÚS AL HACER CLICK AFUERA
 ========================================================= */
 
-document.addEventListener(
-    "click",
-    () => {
+document.addEventListener("click", () => {
+    notificationMenu?.classList.add("hidden");
+    accountMenu?.classList.add("hidden");
+});
 
-        notificationMenu.classList.add(
-            "hidden"
-        );
+notificationMenu?.addEventListener("click", event => {
+    event.stopPropagation();
+});
 
-        accountMenu.classList.add(
-            "hidden"
-        );
-
-    }
-);
+accountMenu?.addEventListener("click", event => {
+    event.stopPropagation();
+});
 
 
 
 /* =========================================================
-   EVITAR QUE LOS MENÚS SE CIERREN AL HACER CLICK DENTRO
+   GESTIÓN DE PEDIDOS DE LA APP MÓVIL (ENTREGAS & TIENDA)
 ========================================================= */
 
-notificationMenu.addEventListener(
-    "click",
-    event => {
+function escaparHTML(texto) {
+    if (!texto) return "";
+    return String(texto)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
-        event.stopPropagation();
+function esRecogerTienda(pedido) {
+    const metodo = String(pedido.metodoEntrega || pedido.tipoEntrega || "").toLowerCase();
+    return metodo.includes("tienda") || metodo.includes("pickup") || metodo.includes("recoger") || metodo.includes("sucursal");
+}
+
+function formatearFecha(fechaValor) {
+    if (!fechaValor) return "Fecha no disponible";
+    try {
+        let fecha;
+        if (typeof fechaValor === "number") {
+            fecha = new Date(fechaValor);
+        } else if (typeof fechaValor.toDate === "function") {
+            fecha = fechaValor.toDate();
+        } else if (fechaValor.seconds) {
+            fecha = new Date(fechaValor.seconds * 1000);
+        } else {
+            fecha = new Date(fechaValor);
+        }
+
+        if (Number.isNaN(fecha.getTime())) return "Reciente";
+        return fecha.toLocaleString("es-MX", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    } catch {
+        return "Reciente";
+    }
+}
+
+async function cargarPedidosMoviles(mostrarCargando = true) {
+
+    if (mostrarCargando && contenedorPedidosMoviles) {
+        contenedorPedidosMoviles.innerHTML = `
+            <div class="text-center py-12 text-on-surface-variant">
+                <span class="material-symbols-outlined text-[36px] text-primary animate-spin">sync</span>
+                <p class="text-sm mt-2">Sincronizando pedidos de la App Móvil...</p>
+            </div>
+        `;
+    }
+
+    try {
+
+        pedidosMoviles = await obtenerPedidosMoviles();
+
+        // Calcular estadísticas con los campos reales de la App Móvil
+        const total = pedidosMoviles.length;
+        const tienda = pedidosMoviles.filter(p => esRecogerTienda(p)).length;
+        const domicilio = pedidosMoviles.filter(p => !esRecogerTienda(p)).length;
+        const pendientes = pedidosMoviles.filter(p => {
+            const st = (p.estado || p.estadoPedido || p.estadoEntrega || "pendiente").toLowerCase();
+            return st !== "entregado" && st !== "completado" && st !== "cancelado";
+        }).length;
+
+        if (statTotalPedidos) statTotalPedidos.textContent = total;
+        if (statRecogerTienda) statRecogerTienda.textContent = tienda;
+        if (statLlevarDomicilio) statLlevarDomicilio.textContent = domicilio;
+        if (statPendientes) statPendientes.textContent = pendientes;
+
+        if (badgePedidosPendientes) {
+            badgePedidosPendientes.textContent = pendientes;
+            if (pendientes > 0) {
+                badgePedidosPendientes.className = "px-2 py-0.5 bg-amber-400 text-black text-[10px] font-bold rounded-full animate-pulse shadow-sm";
+            } else {
+                badgePedidosPendientes.className = "px-2 py-0.5 bg-primary/30 text-primary text-[10px] font-bold rounded-full";
+            }
+        }
+
+        renderizarPedidosMoviles();
+
+    } catch (error) {
+
+        console.error("Error al cargar pedidos móviles:", error);
+
+        if (contenedorPedidosMoviles) {
+            contenedorPedidosMoviles.innerHTML = `
+                <div class="p-6 bg-error-container/20 border border-error/30 rounded-xl text-center">
+                    <p class="text-sm text-error font-medium">No se pudieron cargar los pedidos móviles.</p>
+                    <button type="button" onclick="cargarPedidosMoviles()" class="mt-3 px-4 py-1.5 bg-primary text-on-primary rounded-lg text-xs font-bold">
+                        Reintentar
+                    </button>
+                </div>
+            `;
+        }
 
     }
-);
 
+}
 
-accountMenu.addEventListener(
-    "click",
-    event => {
+function renderizarPedidosMoviles() {
 
-        event.stopPropagation();
+    if (!contenedorPedidosMoviles) return;
+
+    let lista = [...pedidosMoviles];
+
+    // Filtro por estado / tipo
+    if (filtroPedidoActivo === "pendiente") {
+        lista = lista.filter(p => {
+            const st = (p.estado || p.estadoPedido || p.estadoEntrega || "pendiente").toLowerCase();
+            return st !== "entregado" && st !== "completado" && st !== "cancelado";
+        });
+    } else if (filtroPedidoActivo === "tienda") {
+        lista = lista.filter(p => esRecogerTienda(p));
+    } else if (filtroPedidoActivo === "domicilio") {
+        lista = lista.filter(p => !esRecogerTienda(p));
+    } else if (filtroPedidoActivo === "entregado") {
+        lista = lista.filter(p => {
+            const st = (p.estado || p.estadoPedido || p.estadoEntrega || "").toLowerCase();
+            return st === "entregado" || st === "completado";
+        });
+    }
+
+    // Filtro por texto
+    if (busquedaPedidoTexto) {
+        const query = busquedaPedidoTexto.toLowerCase();
+        lista = lista.filter(p => {
+            const cliente = (typeof p.cliente === "string" ? p.cliente : (p.cliente?.nombre || p.clienteNombre || "")).toLowerCase();
+            const tel = (p.telefono || p.cliente?.telefono || p.clienteTelefono || "").toLowerCase();
+            const email = (p.correo || p.cliente?.correo || "").toLowerCase();
+            const folio = (p.id || p.folio || "").toLowerCase();
+            const direccion = [p.direccion, p.ciudad, p.codigoPostal, p.cliente?.direccion].filter(Boolean).join(" ").toLowerCase();
+            return cliente.includes(query) || tel.includes(query) || email.includes(query) || folio.includes(query) || direccion.includes(query);
+        });
+    }
+
+    if (lista.length === 0) {
+        contenedorPedidosMoviles.innerHTML = `
+            <div class="text-center py-16 px-4 bg-surface-container-low rounded-2xl border border-outline-variant/50">
+                <span class="material-symbols-outlined text-[48px] text-on-surface-variant/40 mb-2">
+                    inbox
+                </span>
+                <p class="text-base font-semibold text-on-surface">No hay pedidos móviles en este filtro</p>
+                <p class="text-xs text-on-surface-variant mt-1 max-w-md mx-auto">
+                    Los pedidos realizados por los clientes desde la App Móvil (con entrega a domicilio o recolección en tienda) se mostrarán automáticamente aquí.
+                </p>
+            </div>
+        `;
+        return;
+    }
+
+    contenedorPedidosMoviles.innerHTML = lista.map(pedido => {
+
+        const estado = (pedido.estado || pedido.estadoPedido || pedido.estadoEntrega || "pendiente").toLowerCase();
+        const recogidaTienda = esRecogerTienda(pedido);
+        
+        // Extracción de datos del cliente
+        const clienteNombre = escaparHTML(typeof pedido.cliente === "string" ? pedido.cliente : (pedido.cliente?.nombre || pedido.clienteNombre || "Cliente LM Scents"));
+        const clienteTel = escaparHTML(pedido.telefono || pedido.cliente?.telefono || pedido.clienteTelefono || "Sin teléfono registrado");
+        const clienteCorreo = escaparHTML(pedido.correo || pedido.cliente?.correo || "");
+        
+        // Dirección formateada
+        let clienteDir = "Recolección en sucursal";
+        if (!recogidaTienda) {
+            const partesDir = [pedido.direccion, pedido.ciudad, pedido.codigoPostal ? `C.P. ${pedido.codigoPostal}` : null].filter(Boolean);
+            clienteDir = partesDir.length > 0 ? partesDir.join(", ") : (pedido.cliente?.direccion || "Entrega a Domicilio");
+        }
+        clienteDir = escaparHTML(clienteDir);
+        
+        const clienteNotas = escaparHTML(pedido.notas || pedido.cliente?.notas || pedido.notasEntrega || "");
+        const folio = escaparHTML(pedido.id ? (pedido.id.startsWith("#") ? pedido.id : `#${pedido.id}`) : "#APP-MOVIL");
+        const fecha = formatearFecha(pedido.timestamp || pedido.fecha || pedido.fechaCreacion || pedido.createdAt);
+        const total = Number(pedido.total || 0).toFixed(2);
+        const subtotal = Number(pedido.subtotal || 0).toFixed(2);
+        const costoEnvio = Number(pedido.envio || pedido.costoEnvio || 0);
+        const metodoPagoTexto = escaparHTML(pedido.metodoPago || pedido.tipoPago || (pedido.esEfectivo ? "Efectivo" : (pedido.esTarjeta ? "Tarjeta" : "App Móvil")));
+        const productos = Array.isArray(pedido.productos) ? pedido.productos : [];
+
+        // Estado visual badge
+        let badgeEstado = `
+            <span class="px-2.5 py-1 bg-yellow-500/15 border border-yellow-500/30 text-yellow-400 text-[11px] font-bold rounded-full flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
+                Pendiente
+            </span>
+        `;
+        if (estado === "listo" || estado === "en_camino") {
+            badgeEstado = `
+                <span class="px-2.5 py-1 bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 text-[11px] font-bold rounded-full flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">local_shipping</span>
+                    Listo / En camino
+                </span>
+            `;
+        } else if (estado === "entregado" || estado === "completado") {
+            badgeEstado = `
+                <span class="px-2.5 py-1 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold rounded-full flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                    Entregado
+                </span>
+            `;
+        }
+
+        // Tipo de entrega badge
+        const badgeEntrega = recogidaTienda
+            ? `
+                <span class="px-2.5 py-1 bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[11px] font-bold rounded-lg flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">storefront</span>
+                    RECOGER EN TIENDA
+                </span>
+            `
+            : `
+                <span class="px-2.5 py-1 bg-blue-500/20 border border-blue-500/40 text-blue-300 text-[11px] font-bold rounded-lg flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">two_wheeler</span>
+                    A DOMICILIO
+                </span>
+            `;
+
+        // Filas de productos solicitados
+        const itemsHtml = productos.map(item => {
+            const nombre = escaparHTML(item.nombre || item.producto || item.name || "Producto");
+            const talla = escaparHTML(item.talla_volumen || item.talla || item.size || item.sizeLabel || "");
+            const cant = Number(item.cantidad || item.qty || 1);
+            const precio = Number(item.precio ?? item.precioVenta ?? 0).toFixed(2);
+            const subtotalItem = Number(item.subtotal ?? (cant * Number(item.precio ?? item.precioVenta ?? 0))).toFixed(2);
+            const imgUrl = item.imagenUrl || item.imagen || item.image || "";
+
+            return `
+                <div class="flex items-center justify-between py-2 border-b border-outline-variant/20 last:border-0 text-xs">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        ${imgUrl ? `
+                            <img src="${imgUrl}" alt="${nombre}" class="w-8 h-8 rounded-lg object-cover bg-surface-container shrink-0 border border-outline-variant/30" />
+                        ` : `
+                            <div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary font-bold text-[11px] shrink-0">
+                                ${cant}x
+                            </div>
+                        `}
+                        <div class="min-w-0">
+                            <p class="font-medium text-on-surface truncate">${cant}x ${nombre}</p>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                ${talla ? `<span class="px-1.5 py-0.2 bg-primary/10 text-primary border border-primary/20 rounded text-[10px] font-bold">${talla}</span>` : ""}
+                                <span class="text-[10px] text-on-surface-variant font-mono">$${precio} c/u</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right shrink-0 pl-2">
+                        <span class="text-on-surface font-semibold font-mono">$${subtotalItem}</span>
+                    </div>
+                </div>
+            `;
+        }).join("");
+
+        return `
+            <div class="bg-surface-container-low border ${estado === 'entregado' || estado === 'completado' ? 'border-outline-variant/30 opacity-75' : 'border-outline-variant'} rounded-2xl p-5 hover:border-primary/50 transition-all shadow-sm">
+
+                <!-- ENCABEZADO DE TARJETA -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-outline-variant/40">
+
+                    <div class="flex items-center gap-3">
+                        <span class="font-mono text-sm font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-lg border border-primary/20">
+                            ${folio}
+                        </span>
+                        <div>
+                            <p class="text-xs font-medium text-on-surface flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[14px] text-on-surface-variant">schedule</span>
+                                ${fecha}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        ${badgeEntrega}
+                        ${badgeEstado}
+                    </div>
+
+                </div>
+
+                <!-- CONTENIDO PRINCIPAL: DATOS DE CLIENTE Y PRODUCTOS -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-5 py-4">
+
+                    <!-- COLUMNA CLIENTE / DIRECCIÓN -->
+                    <div class="md:col-span-5 space-y-2 bg-surface-container-lowest/50 p-3.5 rounded-xl border border-outline-variant/30 text-xs">
+
+                        <div class="flex items-center gap-2 text-on-surface">
+                            <span class="material-symbols-outlined text-primary text-[18px]">person</span>
+                            <span class="font-bold text-sm truncate">${clienteNombre}</span>
+                        </div>
+
+                        ${clienteTel !== 'Sin teléfono registrado' ? `
+                            <div class="flex items-center gap-2 text-on-surface-variant">
+                                <span class="material-symbols-outlined text-[16px]">call</span>
+                                <a href="tel:${clienteTel}" class="hover:text-primary transition-colors font-mono">${clienteTel}</a>
+                            </div>
+                        ` : ''}
+
+                        ${clienteCorreo ? `
+                            <div class="flex items-center gap-2 text-on-surface-variant truncate">
+                                <span class="material-symbols-outlined text-[16px]">mail</span>
+                                <span class="truncate">${clienteCorreo}</span>
+                            </div>
+                        ` : ''}
+
+                        <div class="flex items-start gap-2 text-on-surface-variant pt-1 border-t border-outline-variant/20">
+                            <span class="material-symbols-outlined text-[16px] shrink-0 mt-0.5">${recogidaTienda ? 'store' : 'location_on'}</span>
+                            <p class="text-[11px] leading-relaxed">
+                                <strong class="text-on-surface">${recogidaTienda ? 'Lugar de recolección:' : 'Dirección de envío:'}</strong>
+                                ${clienteDir}
+                            </p>
+                        </div>
+
+                        ${clienteNotas ? `
+                            <div class="p-2 bg-surface-container rounded-lg border border-outline-variant/40 text-[11px] text-amber-300 flex items-start gap-1.5">
+                                <span class="material-symbols-outlined text-[15px] shrink-0">notes</span>
+                                <span><strong>Nota cliente:</strong> ${clienteNotas}</span>
+                            </div>
+                        ` : ''}
+
+                    </div>
+
+                    <!-- COLUMNA PRODUCTOS -->
+                    <div class="md:col-span-7 flex flex-col justify-between">
+
+                        <div class="space-y-1">
+                            <p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[15px]">inventory_2</span>
+                                Artículos Solicitados (${productos.length})
+                            </p>
+                            <div class="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/30 space-y-1 max-h-40 overflow-y-auto custom-scrollbar">
+                                ${itemsHtml || '<p class="text-xs text-on-surface-variant">Sin detalle de artículos</p>'}
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-3 mt-2 border-t border-outline-variant/30">
+                            <div class="text-xs text-on-surface-variant">
+                                ${costoEnvio > 0 ? `<span>Envío: $${costoEnvio.toFixed(2)} | </span>` : ''}
+                                <span>Total de la Orden:</span>
+                            </div>
+                            <span class="text-lg font-bold text-primary font-mono">$${total}</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- PIE Y BOTONES DE ACCIÓN -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-outline-variant/40 bg-surface-container-lowest/30 -mx-5 -mb-5 p-4 rounded-b-2xl">
+
+                    <div class="flex items-center gap-2 text-xs text-on-surface-variant">
+                        <span class="material-symbols-outlined text-[16px] text-emerald-400">verified</span>
+                        <span>Pago: <strong>${metodoPagoTexto}</strong> (App Móvil)</span>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2">
+
+                        <!-- BOTÓN IMPRIMIR TICKET -->
+                        <button
+                            type="button"
+                            onclick="abrirTicketDespacho('${pedido.id}')"
+                            class="px-3 py-1.5 bg-surface-container-high hover:bg-surface-container-highest border border-outline-variant text-on-surface text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all"
+                            title="Imprimir ticket o nota de entrega"
+                        >
+                            <span class="material-symbols-outlined text-[16px]">receipt_long</span>
+                            Ticket
+                        </button>
+
+                        ${estado === 'pendiente' ? `
+                            <!-- BOTÓN MARCAR COMO LISTO -->
+                            <button
+                                type="button"
+                                onclick="actualizarEstadoPedidoUI('${pedido.id}', 'listo')"
+                                class="px-3.5 py-1.5 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-300 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all"
+                            >
+                                <span class="material-symbols-outlined text-[16px]">check</span>
+                                ${recogidaTienda ? 'Listo en Tienda' : 'Listo para Envío'}
+                            </button>
+                        ` : ''}
+
+                        ${estado !== 'entregado' && estado !== 'completado' ? `
+                            <!-- BOTÓN MARCAR COMO ENTREGADO -->
+                            <button
+                                type="button"
+                                onclick="actualizarEstadoPedidoUI('${pedido.id}', 'entregado')"
+                                class="px-4 py-1.5 bg-primary text-on-primary hover:brightness-110 font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-sm transition-all"
+                            >
+                                <span class="material-symbols-outlined text-[16px]">task_alt</span>
+                                Marcar Entregado
+                            </button>
+                        ` : `
+                            <span class="px-3 py-1.5 text-xs text-emerald-400 font-bold flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[16px]">done_all</span>
+                                Despachado y Entregado
+                            </span>
+                        `}
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+    }).join("");
+
+}
+
+window.actualizarEstadoPedidoUI = async function(pedidoId, nuevoEstado) {
+
+    const label = nuevoEstado === "entregado" ? "entregado al cliente" : "listo para entrega";
+    if (!confirm(`¿Marcar este pedido como ${label}?`)) return;
+
+    try {
+
+        await actualizarEstadoPedido(pedidoId, nuevoEstado);
+        await cargarPedidosMoviles(false);
+
+    } catch (error) {
+
+        console.error("Error al actualizar estado del pedido:", error);
+        alert("No se pudo actualizar el estado del pedido.");
 
     }
-);
+
+};
+
+// TICKET PARA VENTA DIRECTA (PUNTO DE VENTA)
+window.abrirTicketVentaDirecta = function(venta) {
+    if (!venta) return;
+
+    const textoTituloModal = document.getElementById("textoTituloModalTicket");
+    if (textoTituloModal) {
+        textoTituloModal.textContent = "Comprobante de Venta";
+    }
+
+    const folio = venta.id ? (venta.id.toString().startsWith("#") ? venta.id : `#${venta.id}`) : `#VTA-${Date.now().toString().slice(-6)}`;
+    const fecha = formatearFecha(venta.fecha || new Date());
+    const totalArts = venta.numArticulos || (venta.productos ? venta.productos.reduce((acc, p) => acc + Number(p.cantidad || 1), 0) : 1);
+    const productos = Array.isArray(venta.productos) ? venta.productos : [];
+
+    const itemsTicket = productos.map(item => {
+        const cant = Number(item.cantidad || 1);
+        const precio = Number(item.precioVenta ?? item.precio ?? 0);
+        const subtotalItem = Number(cant * precio).toFixed(2);
+        const talla = item.talla_volumen || item.talla || item.size || "";
+
+        return `
+            <div class="flex justify-between py-1.5 border-b border-dashed border-gray-300 text-xs">
+                <div>
+                    <p class="font-bold">${cant}x ${escaparHTML(item.nombre || item.producto || 'Producto')}</p>
+                    ${talla ? `<p class="text-[10px] text-gray-600">Talla/Presentación: ${escaparHTML(talla)}</p>` : ''}
+                </div>
+                <div class="text-right">
+                    <p class="font-bold font-mono">$${subtotalItem}</p>
+                    <p class="text-[9px] text-gray-500">($${precio.toFixed(2)} c/u)</p>
+                </div>
+            </div>
+        `;
+    }).join("");
+
+    if (cuerpoTicketDespacho) {
+        cuerpoTicketDespacho.innerHTML = `
+            <div class="text-center pb-3 border-b-2 border-black">
+                <h3 class="font-bold text-base tracking-wider">LM SCENTS & FASHION</h3>
+                <p class="text-[10px] text-gray-700">Punto de Venta | Sucursal Central</p>
+                <p class="text-[11px] mt-1 font-extrabold text-black">TICKET DE COMPRA: ${escaparHTML(folio)}</p>
+                <p class="text-[10px] text-gray-600">${fecha}</p>
+            </div>
+
+            <div class="my-2 p-2 bg-gray-100 rounded border border-gray-300 flex justify-between items-center text-xs">
+                <div>
+                    <span class="text-gray-600 font-bold uppercase text-[10px]">Total Artículos:</span>
+                    <span class="font-bold ml-1">${totalArts} pza(s)</span>
+                </div>
+                <div class="text-right">
+                    <span class="text-gray-600 font-bold uppercase text-[10px]">Pago:</span>
+                    <span class="font-bold ml-1">${escaparHTML(venta.metodoPago || "Efectivo")}</span>
+                </div>
+            </div>
+
+            <div class="py-2">
+                <p class="font-bold text-[11px] mb-1">DETALLE DE COMPRA:</p>
+                ${itemsTicket || '<p class="text-xs text-gray-500">Sin artículos</p>'}
+            </div>
+
+            <div class="pt-2 border-t-2 border-black space-y-1 text-xs">
+                <div class="flex justify-between text-gray-600">
+                    <span>Subtotal:</span>
+                    <span class="font-mono">$${Number(venta.subtotal || 0).toFixed(2)}</span>
+                </div>
+                <div class="flex justify-between font-bold text-base pt-1 border-t border-gray-200">
+                    <span>TOTAL:</span>
+                    <span class="font-mono text-black">$${Number(venta.total || 0).toFixed(2)}</span>
+                </div>
+            </div>
+
+            <div class="pt-6 text-center text-[10px] text-gray-600 space-y-2">
+                <p class="font-semibold text-gray-800">¡Muchas gracias por su preferencia!</p>
+                <p>Conserve este comprobante para cualquier aclaración o cambio.</p>
+            </div>
+        `;
+    }
+
+    if (modalTicketDespacho) {
+        modalTicketDespacho.classList.remove("hidden");
+        modalTicketDespacho.classList.add("flex");
+    }
+};
+
+// TICKET PARA PEDIDO DE LA APP MÓVIL
+window.abrirTicketDespacho = function(pedidoId) {
+
+    const pedido = pedidosMoviles.find(p => p.id === pedidoId);
+    if (!pedido) return;
+
+    pedidoParaTicket = pedido;
+
+    const textoTituloModal = document.getElementById("textoTituloModalTicket");
+    if (textoTituloModal) {
+        textoTituloModal.textContent = "Comprobante de Despacho Móvil";
+    }
+
+    const recogidaTienda = esRecogerTienda(pedido);
+    const clienteNombre = escaparHTML(typeof pedido.cliente === "string" ? pedido.cliente : (pedido.cliente?.nombre || pedido.clienteNombre || "Cliente LM Scents"));
+    const clienteTel = escaparHTML(pedido.telefono || pedido.cliente?.telefono || pedido.clienteTelefono || "Sin teléfono registrado");
+    const clienteCorreo = escaparHTML(pedido.correo || pedido.cliente?.correo || "");
+    
+    let clienteDir = "Recolección en sucursal";
+    if (!recogidaTienda) {
+        const partesDir = [pedido.direccion, pedido.ciudad, pedido.codigoPostal ? `C.P. ${pedido.codigoPostal}` : null].filter(Boolean);
+        clienteDir = partesDir.length > 0 ? partesDir.join(", ") : (pedido.cliente?.direccion || "Entrega a Domicilio");
+    }
+    clienteDir = escaparHTML(clienteDir);
+
+    const clienteNotas = escaparHTML(pedido.notas || pedido.cliente?.notas || pedido.notasEntrega || "");
+    const folio = escaparHTML(pedido.id ? (pedido.id.startsWith("#") ? pedido.id : `#${pedido.id}`) : "#APP-MOVIL");
+    const fecha = formatearFecha(pedido.timestamp || pedido.fecha || pedido.fechaCreacion || pedido.createdAt);
+    const metodoPagoTexto = escaparHTML(pedido.metodoPago || pedido.tipoPago || (pedido.esEfectivo ? "Efectivo" : (pedido.esTarjeta ? "Tarjeta" : "App Móvil")));
+    const estado = escaparHTML(pedido.estado || pedido.estadoPedido || pedido.estadoEntrega || "Pendiente");
+    const productos = Array.isArray(pedido.productos) ? pedido.productos : [];
+
+    const itemsTicket = productos.map(item => {
+        const cant = Number(item.cantidad || item.qty || 1);
+        const precio = Number(item.precio ?? item.precioVenta ?? 0);
+        const subtotalItem = Number(item.subtotal ?? (cant * precio)).toFixed(2);
+        const talla = item.talla_volumen || item.talla || item.size || "";
+
+        return `
+            <div class="flex justify-between py-1.5 border-b border-dashed border-gray-300 text-xs">
+                <div>
+                    <p class="font-bold">${cant}x ${escaparHTML(item.nombre || item.producto || item.name || 'Producto')}</p>
+                    ${talla ? `<p class="text-[10px] text-gray-600">Talla/Presentación: ${escaparHTML(talla)}</p>` : ''}
+                </div>
+                <div class="text-right">
+                    <p class="font-bold font-mono">$${subtotalItem}</p>
+                    <p class="text-[9px] text-gray-500">($${precio.toFixed(2)} c/u)</p>
+                </div>
+            </div>
+        `;
+    }).join("");
+
+    if (cuerpoTicketDespacho) {
+        cuerpoTicketDespacho.innerHTML = `
+            <div class="text-center pb-3 border-b-2 border-black">
+                <h3 class="font-bold text-base tracking-wider">LM SCENTS & FASHION</h3>
+                <p class="text-[10px]">Punto de Venta & Despacho Móvil</p>
+                <p class="text-[11px] mt-1 font-extrabold text-black">ORDEN: ${folio}</p>
+                <p class="text-[10px] text-gray-600">${fecha}</p>
+            </div>
+
+            <div class="my-2 p-2 bg-gray-100 rounded border border-gray-300">
+                <p class="font-bold text-[10px] uppercase tracking-wide text-gray-700">MODALIDAD DE ENTREGA:</p>
+                <p class="text-xs font-extrabold text-black mt-0.5">
+                    ${recogidaTienda ? '🏪 RECOLECCIÓN EN TIENDA (PICK-UP)' : '🛵 ENTREGA A DOMICILIO'}
+                </p>
+            </div>
+
+            <div class="space-y-1 text-[11px] pb-2 border-b border-gray-300">
+                <p><strong>Cliente:</strong> ${clienteNombre}</p>
+                ${clienteTel !== 'Sin teléfono registrado' ? `<p><strong>Teléfono:</strong> ${clienteTel}</p>` : ''}
+                ${clienteCorreo ? `<p><strong>Correo:</strong> ${clienteCorreo}</p>` : ''}
+                <p><strong>Destino:</strong> ${clienteDir}</p>
+                ${clienteNotas ? `<p class="text-gray-700 italic"><strong>Nota:</strong> ${clienteNotas}</p>` : ''}
+            </div>
+
+            <div class="py-2">
+                <p class="font-bold text-[11px] mb-1">ARTÍCULOS SOLICITADOS:</p>
+                ${itemsTicket || '<p class="text-xs text-gray-500">Sin artículos</p>'}
+            </div>
+
+            <div class="pt-2 border-t-2 border-black space-y-1 text-xs">
+                ${Number(pedido.subtotal || 0) > 0 ? `
+                    <div class="flex justify-between text-gray-600">
+                        <span>Subtotal:</span>
+                        <span class="font-mono">$${Number(pedido.subtotal).toFixed(2)}</span>
+                    </div>
+                ` : ''}
+                ${Number(pedido.envio || 0) > 0 ? `
+                    <div class="flex justify-between text-gray-600">
+                        <span>Costo de envío:</span>
+                        <span class="font-mono">$${Number(pedido.envio).toFixed(2)}</span>
+                    </div>
+                ` : ''}
+                ${Number(pedido.descuento || 0) > 0 ? `
+                    <div class="flex justify-between text-gray-600">
+                        <span>Descuento:</span>
+                        <span class="font-mono">-$${Number(pedido.descuento).toFixed(2)}</span>
+                    </div>
+                ` : ''}
+                <div class="flex justify-between font-bold text-sm pt-1 border-t border-gray-200">
+                    <span>TOTAL:</span>
+                    <span class="font-mono">$${Number(pedido.total || 0).toFixed(2)}</span>
+                </div>
+                <div class="flex justify-between text-[10px] text-gray-600 mt-1">
+                    <span>Método de pago:</span>
+                    <span>${metodoPagoTexto} (App Móvil)</span>
+                </div>
+                <div class="flex justify-between text-[10px] text-gray-600">
+                    <span>Estado:</span>
+                    <span class="font-bold uppercase">${estado}</span>
+                </div>
+            </div>
+
+            <div class="pt-6 text-center text-[10px] text-gray-600 space-y-4">
+                <div class="border-t border-black w-48 mx-auto pt-1">
+                    Firma de Entrega / Recibido
+                </div>
+                <p>¡Gracias por su compra en la app móvil!</p>
+            </div>
+        `;
+    }
+
+    if (modalTicketDespacho) {
+        modalTicketDespacho.classList.remove("hidden");
+        modalTicketDespacho.classList.add("flex");
+    }
+
+};
+
+function cerrarTicketDespacho() {
+    if (modalTicketDespacho) {
+        modalTicketDespacho.classList.add("hidden");
+        modalTicketDespacho.classList.remove("flex");
+    }
+    if (buscador) {
+        buscador.focus();
+    }
+}
+window.cerrarTicketDespacho = cerrarTicketDespacho;
+
+// NAVEGACIÓN ENTRE PANTALLAS (PUNTO DE VENTA <-> PEDIDOS APP MÓVIL)
+function irAPedidosMoviles() {
+    const vVenta = document.getElementById("vistaVenta");
+    const vMoviles = document.getElementById("vistaPedidosMoviles");
+    if (vVenta && vMoviles) {
+        vVenta.classList.add("hidden");
+        vMoviles.classList.remove("hidden");
+        vMoviles.classList.add("flex");
+        cargarPedidosMoviles();
+    }
+}
+window.irAPedidosMoviles = irAPedidosMoviles;
+
+function volverAPuntoVenta() {
+    const vVenta = document.getElementById("vistaVenta");
+    const vMoviles = document.getElementById("vistaPedidosMoviles");
+    if (vVenta && vMoviles) {
+        vMoviles.classList.add("hidden");
+        vMoviles.classList.remove("flex");
+        vVenta.classList.remove("hidden");
+        const b = document.getElementById("buscador");
+        if (b) b.focus();
+    }
+}
+window.volverAPuntoVenta = volverAPuntoVenta;
+
+// LISTENERS DE PANTALLA Y PEDIDOS APP MÓVIL
+document.getElementById("btnIrAPedidosMoviles")?.addEventListener("click", irAPedidosMoviles);
+document.getElementById("btnVolverAPuntoVenta")?.addEventListener("click", volverAPuntoVenta);
+document.getElementById("btnRecargarPedidos")?.addEventListener("click", () => cargarPedidosMoviles(true));
+
+// Listeners Ticket
+document.getElementById("btnCerrarTicketDespacho")?.addEventListener("click", cerrarTicketDespacho);
+document.getElementById("btnCerrarTicketBtn")?.addEventListener("click", cerrarTicketDespacho);
+document.getElementById("btnImprimirTicket")?.addEventListener("click", () => {
+    window.print();
+});
+
+modalTicketDespacho?.addEventListener("click", event => {
+    if (event.target === modalTicketDespacho) {
+        cerrarTicketDespacho();
+    }
+});
+
+// Pestañas de filtro
+document.querySelectorAll(".tab-filtro-pedido").forEach(tab => {
+    tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab-filtro-pedido").forEach(t => {
+            t.className = "tab-filtro-pedido px-3 py-1 rounded-lg text-xs font-semibold bg-surface-container text-on-surface-variant hover:text-on-surface transition-all cursor-pointer";
+        });
+        tab.className = "tab-filtro-pedido px-3 py-1 rounded-lg text-xs font-semibold bg-primary text-on-primary transition-all shadow-sm cursor-pointer";
+        filtroPedidoActivo = tab.dataset.filtro || "todos";
+        renderizarPedidosMoviles();
+    });
+});
+
+// Búsqueda en tiempo real de pedidos
+document.getElementById("inputBuscarPedidos")?.addEventListener("input", e => {
+    busquedaPedidoTexto = (e.target.value || "").trim();
+    renderizarPedidosMoviles();
+});
 
 </script>
 

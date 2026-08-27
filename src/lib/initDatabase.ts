@@ -1,4 +1,4 @@
-/*
+
 import {
 doc,
 setDoc,
@@ -12,7 +12,7 @@ db
 export async function initDatabase(){
 
 await Promise.all([
-
+/*
 setDoc(
 doc(db,"configuracion","general"),
 {
@@ -93,6 +93,7 @@ monto:0,
 notas:""
 }
 )
+*/
 
 ]);
 
@@ -101,4 +102,3 @@ console.log(
 );
 
 }
-*/

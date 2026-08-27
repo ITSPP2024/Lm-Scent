@@ -228,6 +228,55 @@ export async function agregarProducto(
                 || 5,
 
 
+            rating:
+                Number(
+                    data.rating
+                )
+                || 5,
+
+
+            concentracion:
+                data.concentracion
+                ?? data.concentration
+                ?? "",
+
+
+            descripcion:
+                data.descripcion
+                ?? data.description
+                ?? "",
+
+
+            caracteristicas:
+                Array.isArray(data.caracteristicas)
+                    ? data.caracteristicas
+                    : (data.caracteristicas
+                        ? String(data.caracteristicas)
+                            .split(",")
+                            .map(s => s.trim())
+                            .filter(Boolean)
+                        : []),
+
+
+            scentNotes:
+                Array.isArray(data.scentNotes)
+                    ? data.scentNotes
+                    : (Array.isArray(data.caracteristicas)
+                        ? data.caracteristicas
+                        : (data.caracteristicas
+                            ? String(data.caracteristicas)
+                                .split(",")
+                                .map(s => s.trim())
+                                .filter(Boolean)
+                            : [])),
+
+
+            sizes:
+                Array.isArray(data.sizes)
+                    ? data.sizes
+                    : [],
+
+
             ventas24h:
                 0,
 
