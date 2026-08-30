@@ -419,14 +419,13 @@
 <!-- ========================================================= -->
 
 <header
-    class="bg-surface border-b border-outline-variant shadow-sm flex justify-between items-center px-container-desktop py-unit w-full z-50"
+    class="bg-surface/95 backdrop-blur border-b border-outline-variant shadow-sm flex justify-between items-center px-4 sm:px-container-desktop py-2.5 sm:py-unit w-full z-50 sticky top-0"
 >
 
-    <div class="flex items-center gap-gutter">
+    <div class="flex items-center gap-4 sm:gap-gutter min-w-0">
 
         <!-- LOGO -->
-
-        <div class="flex items-center gap-3">
+        <a href="/screens/ventas.html" class="flex items-center gap-3 shrink-0 hover:opacity-90 transition-opacity" title="Ir a Ventas">
 
             <img
                 alt="LM Scent Logo"
@@ -438,50 +437,48 @@
                 LM Scents
             </h1>
 
-        </div>
+        </a>
 
 
         <!-- MENU -->
+        <nav class="flex items-center gap-4 sm:gap-6 md:gap-8 ml-4 sm:ml-8 lg:ml-12 overflow-x-auto py-1 scrollbar-none">
 
-        <nav class="hidden lg:flex gap-8 ml-12">
+            <a        
+                class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors pb-1 whitespace-nowrap hover:border-b-2 hover:border-primary/40"
+                href="/screens/ventas.html"
+            >
+                Ventas
+            </a>
 
-    <a        
-    class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors"
-        href="/screens/ventas.html"
-    >
-        Ventas
-    </a>
+            <a
+                class="font-title-md text-title-md text-primary border-b-2 border-primary pb-1 font-bold whitespace-nowrap"
+                href="/screens/inventario.html"
+            >
+                Inventario
+            </a>
 
-    <a
-       class="font-title-md text-title-md text-primary border-b-2 border-primary pb-1"
+            <a
+                class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors pb-1 whitespace-nowrap hover:border-b-2 hover:border-primary/40"
+                href="/screens/reportes.html"
+            >
+                Reportes
+            </a>
 
-        href="/screens/inventario.html"
-    >
-        Inventario
-    </a>
+            <a
+                class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors pb-1 whitespace-nowrap hover:border-b-2 hover:border-primary/40"
+                href="/screens/caja.html"
+            >
+                Caja
+            </a>
 
-    <a
-        class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors"
-        href="/screens/reportes.html"
-    >
-        Reportes
-    </a>
+            <a
+                class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors pb-1 whitespace-nowrap hover:border-b-2 hover:border-primary/40"
+                href="/screens/configuracion.html"
+            >
+                Configuración
+            </a>
 
-    <a
-        class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors"
-        href="/screens/caja.html"
-    >
-        Caja
-    </a>
-
-    <a
-        class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors"
-        href="/screens/configuracion.html"
-    >
-        Configuración
-    </a>
-
-</nav>
+        </nav>
 
     </div>
 
@@ -490,155 +487,11 @@
     <!-- ACCIONES DERECHA -->
     <!-- ===================================================== -->
 
-    <div class="flex items-center gap-gutter">
-
-        <div class="flex gap-3 relative">
-
-
-            <!-- NOTIFICACIONES -->
-
-            <button
-                id="btnNotificaciones"
-                type="button"
-                class="p-2 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-full relative"
-                title="Notificaciones"
-            >
-
-                <span class="material-symbols-outlined">
-                    notifications
-                </span>
-
-                <span
-                    id="notificationDot"
-                    class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"
-                ></span>
-
-            </button>
-
-
-            <!-- PANEL NOTIFICACIONES -->
-
-            <div
-                id="notificationMenu"
-                class="hidden dropdown-menu absolute right-14 top-12 w-80 bg-surface-container-low border border-outline-variant rounded-xl shadow-2xl p-4 z-[100]"
-            >
-
-                <div class="flex items-center justify-between mb-4">
-
-                    <h3 class="font-title-md text-on-surface">
-                        Notificaciones
-                    </h3>
-
-                    <span class="text-[10px] text-on-surface-variant uppercase">
-                        Sistema
-                    </span>
-
-                </div>
-
-                <div class="flex items-center gap-3 p-3 rounded-lg bg-surface-container-high">
-
-                    <span class="material-symbols-outlined text-primary">
-                        notifications
-                    </span>
-
-                    <div>
-
-                        <p class="text-sm text-on-surface">
-                            No hay notificaciones nuevas.
-                        </p>
-
-                        <p class="text-xs text-on-surface-variant mt-1">
-                            Aquí aparecerán los avisos del sistema.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- CUENTA -->
-
-            <button
-                id="btnCuenta"
-                type="button"
-                class="p-2 rounded-full hover:bg-surface-container-high transition-all text-on-surface-variant"
-                title="Cuenta"
-            >
-
-                <span class="material-symbols-outlined">
-                    account_circle
-                </span>
-
-            </button>
-
-
-            <!-- PANEL CUENTA -->
-
-            <div
-                id="accountMenu"
-                class="hidden dropdown-menu absolute right-0 top-12 w-64 bg-surface-container-low border border-outline-variant rounded-xl shadow-2xl p-3 z-[100]"
-            >
-
-                <div class="flex items-center gap-3 p-3 border-b border-outline-variant">
-
-                    <span class="material-symbols-outlined text-primary text-[34px]">
-                        account_circle
-                    </span>
-
-                    <div>
-
-                        <p class="font-title-md text-on-surface">
-                            Cuenta
-                        </p>
-
-                        <p class="text-xs text-on-surface-variant">
-                            Usuario del sistema
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="pt-2">
-
-                    <button
-                        id="btnPerfil"
-                        type="button"
-                        class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors"
-                    >
-
-                        <span class="material-symbols-outlined text-[20px]">
-                            person
-                        </span>
-
-                        Mi cuenta
-
-                    </button>
-
-
-                    <button
-                        id="btnCerrarSesion"
-                        type="button"
-                        class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-error-container text-on-surface-variant hover:text-on-error-container transition-colors"
-                    >
-
-                        <span class="material-symbols-outlined text-[20px]">
-                            logout
-                        </span>
-
-                        Cerrar sesión
-
-                    </button>
-
-                </div>
-
-            </div>
-
+    <div class="flex items-center gap-3 shrink-0">
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-high/60 border border-outline-variant text-xs text-on-surface-variant">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="font-medium text-[11px] uppercase tracking-wider text-on-surface/80">En Línea</span>
         </div>
-
     </div>
 
 </header>
@@ -3318,173 +3171,26 @@ buscadorNavbar?.addEventListener(
 
 
 /* ========================================================= */
-/* NOTIFICACIONES */
+/* NAVEGACIÓN RÁPIDA (PREFETCHING) */
 /* ========================================================= */
 
-const btnNotificaciones =
-    document.getElementById(
-        "btnNotificaciones"
-    );
-
-
-const notificationMenu =
-    document.getElementById(
-        "notificationMenu"
-    );
-
-
-const btnCuenta =
-    document.getElementById(
-        "btnCuenta"
-    );
-
-
-const accountMenu =
-    document.getElementById(
-        "accountMenu"
-    );
-
-
-btnNotificaciones?.addEventListener(
-    "click",
-
-    event => {
-
-        event.stopPropagation();
-
-        notificationMenu.classList.toggle(
-            "hidden"
-        );
-
-        accountMenu.classList.add(
-            "hidden"
-        );
-
-    }
-);
-
-
-btnCuenta?.addEventListener(
-    "click",
-
-    event => {
-
-        event.stopPropagation();
-
-        accountMenu.classList.toggle(
-            "hidden"
-        );
-
-        notificationMenu.classList.add(
-            "hidden"
-        );
-
-    }
-);
-
-
-document.addEventListener(
-    "click",
-
-    event => {
-
-        if (
-            !notificationMenu.contains(
-                event.target
-            ) &&
-            !btnNotificaciones.contains(
-                event.target
-            )
-        ) {
-
-            notificationMenu.classList.add(
-                "hidden"
-            );
-
+document.querySelectorAll('nav a[href]').forEach(link => {
+    link.addEventListener('mouseenter', () => {
+        const href = link.getAttribute('href');
+        if (href && !document.querySelector(`link[rel="prefetch"][href="${href}"]`)) {
+            const prefetchLink = document.createElement('link');
+            prefetchLink.rel = 'prefetch';
+            prefetchLink.href = href;
+            document.head.appendChild(prefetchLink);
         }
-
-
-        if (
-            !accountMenu.contains(
-                event.target
-            ) &&
-            !btnCuenta.contains(
-                event.target
-            )
-        ) {
-
-            accountMenu.classList.add(
-                "hidden"
-            );
-
-        }
-
-    }
-);
-
-
-/* ========================================================= */
-/* CUENTA */
-/* ========================================================= */
-
-document
-    .getElementById(
-        "btnPerfil"
-    )
-    ?.addEventListener(
-        "click",
-
-        () => {
-
-            alert(
-                "La sección de cuenta estará disponible próximamente."
-            );
-
-        }
-    );
-
-
-document
-    .getElementById(
-        "btnCerrarSesion"
-    )
-    ?.addEventListener(
-        "click",
-
-        () => {
-
-            const confirmar =
-                confirm(
-                    "¿Deseas cerrar sesión?"
-                );
-
-
-            if (!confirmar) {
-
-                return;
-
-            }
-
-
-            /*
-             * Aquí posteriormente
-             * conectaremos el sistema
-             * de autenticación.
-             */
-
-            alert(
-                "Sesión cerrada."
-            );
-
-        }
-    );
-
+    }, { once: true });
+});
 
 /* ========================================================= */
 /* INICIO */
 /* ========================================================= */
 
-await cargar();
+cargar().catch(console.error);
 
 </script>
 
