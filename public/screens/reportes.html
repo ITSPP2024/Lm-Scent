@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Reportes y Analítica | LM Scents</title>
+    <meta name="theme-color" content="#131315" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <script src="/pwa-register.js"></script>
+
+
+    <!-- ========================================================= -->
+    <!-- TAILWIND -->
+    <!-- ========================================================= -->
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+
+    <!-- ========================================================= -->
+    <!-- FUENTES -->
+    <!-- ========================================================= -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- ========================================================= -->
+    <!-- CONFIGURACIÓN TAILWIND -->
+    <!-- ========================================================= -->
+
+    <script>
+
+        tailwind.config = {
+
+            darkMode: "class",
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        "outline-variant": "#4d4635",
+                        "secondary": "#c8c6c7",
+                        "secondary-container": "#49494a",
+                        "on-secondary": "#303031",
+
+                        "primary-fixed": "#ffe088",
+                        "inverse-on-surface": "#313030",
+                        "on-primary-fixed": "#241a00",
+
+                        "tertiary-container": "#b2b3b5",
+                        "on-tertiary": "#2f3132",
+
+                        "surface-dim": "#131313",
+
+                        "secondary-fixed": "#e5e2e3",
+                        "secondary-fixed-dim": "#c8c6c7",
+
+                        "surface-container-highest": "#353534",
+
+                        "error-container": "#93000a",
+
+                        "background": "#131313",
+                        "on-primary-fixed-variant": "#574500",
+
+                        "on-background": "#e5e2e1",
+
+                        "tertiary": "#ceced0",
+
+                        "error": "#ffb4ab",
+
+                        "outline": "#99907c",
+
+                        "on-secondary-fixed": "#1b1b1c",
+
+                        "tertiary-fixed-dim": "#c6c6c8",
+
+                        "primary-container": "#d4af37",
+
+                        "on-secondary-container": "#bab8b9",
+
+                        "on-error": "#690005",
+                        "on-error-container": "#ffdad6",
+
+                        "on-primary": "#3c2f00",
+
+                        "on-surface-variant": "#d0c5af",
+
+                        "surface-bright": "#393939",
+
+                        "surface-container-high": "#2a2a2a",
+                        "surface-container": "#201f1f",
+
+                        "surface-variant": "#353534",
+
+                        "inverse-surface": "#e5e2e1",
+
+                        "surface-container-low": "#1c1b1b",
+
+                        "on-tertiary-fixed": "#1a1c1d",
+
+                        "on-surface": "#e5e2e1",
+
+                        "surface-tint": "#e9c349",
+
+                        "primary-fixed-dim": "#e9c349",
+
+                        "on-tertiary-fixed-variant": "#454749",
+
+                        "surface": "#131313",
+
+                        "on-tertiary-container": "#434547",
+
+                        "on-primary-container": "#554300",
+
+                        "primary": "#f2ca50",
+
+                        "tertiary-fixed": "#e2e2e4",
+
+                        "inverse-primary": "#735c00",
+
+                        "surface-container-lowest": "#0e0e0e",
+
+                        "on-secondary-fixed-variant": "#474647"
+                    },
+
+
+                    borderRadius: {
+
+                        DEFAULT: "0.125rem",
+                        lg: "0.25rem",
+                        xl: "0.5rem",
+                        full: "0.75rem"
+
+                    },
+
+
+                    spacing: {
+
+                        unit: "8px",
+                        gutter: "24px",
+
+                        "container-padding-mobile": "20px",
+                        "card-gap": "16px",
+                        "container-padding-desktop": "40px"
+
+                    },
+
+
+                    fontFamily: {
+
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "price-display": ["Hanken Grotesk"],
+                        "label-caps": ["Hanken Grotesk"],
+                        "body-lg": ["Manrope"],
+                        "title-md": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-md": ["Manrope"]
+
+                    },
+
+
+                    fontSize: {
+
+                        "headline-lg-mobile": [
+                            "24px",
+                            {
+                                lineHeight: "32px",
+                                fontWeight: "600"
+                            }
+                        ],
+
+                        "price-display": [
+                            "40px",
+                            {
+                                lineHeight: "40px",
+                                fontWeight: "300"
+                            }
+                        ],
+
+                        "label-caps": [
+                            "12px",
+                            {
+                                lineHeight: "16px",
+                                letterSpacing: "0.1em",
+                                fontWeight: "700"
+                            }
+                        ],
+
+                        "body-lg": [
+                            "18px",
+                            {
+                                lineHeight: "28px",
+                                fontWeight: "400"
+                            }
+                        ],
+
+                        "title-md": [
+                            "20px",
+                            {
+                                lineHeight: "28px",
+                                fontWeight: "500"
+                            }
+                        ],
+
+                        "display-lg": [
+                            "48px",
+                            {
+                                lineHeight: "56px",
+                                letterSpacing: "-0.02em",
+                                fontWeight: "600"
+                            }
+                        ],
+
+                        "headline-lg": [
+                            "32px",
+                            {
+                                lineHeight: "40px",
+                                letterSpacing: "-0.01em",
+                                fontWeight: "500"
+                            }
+                        ],
+
+                        "body-md": [
+                            "16px",
+                            {
+                                lineHeight: "24px",
+                                fontWeight: "400"
+                            }
+                        ]
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+
+    <!-- ========================================================= -->
+    <!-- ESTILOS -->
+    <!-- ========================================================= -->
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            min-height: 100vh;
+        }
+
+
+        .material-symbols-outlined {
+
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24;
+
+            display: inline-block;
+            vertical-align: middle;
+
+        }
+
+
+        .gold-glow:hover {
+
+            box-shadow:
+                0 0 15px
+                rgba(242, 202, 80, 0.2);
+
+        }
+
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1c1b1b;
+        }
+
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+
+            background: #4d4635;
+            border-radius: 10px;
+
+        }
+
+
+        .premium-border {
+
+            border:
+                1px solid
+                rgba(153, 144, 124, 0.1);
+
+        }
+
+
+        .gold-accent-line {
+
+            height: 2px;
+            background: #f2ca50;
+
+        }
+
+
+        .gold-border-top {
+
+            border-top:
+                2px solid
+                #f2ca50;
+
+        }
+
+
+        .luxury-card {
+
+            background: #1c1b1b;
+
+            border:
+                1px solid
+                rgba(153, 144, 124, 0.10);
+
+            box-shadow:
+                0 8px 25px
+                rgba(0, 0, 0, 0.15);
+
+            transition:
+                border-color .2s ease,
+                box-shadow .2s ease;
+
+        }
+
+
+        .luxury-card:hover {
+
+            border-color:
+                rgba(242, 202, 80, 0.15);
+
+            box-shadow:
+                0 10px 30px
+                rgba(0, 0, 0, 0.25);
+
+        }
+
+
+        .tactile-press:active {
+
+            transform: scale(0.97);
+
+            transition:
+                transform 0.1s ease;
+
+        }
+
+
+        .gold-gradient {
+            background: linear-gradient(135deg, #f2ca50 0%, #e9c349 50%, #d4af37 100%);
+            color: #3c2f00;
+        }
+
+        .campo,
+        input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+        textarea,
+        select {
+            width: 100%;
+            background-color: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            padding: 10px 14px;
+            border-radius: 8px;
+            outline: none;
+            color: #000000 !important;
+            font-weight: 500;
+            transition: .2s;
+        }
+
+        .campo::placeholder,
+        input::placeholder,
+        textarea::placeholder {
+            color: #64748b !important;
+            opacity: 1;
+        }
+
+        .campo:focus,
+        input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]):focus,
+        textarea:focus,
+        select:focus {
+            border-color: #f2ca50 !important;
+            box-shadow: 0 0 0 3px rgba(242, 202, 80, .35) !important;
+            background-color: #ffffff !important;
+            color: #000000 !important;
+        }
+
+        select option {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+        }
+
+
+        @keyframes fade {
+
+            from {
+
+                opacity: 0;
+                transform: translateY(10px);
+
+            }
+
+            to {
+
+                opacity: 1;
+                transform: translateY(0);
+
+            }
+
+        }
+
+
+        .dropdown-menu {
+
+            animation:
+                fade .15s ease-out;
+
+        }
+
+
+        .shine-button {
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #f2ca50 0%,
+                    #ffe088 50%,
+                    #f2ca50 100%
+                );
+
+            background-size: 200% auto;
+
+            transition: .3s;
+
+        }
+
+
+        .shine-button:hover {
+
+            animation:
+                subtle-shine 1.5s
+                infinite linear;
+
+        }
+
+
+        @keyframes subtle-shine {
+
+            0% {
+                background-position: -200% center;
+            }
+
+            100% {
+                background-position: 200% center;
+            }
+
+        }
+
+
+        /* ===================================================== */
+        /* BOTONES DE PERIODO */
+        /* ===================================================== */
+
+        .periodo-btn.active {
+
+            background: #f2ca50;
+
+            color: #3c2f00;
+
+            box-shadow:
+                0 2px 8px
+                rgba(242, 202, 80, 0.15);
+
+        }
+
+
+        .periodo-btn:not(.active) {
+
+            background: transparent;
+
+        }
+
+
+        /* ===================================================== */
+        /* SCROLLBAR */
+        /* ===================================================== */
+
+        .custom-scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: #4d4635 #1c1b1b;
+        }
+
+
+        /* ===================================================== */
+        /* TABLA */
+        /* ===================================================== */
+
+        table {
+            min-width: 700px;
+        }
+
+
+        /* ===================================================== */
+        /* RESPONSIVE */
+        /* ===================================================== */
+
+        @media (max-width: 1024px) {
+
+            header {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+
+        }
+
+
+        @media (max-width: 640px) {
+
+            .main-content {
+                padding: 20px !important;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body
+    class="bg-background text-on-background font-body-md selection:bg-primary selection:text-on-primary"
+>
+
+
+<!-- ========================================================= -->
+<!-- NAVBAR -->
+<!-- ========================================================= -->
+
+<header
+    class="bg-surface/95 backdrop-blur border-b border-outline-variant shadow-sm flex justify-between items-center px-4 sm:px-container-desktop py-2.5 sm:py-unit w-full z-50 sticky top-0"
+>
+
+    <!-- ===================================================== -->
+    <!-- IZQUIERDA -->
+    <!-- ===================================================== -->
+
+    <div class="flex items-center gap-4 sm:gap-gutter min-w-0">
+
+        <!-- LOGO -->
+        <a href="./ventas.html" class="flex items-center gap-3 shrink-0 hover:opacity-90 transition-opacity" title="Ir a Ventas">
+
+            <img
+                alt="LM Scents Logo"
+                class="h-10 w-10 rounded-full object-cover border border-primary/30"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx1L8ChuFo0lV2cwq19P_Z1ZI6TatndWWyGalLbbTO_xEFWrTwNGKvEvfyEtPirqURF-fhtPs1DQSzsM19mMLof45jpFiYeixdvjvR3mpiJj-BQ8zajO21Z3soSHWME43z5CJ-SOPTUMqe5MMOYkIjvlpboi0vLZjvwMF-BMGv8fX3IGKV1TIuM-aJ83yN8jbzZFG75ulwlpJK747Pq4D6zM1dCrlWsiKE056dJCouC8ioTH_dfxaYYlgq7xHHLbO7kHA2HpW-BEub"
+            >
+
+            <h1
+                class="font-display-lg text-display-lg font-bold text-primary tracking-tight"
+            >
+                LM Scents
+            </h1>
+
+        </a>
+
+
+        <!-- ================================================= -->
+        <!-- MENÚ -->
+        <!-- ================================================= -->
+
+        <nav
+            class="flex items-center gap-4 sm:gap-6 md:gap-8 ml-4 sm:ml-8 lg:ml-12 overflow-x-auto py-1 scrollbar-none"
+        >
+
+            <a
+                class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors pb-1 whitespace-nowrap hover:border-b-2 hover:border-primary/40"
+                href="./ventas.html"
+            >
+                Ventas
+            </a>
+
+
+            <a
+                class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors pb-1 whitespace-nowrap hover:border-b-2 hover:border-primary/40"
+                href="./inventario.html"
+            >
+                Inventario
+            </a>
+
+
+            <a
+                class="font-title-md text-title-md text-primary border-b-2 border-primary pb-1 font-bold whitespace-nowrap"
+                href="./reportes.html"
+            >
+                Reportes
+            </a>
+
+
+            <a
+                class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors pb-1 whitespace-nowrap hover:border-b-2 hover:border-primary/40"
+                href="./caja.html"
+            >
+                Caja
+            </a>
+
+
+            <a
+                class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors pb-1 whitespace-nowrap hover:border-b-2 hover:border-primary/40"
+                href="./configuracion.html"
+            >
+                Configuración
+            </a>
+
+        </nav>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- ACCIONES DERECHA -->
+    <!-- ===================================================== -->
+
+    <div class="flex items-center gap-3 shrink-0">
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-high/60 border border-outline-variant text-xs text-on-surface-variant">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="font-medium text-[11px] uppercase tracking-wider text-on-surface/80">En Línea</span>
+        </div>
+    </div>
+
+</header>
+
+
+
+<!-- ========================================================= -->
+<!-- CONTENEDOR PRINCIPAL -->
+<!-- ========================================================= -->
+
+<!-- Dashboard -->
+<div class="flex-1 overflow-y-auto p-10 space-y-gutter scroll-smooth">
+
+  <!-- Filters -->
+  <section class="flex flex-col xl:flex-row xl:items-end justify-between gap-4">
+    <div>
+      <h3 class="font-headline-lg text-headline-lg text-on-surface">Panel de Analítica</h3>
+      <p id="periodo-label" class="text-on-surface-variant font-body-md">Cargando...</p>
+    </div>
+    <div class="flex flex-col sm:flex-row sm:items-end gap-3">
+      <div class="flex items-center bg-surface-container-high rounded-lg p-1 gap-1">
+        <button class="periodo-btn active px-4 py-2 font-label-caps text-label-caps rounded-lg shadow-sm transition-all" data-p="hoy">Hoy</button>
+        <button class="periodo-btn px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-all" data-p="semana">Semana</button>
+        <button class="periodo-btn px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-all" data-p="mes">Mes</button>
+      </div>
+
+      <div class="flex flex-wrap items-end gap-2">
+        <label class="flex flex-col gap-1 text-on-surface-variant font-label-caps text-[10px]">
+          Desde
+          <input
+            id="filtro-desde"
+            type="date"
+            class="bg-surface-container-high border border-outline-variant rounded-lg px-3 py-2 text-sm text-on-surface outline-none focus:border-primary"
+          />
+        </label>
+        <label class="flex flex-col gap-1 text-on-surface-variant font-label-caps text-[10px]">
+          Hasta
+          <input
+            id="filtro-hasta"
+            type="date"
+            class="bg-surface-container-high border border-outline-variant rounded-lg px-3 py-2 text-sm text-on-surface outline-none focus:border-primary"
+          />
+        </label>
+        <button
+          id="aplicar-filtro-fechas"
+          type="button"
+          class="px-4 py-2 bg-surface-container-high border border-primary/40 text-primary rounded-lg font-label-caps text-label-caps hover:bg-primary/10 transition-all cursor-pointer"
+        >
+          Aplicar
+        </button>
+        <button
+          id="exportar-excel"
+          type="button"
+          class="px-6 py-2.5 bg-primary text-on-primary font-label-caps text-label-caps hover:brightness-110 transition-all rounded-lg flex items-center gap-2 group tactile-press cursor-pointer"
+        >
+          <span class="material-symbols-outlined">
+            download
+          </span>
+          Exportar a Excel
+        </button>
+      </div>
+    </div>
+    <p id="error-filtro-fechas" class="hidden text-error text-xs" role="alert"></p>
+  </section>
+
+  <!-- KPI Cards -->
+  <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-card-gap">
+    <div class="luxury-card p-6 rounded-xl flex flex-col gap-2 relative overflow-hidden group">
+      <div class="absolute top-0 left-0 w-full gold-accent-line opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      <span class="text-on-surface-variant font-label-caps text-label-caps">Ingresos Totales</span>
+      <div class="flex items-end justify-between">
+        <span id="kpi-ingresos" class="font-price-display text-price-display text-primary">$0.00</span>
+      </div>
+    </div>
+    <div class="luxury-card p-6 rounded-xl flex flex-col gap-2 relative overflow-hidden group">
+      <div class="absolute top-0 left-0 w-full gold-accent-line opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      <span class="text-on-surface-variant font-label-caps text-label-caps">Ticket Promedio</span>
+      <div class="flex items-end justify-between">
+        <span id="kpi-ticket" class="font-price-display text-price-display text-on-surface">$0.00</span>
+      </div>
+    </div>
+    <div class="luxury-card p-6 rounded-xl flex flex-col gap-2 relative overflow-hidden group">
+      <div class="absolute top-0 left-0 w-full gold-accent-line opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      <span class="text-on-surface-variant font-label-caps text-label-caps">Ventas Realizadas</span>
+      <div class="flex items-end justify-between">
+        <span id="kpi-ventas" class="font-price-display text-price-display text-on-surface">0</span>
+      </div>
+    </div>
+    <div class="luxury-card p-6 rounded-xl flex flex-col gap-2 relative overflow-hidden group">
+      <div class="absolute top-0 left-0 w-full gold-accent-line opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      <span class="text-on-surface-variant font-label-caps text-label-caps">Unidades Vendidas</span>
+      <div class="flex items-end justify-between">
+        <span id="kpi-unidades" class="font-price-display text-price-display text-on-surface">0</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chart + Top Productos -->
+  <section class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+    <!-- Barras de ingresos por hora/día -->
+    <div class="lg:col-span-2 luxury-card p-8 rounded-xl h-80 flex flex-col relative group">
+      <div class="absolute top-0 left-0 w-full gold-accent-line"></div>
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="font-title-md text-title-md text-on-surface">Ingresos por Período</h4>
+        <span class="font-label-caps text-[10px] text-on-surface-variant flex items-center gap-2">
+          <span class="w-3 h-3 bg-primary rounded-full inline-block"></span> Ventas
+        </span>
+      </div>
+      <div id="chart-bars" class="flex-1 flex items-end gap-2 pb-2 relative">
+        <div class="text-on-surface-variant text-sm w-full text-center pt-8">Cargando gráfica...</div>
+      </div>
+      <div id="chart-labels" class="flex justify-between pt-2 font-label-caps text-label-caps text-on-surface-variant text-[10px]"></div>
+    </div>
+
+    <!-- Top Productos -->
+    <div class="luxury-card p-8 rounded-xl h-80 flex flex-col relative group">
+      <div class="absolute top-0 left-0 w-full gold-accent-line"></div>
+      <h4 class="font-title-md text-title-md text-on-surface mb-4">Productos Top</h4>
+      <div id="top-productos" class="space-y-4 flex-1 overflow-y-auto pr-1">
+        <div class="text-on-surface-variant text-sm text-center pt-6">Cargando...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tabla de Transacciones -->
+  <section class="luxury-card rounded-xl overflow-hidden relative">
+    <div class="absolute top-0 left-0 w-full gold-accent-line"></div>
+    <div class="p-8 border-b border-outline-variant/30 flex justify-between items-center">
+      <h4 class="font-title-md text-title-md text-on-surface">Transacciones Recientes</h4>
+      <span id="total-tx" class="font-label-caps text-label-caps text-on-surface-variant"></span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="bg-surface-container-high/50 font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">
+          <tr>
+            <th class="px-8 py-4">ID</th>
+            <th class="px-8 py-4">Productos</th>
+            <th class="px-8 py-4">Fecha</th>
+            <th class="px-8 py-4">Monto</th>
+            <th class="px-8 py-4">Estado</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-tx" class="divide-y divide-outline-variant/10">
+          <tr><td colspan="5" class="px-8 py-8 text-center text-on-surface-variant">Cargando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+</main>
+</div>
+
+<script type="module" src="/src/lib/Reportes.js"></script>
+
+<script>
+    /* =========================================================
+       NAVEGACIÓN RÁPIDA (PREFETCHING)
+    ========================================================== */
+    document.querySelectorAll('nav a[href]').forEach(link => {
+        link.addEventListener('mouseenter', () => {
+            const href = link.getAttribute('href');
+            if (href && !document.querySelector(`link[rel="prefetch"][href="${href}"]`)) {
+                const prefetchLink = document.createElement('link');
+                prefetchLink.rel = 'prefetch';
+                prefetchLink.href = href;
+                document.head.appendChild(prefetchLink);
+            }
+        }, { once: true });
+    });
+</script>
+</body>
+</html>
