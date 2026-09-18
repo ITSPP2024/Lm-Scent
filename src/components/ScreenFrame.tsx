@@ -1,4 +1,4 @@
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 
 const NAV = [
@@ -11,7 +11,24 @@ const NAV = [
 
 export default function ScreenFrame({ src, title }: { src: string; title: string }) {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  // Redirigir a bienvenida si se intenta acceder a pantallas protegidas sin sesión iniciada
+  useEffect(() => {
+    if (pathname !== "/" && pathname !== "/apertura") {
+      try {
+        const sesion =
+          sessionStorage.getItem("lm_sesion_activa") || localStorage.getItem("lm_sesion_activa");
+        if (!sesion) {
+          console.info("[Auth Guard] Sin sesión activa, redirigiendo a Bienvenida...");
+          navigate({ to: "/" });
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+  }, [pathname, navigate]);
 
   // After iframe loads, rewrite the top-nav anchor links inside the HTML
   // so clicks navigate the parent SPA between routes.
@@ -21,7 +38,51 @@ export default function ScreenFrame({ src, title }: { src: string; title: string
     const onLoad = () => {
       try {
         const doc = iframe.contentDocument;
+        const win = iframe.contentWindow;
         if (!doc) return;
+
+        // In Electron, ensure iframe gets keyboard and window focus
+        iframe.focus();
+        win?.focus();
+
+        // Restore focus on click or interaction anywhere inside iframe
+        doc.addEventListener("mousedown", () => {
+          iframe.focus();
+          win?.focus();
+        });
+
+        doc.addEventListener("focusin", () => {
+          iframe.focus();
+        });
+
+        // Global safeguard for Electron: override native alert to prevent blocking OS dialogs
+        if (win) {
+          win.alert = function (message) {
+            console.info("[In-App Notice]", message);
+            try {
+              let toast = doc.getElementById("__global_electron_toast");
+              if (!toast) {
+                toast = doc.createElement("div");
+                toast.id = "__global_electron_toast";
+                toast.style.cssText =
+                  "position:fixed;bottom:24px;right:24px;z-index:99999;background:#2b2930;color:#f5f2f7;padding:12px 20px;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,0.6);font-size:13px;font-weight:600;font-family:system-ui,-apple-system,sans-serif;border:1px solid #49454f;transition:all .3s ease;transform:translateY(0);opacity:1;pointer-events:none;";
+                doc.body.appendChild(toast);
+              }
+              toast.textContent = String(message ?? "");
+              toast.style.opacity = "1";
+              toast.style.transform = "translateY(0)";
+              setTimeout(() => {
+                if (toast) {
+                  toast.style.opacity = "0";
+                  toast.style.transform = "translateY(12px)";
+                }
+              }, 3200);
+            } catch {
+              /* ignore */
+            }
+          };
+        }
+
         const map: Record<string, string> = {
           ventas: "/ventas",
           inventario: "/inventario",
@@ -55,12 +116,7 @@ export default function ScreenFrame({ src, title }: { src: string; title: string
 
   return (
     <div className="h-screen w-screen bg-black flex flex-col">
-      <iframe
-        ref={iframeRef}
-        src={src}
-        title={title}
-        className="flex-1 w-full border-0"
-      />
+      <iframe ref={iframeRef} src={src} title={title} className="flex-1 w-full border-0" />
       {/* Hidden accessible nav for SPA route discovery */}
       <nav className="sr-only" aria-label="Primary">
         {NAV.map((n) => (

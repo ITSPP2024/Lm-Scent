@@ -3,12 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>LM Scents - Gestión de Caja</title>
-<meta name="theme-color" content="#131315" />
-<link rel="icon" type="image/png" href="/favicon.png" />
-<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-<link rel="manifest" href="/manifest.json" />
-<script src="/pwa-register.js"></script>
+<title>SCENT LM - Gestión de Caja</title>
 
     <!-- ========================================================= -->
     <!-- TAILWIND -->
@@ -298,41 +293,37 @@
         }
 
 
-        .campo,
-        input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
-        textarea,
-        select {
+        .campo {
+
             width: 100%;
-            background-color: #ffffff !important;
-            border: 1px solid #cbd5e1 !important;
-            padding: 12px 14px;
-            border-radius: 8px;
+
+            background: #1c1b1b;
+
+            border:
+                1px solid
+                #4d4635;
+
+            padding: 14px;
+
+            border-radius: 10px;
+
             outline: none;
-            color: #000000 !important;
-            font-weight: 500;
+
+            color: white;
+
             transition: .2s;
+
         }
 
-        .campo::placeholder,
-        input::placeholder,
-        textarea::placeholder {
-            color: #64748b !important;
-            opacity: 1;
-        }
 
-        .campo:focus,
-        input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]):focus,
-        textarea:focus,
-        select:focus {
-            border-color: #f2ca50 !important;
-            box-shadow: 0 0 0 3px rgba(242, 202, 80, .35) !important;
-            background-color: #ffffff !important;
-            color: #000000 !important;
-        }
+        .campo:focus {
 
-        select option {
-            background-color: #ffffff !important;
-            color: #000000 !important;
+            border-color: #f2ca50;
+
+            box-shadow:
+                0 0 15px
+                rgba(242, 202, 80, .2);
+
         }
 
         /* Los modales permanecen ocultos hasta que su botón los abre. */
@@ -455,7 +446,7 @@
     <div class="flex items-center gap-4 sm:gap-gutter min-w-0">
 
         <!-- LOGO -->
-        <a href="./ventas.html" class="flex items-center gap-3 shrink-0 hover:opacity-90 transition-opacity" title="Ir a Ventas">
+        <a href="/screens/ventas.html" class="flex items-center gap-3 shrink-0 hover:opacity-90 transition-opacity" title="Ir a Ventas">
 
             <img
                 alt="LM Scent Logo"
@@ -475,35 +466,35 @@
 
             <a        
                 class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors pb-1 whitespace-nowrap hover:border-b-2 hover:border-primary/40"
-                href="./ventas.html"
+                href="/screens/ventas.html"
             >
                 Ventas
             </a>
 
             <a
                 class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors pb-1 whitespace-nowrap hover:border-b-2 hover:border-primary/40"
-                href="./inventario.html"
+                href="/screens/inventario.html"
             >
                 Inventario
             </a>
 
             <a
                 class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors pb-1 whitespace-nowrap hover:border-b-2 hover:border-primary/40"
-                href="./reportes.html"
+                href="/screens/reportes.html"
             >
                 Reportes
             </a>
 
             <a
                 class="font-title-md text-title-md text-primary border-b-2 border-primary pb-1 font-bold whitespace-nowrap"
-                href="./caja.html"
+                href="/screens/caja.html"
             >
                 Caja
             </a>
 
             <a
                 class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors pb-1 whitespace-nowrap hover:border-b-2 hover:border-primary/40"
-                href="./configuracion.html"
+                href="/screens/configuracion.html"
             >
                 Configuración
             </a>
@@ -522,6 +513,13 @@
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span class="font-medium text-[11px] uppercase tracking-wider text-on-surface/80">En Línea</span>
         </div>
+        <div id="usuario-sesion-badge" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs text-primary font-medium">
+            <span class="material-symbols-outlined text-sm">person</span>
+            <span id="nombre-usuario-sesion">Usuario</span>
+        </div>
+        <button id="btn-cerrar-sesion" title="Cerrar sesión" class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error/10 transition-colors flex items-center justify-center cursor-pointer">
+            <span class="material-symbols-outlined text-lg">logout</span>
+        </button>
     </div>
 
 </header>
@@ -845,6 +843,49 @@
   </div>
 </div>
 
+<!-- MODAL: CONFIRMACIÓN FINAL DE CORTE DE CAJA -->
+<div id="modal-confirmacion-final-corte" class="modal-overlay select-none" aria-hidden="true">
+  <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl p-6 text-center space-y-4">
+    <div class="w-12 h-12 mx-auto rounded-full bg-red-500/10 text-red-500 flex items-center justify-center">
+      <span class="material-symbols-outlined text-[28px]">lock_reset</span>
+    </div>
+    <div>
+      <h3 class="font-bold text-base text-on-surface">Confirmar Corte de Caja</h3>
+      <p class="text-xs text-on-surface-variant mt-1">Esto cerrará el turno actual y generará el corte.</p>
+    </div>
+    <div class="py-3 px-4 bg-surface-container-low rounded-xl text-center border border-outline-variant/40">
+      <span class="text-[11px] text-on-surface-variant font-medium">Efectivo contado:</span>
+      <p class="text-2xl font-black text-red-500 font-mono mt-0.5" id="corte-monto-contado-modal">$0.00</p>
+    </div>
+    <div class="flex gap-3 pt-2">
+      <button
+        id="btn-cancelar-corte-modal"
+        type="button"
+        class="flex-1 py-2.5 bg-surface-container border border-outline-variant text-on-surface text-xs font-bold rounded-xl hover:bg-surface-container-high transition-all active:scale-95 cursor-pointer"
+      >
+        Cancelar
+      </button>
+      <button
+        id="btn-aceptar-corte-modal"
+        type="button"
+        class="flex-1 py-2.5 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl transition-all shadow-md active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
+      >
+        <span class="material-symbols-outlined text-[18px]">lock</span>
+        <span>Cerrar Turno</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST NOTIFICACIÓN NO BLOQUEANTE -->
+<div
+  id="toastCaja"
+  class="fixed bottom-6 right-6 z-50 bg-[#2b2930] text-[#e6e1e5] border border-[#49454f] px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 transition-all duration-300 transform translate-y-4 opacity-0 pointer-events-none"
+>
+  <span class="material-symbols-outlined text-[#d0bcff] text-[20px]" id="iconoToastCaja">info</span>
+  <span class="text-xs font-semibold" id="textoToastCaja">Mensaje</span>
+</div>
+
 <!--
   Este script contiene la lógica de la pantalla. No debe tener `src` y código
   interno al mismo tiempo: el navegador ignoraría todo el código interno.
@@ -858,15 +899,94 @@ import {
   validarUsuarioCaja,
   registrarMovimiento,
   actualizarEfectivoEsperado,
-  cerrarCaja
+  cerrarCaja,
+  obtenerSesionActiva,
+  cerrarSesion,
+  verificarSesionOVolverAWelcome
 } from "/src/lib/movimientosCaja.js";
+
+// Verificar que exista una sesión activa; de lo contrario redirigir a bienvenida
+const sesionUsuario = verificarSesionOVolverAWelcome();
+if (sesionUsuario) {
+  const badge = document.getElementById("usuario-sesion-badge");
+  const nombreEl = document.getElementById("nombre-usuario-sesion");
+  if (badge && nombreEl) {
+    nombreEl.textContent = sesionUsuario.nombre || "Usuario";
+    badge.classList.remove("hidden");
+  }
+}
+
+const btnLogout = document.getElementById("btn-cerrar-sesion");
+if (btnLogout) {
+  btnLogout.addEventListener("click", () => {
+    cerrarSesion();
+    if (window.top && window.top !== window.self) {
+      window.top.location.href = "/";
+    } else {
+      window.location.assign("/screens/welcome.html");
+    }
+  });
+}
 
 let cajaActual = null;
 let movimientosCache = [];
 let ventasCache = [];
 let operacionPendiente = null;
 
-const RUTA_APERTURA = "./apertura.html";
+const RUTA_APERTURA = "/screens/apertura.html";
+
+function mostrarToastCaja(mensaje, icono = "info") {
+  const toast = document.getElementById("toastCaja");
+  const texto = document.getElementById("textoToastCaja");
+  const ico = document.getElementById("iconoToastCaja");
+  if (!toast) return;
+  if (texto) texto.textContent = mensaje;
+  if (ico) ico.textContent = icono;
+  toast.classList.remove("opacity-0", "translate-y-4", "pointer-events-none");
+  setTimeout(() => {
+    toast.classList.add("opacity-0", "translate-y-4", "pointer-events-none");
+  }, 3200);
+}
+
+function pedirConfirmacionCorte(contado) {
+  return new Promise(resolve => {
+    const modal = document.getElementById("modal-confirmacion-final-corte");
+    const montoElem = document.getElementById("corte-monto-contado-modal");
+    const btnCancel = document.getElementById("btn-cancelar-corte-modal");
+    const btnAceptar = document.getElementById("btn-aceptar-corte-modal");
+
+    if (!modal) {
+      resolve(true);
+      return;
+    }
+
+    if (montoElem) {
+      montoElem.textContent = fmt(contado);
+    }
+
+    const cleanup = () => {
+      cerrarModal(modal);
+      if (btnCancel) btnCancel.onclick = null;
+      if (btnAceptar) btnAceptar.onclick = null;
+    };
+
+    if (btnCancel) {
+      btnCancel.onclick = () => {
+        cleanup();
+        resolve(false);
+      };
+    }
+
+    if (btnAceptar) {
+      btnAceptar.onclick = () => {
+        cleanup();
+        resolve(true);
+      };
+    }
+
+    abrirModal(modal);
+  });
+}
 
 const numero = n => {
   const valor = Number(n);
@@ -1314,7 +1434,7 @@ function limpiarAutorizacionMovimiento() {
 
 document.getElementById("btn-ingreso").addEventListener("click", () => {
   if (!cajaActual?.id) {
-    alert("No hay caja abierta para registrar un ingreso.");
+    mostrarToastCaja("No hay caja abierta para registrar un ingreso.", "warning");
     return;
   }
 
@@ -1325,18 +1445,13 @@ document.getElementById("btn-ingreso").addEventListener("click", () => {
 
 document.getElementById("btn-retiro").addEventListener("click", () => {
   if (!cajaActual?.id) {
-    alert("No hay caja abierta para registrar un retiro.");
+    mostrarToastCaja("No hay caja abierta para registrar un retiro.", "warning");
     return;
   }
 
   cerrarModal(modalIngreso);
   cerrarModal(modalAutorizacion);
   abrirModal(modalRetiro);
-});
-
-document.querySelectorAll(".modal-overlay > div").forEach(card => {
-  card.addEventListener("click", e => e.stopPropagation());
-  card.addEventListener("dblclick", e => e.stopPropagation());
 });
 
 document.querySelectorAll(".modal-close").forEach(boton => {
@@ -1374,7 +1489,8 @@ document.getElementById("confirmar-ingreso").onclick = () => {
   const descripcion = document.getElementById("ingreso-desc").value;
 
   if (!monto || monto <= 0) {
-    alert("Ingrese un monto válido");
+    mostrarToastCaja("Ingrese un monto válido para el ingreso.", "warning");
+    document.getElementById("ingreso-monto")?.focus();
     return;
   }
 
@@ -1387,7 +1503,8 @@ document.getElementById("confirmar-retiro").onclick = () => {
   const descripcion = document.getElementById("retiro-desc").value;
 
   if (!monto || monto <= 0) {
-    alert("Ingrese un monto válido");
+    mostrarToastCaja("Ingrese un monto válido para el retiro.", "warning");
+    document.getElementById("retiro-monto")?.focus();
     return;
   }
 
@@ -1457,7 +1574,7 @@ formularioAutorizacionMovimiento.addEventListener("submit", async event => {
 // Abrir autorización antes del corte final.
 document.getElementById("btn-corte").addEventListener("click", () => {
   if (!cajaActual?.id) {
-    alert("No hay caja abierta para cerrar.");
+    mostrarToastCaja("No hay caja abierta para cerrar.", "warning");
     return;
   }
 
@@ -1489,9 +1606,15 @@ formularioAutorizacion.addEventListener("submit", async event => {
       return;
     }
 
-    const resumenAntesCierre = await obtenerResumenCaja();
+    const resumenAntesCierre = await obtenerResumenCaja(cajaActual.id);
     const contado = calcularContado();
-    if (!confirm(`¿Confirmar corte de caja?\nEfectivo contado: ${fmt(contado)}\n\nEsto cerrará el turno actual.`)) {
+    
+    // Cerrar modal de credenciales mientras confirma el monto
+    cerrarModal(modalAutorizacion);
+
+    const confirmar = await pedirConfirmacionCorte(contado);
+    if (!confirmar) {
+      abrirModal(modalAutorizacion);
       return;
     }
 
@@ -1520,11 +1643,17 @@ formularioAutorizacion.addEventListener("submit", async event => {
       fechaCierre
     });
 
-    cerrarModal(modalAutorizacion);
     limpiarAutorizacion();
     limpiarDatosTemporalesCaja();
-    alert(`Caja cerrada correctamente por ${usuarioAutorizado.nombre}. Se descargó el resumen en Excel.`);
-    window.location.assign(RUTA_APERTURA);
+    cerrarSesion();
+    mostrarToastCaja(`Corte completado y caja cerrada por ${usuarioAutorizado.nombre}. Descargando Excel...`, "check_circle");
+    setTimeout(() => {
+      if (window.top && window.top !== window.self) {
+        window.top.location.href = "/";
+      } else {
+        window.location.assign("/screens/welcome.html");
+      }
+    }, 1500);
   } catch (error) {
     console.error("Error al autorizar o cerrar la caja:", error);
     const codigoError = error?.code || "";

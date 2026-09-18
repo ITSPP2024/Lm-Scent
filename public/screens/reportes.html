@@ -10,12 +10,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Reportes y Analítica | LM Scents</title>
-    <meta name="theme-color" content="#131315" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/manifest.json" />
-    <script src="/pwa-register.js"></script>
+    <title>Reportes y Analítica | SCENT LM</title>
 
 
     <!-- ========================================================= -->
@@ -387,41 +382,37 @@
             color: #3c2f00;
         }
 
-        .campo,
-        input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
-        textarea,
-        select {
+        .campo {
+
             width: 100%;
-            background-color: #ffffff !important;
-            border: 1px solid #cbd5e1 !important;
-            padding: 10px 14px;
-            border-radius: 8px;
+
+            background: #1c1b1b;
+
+            border:
+                1px solid
+                #4d4635;
+
+            padding: 14px;
+
+            border-radius: 10px;
+
             outline: none;
-            color: #000000 !important;
-            font-weight: 500;
+
+            color: white;
+
             transition: .2s;
+
         }
 
-        .campo::placeholder,
-        input::placeholder,
-        textarea::placeholder {
-            color: #64748b !important;
-            opacity: 1;
-        }
 
-        .campo:focus,
-        input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]):focus,
-        textarea:focus,
-        select:focus {
-            border-color: #f2ca50 !important;
-            box-shadow: 0 0 0 3px rgba(242, 202, 80, .35) !important;
-            background-color: #ffffff !important;
-            color: #000000 !important;
-        }
+        .campo:focus {
 
-        select option {
-            background-color: #ffffff !important;
-            color: #000000 !important;
+            border-color: #f2ca50;
+
+            box-shadow:
+                0 0 15px
+                rgba(242, 202, 80, .2);
+
         }
 
 
@@ -581,7 +572,7 @@
     <div class="flex items-center gap-4 sm:gap-gutter min-w-0">
 
         <!-- LOGO -->
-        <a href="./ventas.html" class="flex items-center gap-3 shrink-0 hover:opacity-90 transition-opacity" title="Ir a Ventas">
+        <a href="/screens/ventas.html" class="flex items-center gap-3 shrink-0 hover:opacity-90 transition-opacity" title="Ir a Ventas">
 
             <img
                 alt="LM Scents Logo"
@@ -608,7 +599,7 @@
 
             <a
                 class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors pb-1 whitespace-nowrap hover:border-b-2 hover:border-primary/40"
-                href="./ventas.html"
+                href="/screens/ventas.html"
             >
                 Ventas
             </a>
@@ -616,7 +607,7 @@
 
             <a
                 class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors pb-1 whitespace-nowrap hover:border-b-2 hover:border-primary/40"
-                href="./inventario.html"
+                href="/screens/inventario.html"
             >
                 Inventario
             </a>
@@ -624,7 +615,7 @@
 
             <a
                 class="font-title-md text-title-md text-primary border-b-2 border-primary pb-1 font-bold whitespace-nowrap"
-                href="./reportes.html"
+                href="/screens/reportes.html"
             >
                 Reportes
             </a>
@@ -632,7 +623,7 @@
 
             <a
                 class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors pb-1 whitespace-nowrap hover:border-b-2 hover:border-primary/40"
-                href="./caja.html"
+                href="/screens/caja.html"
             >
                 Caja
             </a>
@@ -640,7 +631,7 @@
 
             <a
                 class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors pb-1 whitespace-nowrap hover:border-b-2 hover:border-primary/40"
-                href="./configuracion.html"
+                href="/screens/configuracion.html"
             >
                 Configuración
             </a>
@@ -659,6 +650,13 @@
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span class="font-medium text-[11px] uppercase tracking-wider text-on-surface/80">En Línea</span>
         </div>
+        <div id="usuario-sesion-badge" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs text-primary font-medium">
+            <span class="material-symbols-outlined text-sm">person</span>
+            <span id="nombre-usuario-sesion">Usuario</span>
+        </div>
+        <button id="btn-cerrar-sesion" title="Cerrar sesión" class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error/10 transition-colors flex items-center justify-center cursor-pointer">
+            <span class="material-symbols-outlined text-lg">logout</span>
+        </button>
     </div>
 
 </header>

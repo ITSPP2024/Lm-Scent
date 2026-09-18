@@ -9,37 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AperturaRouteImport } from './routes/apertura'
-import { Route as CajaRouteImport } from './routes/caja'
-import { Route as ConfiguracionRouteImport } from './routes/configuracion'
-import { Route as InventarioRouteImport } from './routes/inventario'
-import { Route as ReportesRouteImport } from './routes/reportes'
 import { Route as VentasRouteImport } from './routes/ventas'
+import { Route as ReportesRouteImport } from './routes/reportes'
+import { Route as InventarioRouteImport } from './routes/inventario'
+import { Route as ConfiguracionRouteImport } from './routes/configuracion'
+import { Route as CajaRouteImport } from './routes/caja'
+import { Route as AperturaRouteImport } from './routes/apertura'
+import { Route as IndexRouteImport } from './routes/index'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AperturaRoute = AperturaRouteImport.update({
-  id: '/apertura',
-  path: '/apertura',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CajaRoute = CajaRouteImport.update({
-  id: '/caja',
-  path: '/caja',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConfiguracionRoute = ConfiguracionRouteImport.update({
-  id: '/configuracion',
-  path: '/configuracion',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InventarioRoute = InventarioRouteImport.update({
-  id: '/inventario',
-  path: '/inventario',
+const VentasRoute = VentasRouteImport.update({
+  id: '/ventas',
+  path: '/ventas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReportesRoute = ReportesRouteImport.update({
@@ -47,9 +27,29 @@ const ReportesRoute = ReportesRouteImport.update({
   path: '/reportes',
   getParentRoute: () => rootRouteImport,
 } as any)
-const VentasRoute = VentasRouteImport.update({
-  id: '/ventas',
-  path: '/ventas',
+const InventarioRoute = InventarioRouteImport.update({
+  id: '/inventario',
+  path: '/inventario',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfiguracionRoute = ConfiguracionRouteImport.update({
+  id: '/configuracion',
+  path: '/configuracion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CajaRoute = CajaRouteImport.update({
+  id: '/caja',
+  path: '/caja',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AperturaRoute = AperturaRouteImport.update({
+  id: '/apertura',
+  path: '/apertura',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -123,39 +123,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/apertura': {
-      id: '/apertura'
-      path: '/apertura'
-      fullPath: '/apertura'
-      preLoaderRoute: typeof AperturaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/caja': {
-      id: '/caja'
-      path: '/caja'
-      fullPath: '/caja'
-      preLoaderRoute: typeof CajaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/configuracion': {
-      id: '/configuracion'
-      path: '/configuracion'
-      fullPath: '/configuracion'
-      preLoaderRoute: typeof ConfiguracionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/inventario': {
-      id: '/inventario'
-      path: '/inventario'
-      fullPath: '/inventario'
-      preLoaderRoute: typeof InventarioRouteImport
+    '/ventas': {
+      id: '/ventas'
+      path: '/ventas'
+      fullPath: '/ventas'
+      preLoaderRoute: typeof VentasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reportes': {
@@ -165,11 +137,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReportesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ventas': {
-      id: '/ventas'
-      path: '/ventas'
-      fullPath: '/ventas'
-      preLoaderRoute: typeof VentasRouteImport
+    '/inventario': {
+      id: '/inventario'
+      path: '/inventario'
+      fullPath: '/inventario'
+      preLoaderRoute: typeof InventarioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/configuracion': {
+      id: '/configuracion'
+      path: '/configuracion'
+      fullPath: '/configuracion'
+      preLoaderRoute: typeof ConfiguracionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/caja': {
+      id: '/caja'
+      path: '/caja'
+      fullPath: '/caja'
+      preLoaderRoute: typeof CajaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apertura': {
+      id: '/apertura'
+      path: '/apertura'
+      fullPath: '/apertura'
+      preLoaderRoute: typeof AperturaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
   }

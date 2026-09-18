@@ -275,6 +275,11 @@ inputmode="decimal"
 
 </div>
 
+<div id="error-monto" class="hidden text-xs text-red-500 font-medium mt-2 flex items-center gap-1">
+  <span class="material-symbols-outlined text-sm">error</span>
+  <span>Por favor, ingrese un monto inicial válido mayor a cero.</span>
+</div>
+
 </div>
 
 <div class="flex gap-2 mb-6">
@@ -396,22 +401,19 @@ Esta acción registrará la apertura oficial y permitirá procesar ventas.
 <script type="module">
 
 import {
-abrirCaja
-}
-from "/src/lib/caja.ts";
+  abrirCaja,
+  validarUsuarioCaja,
+  obtenerCajaAbierta,
+  guardarSesionActiva,
+  obtenerSesionActiva
+} from "/src/lib/movimientosCaja.js";
 
-import {
-validarUsuarioCaja,
-obtenerCajaAbierta,
-guardarSesionActiva
-}
-from "/src/lib/movimientosCaja.js";
-
-// Si ya hay una caja abierta, redirigir automáticamente a Ventas
+// Si ya hay una caja abierta Y una sesión activa legítima, ir directamente a Ventas
 (async () => {
   try {
+    const sesion = obtenerSesionActiva();
     const cajaAbierta = await obtenerCajaAbierta();
-    if (cajaAbierta) {
+    if (cajaAbierta && sesion) {
       window.location.replace("./ventas.html");
     }
   } catch (e) {
@@ -419,37 +421,27 @@ from "/src/lib/movimientosCaja.js";
   }
 })();
 
-const input =
-document.getElementById("amount");
+const input = document.getElementById("amount");
+const errorMonto = document.getElementById("error-monto");
+const notes = document.getElementById("notes");
+const button = document.getElementById("open-cash");
+const modalAutorizacion = document.getElementById("modal-autorizacion-apertura");
+const formularioAutorizacion = document.getElementById("form-autorizacion-apertura");
+const botonCerrarAutorizacion = document.getElementById("cerrar-autorizacion-apertura");
+const botonCancelarAutorizacion = document.getElementById("cancelar-autorizacion-apertura");
+const botonConfirmarAutorizacion = document.getElementById("confirmar-autorizacion-apertura");
+const errorAutorizacion = document.getElementById("error-autorizacion-apertura");
 
-const notes =
-document.getElementById("notes");
-
-const button =
-document.getElementById("open-cash");
-
-const modalAutorizacion =
-document.getElementById("modal-autorizacion-apertura");
-
-const formularioAutorizacion =
-document.getElementById("form-autorizacion-apertura");
-
-const botonCerrarAutorizacion =
-document.getElementById("cerrar-autorizacion-apertura");
-
-const botonCancelarAutorizacion =
-document.getElementById("cancelar-autorizacion-apertura");
-
-const botonConfirmarAutorizacion =
-document.getElementById("confirmar-autorizacion-apertura");
-
-const errorAutorizacion =
-document.getElementById("error-autorizacion-apertura");
+input.addEventListener("input", () => {
+  if (errorMonto) errorMonto.classList.add("hidden");
+});
 
 function abrirModalAutorizacion(){
   modalAutorizacion.classList.add("active");
   modalAutorizacion.setAttribute("aria-hidden", "false");
-  document.getElementById("apertura-usuario")?.focus();
+  setTimeout(() => {
+    document.getElementById("apertura-usuario")?.focus();
+  }, 100);
 }
 
 function cerrarModalAutorizacion(){
@@ -476,46 +468,26 @@ document.addEventListener("keydown", event => {
   }
 });
 
-document
-.querySelectorAll(".chip")
-.forEach(btn=>{
-
-btn.addEventListener(
-"click",
-()=>{
-
-input.value=
-Number(
-btn.dataset.v
-).toFixed(2);
-
+document.querySelectorAll(".chip").forEach(btn => {
+  btn.addEventListener("click", () => {
+    input.value = Number(btn.dataset.v).toFixed(2);
+    if (errorMonto) errorMonto.classList.add("hidden");
+  });
 });
 
-});
+button.addEventListener("click", async () => {
+  const fondo = Number(input.value);
 
-button.addEventListener(
-"click",
+  if (!fondo || fondo <= 0) {
+    if (errorMonto) {
+      errorMonto.classList.remove("hidden");
+    }
+    input.focus();
+    return;
+  }
 
-async()=>{
-
-const fondo =
-Number(input.value);
-
-if(
-!fondo ||
-fondo<=0
-){
-
-alert(
-"Ingrese un monto válido"
-);
-
-return;
-
-}
-
-abrirModalAutorizacion();
-
+  if (errorMonto) errorMonto.classList.add("hidden");
+  abrirModalAutorizacion();
 });
 
 formularioAutorizacion.addEventListener("submit", async event => {
@@ -529,16 +501,16 @@ formularioAutorizacion.addEventListener("submit", async event => {
   botonConfirmarAutorizacion.disabled = true;
   botonConfirmarAutorizacion.textContent = "Verificando...";
 
-  try{
+  try {
     const usuarioAutorizado = await validarUsuarioCaja(usuario, password);
 
-    if(!usuarioAutorizado){
+    if (!usuarioAutorizado) {
       errorAutorizacion.textContent = "Usuario o contraseña incorrectos.";
       errorAutorizacion.classList.remove("hidden");
       return;
     }
 
-    botonConfirmarAutorizacion.textContent = "Guardando...";
+    botonConfirmarAutorizacion.textContent = "Iniciando caja...";
 
     await abrirCaja(
       Number(input.value),
@@ -549,19 +521,30 @@ formularioAutorizacion.addEventListener("submit", async event => {
 
     guardarSesionActiva(usuarioAutorizado);
 
-    cerrarModalAutorizacion();
-    alert(`Caja abierta correctamente por ${usuarioAutorizado.nombre}`);
-    window.location.href = "./ventas.html";
-  }catch(error){
+    botonConfirmarAutorizacion.textContent = "¡Caja Abierta!";
+    botonConfirmarAutorizacion.classList.remove("btn-gold");
+    botonConfirmarAutorizacion.classList.add("bg-emerald-600", "text-white");
+
+    setTimeout(() => {
+      cerrarModalAutorizacion();
+      if (window.top && window.top !== window.self) {
+        window.top.location.href = "/ventas";
+      } else {
+        window.location.href = "./ventas.html";
+      }
+    }, 600);
+  } catch(error) {
     console.error("Error al autorizar la apertura:", error);
     errorAutorizacion.textContent =
       error?.code === "permission-denied"
         ? "Firebase no permite validar el usuario o abrir la caja. Revisa las reglas de Firestore."
         : "No se pudo autorizar o guardar la apertura. Inténtalo de nuevo.";
     errorAutorizacion.classList.remove("hidden");
-  }finally{
-    botonConfirmarAutorizacion.disabled = false;
-    botonConfirmarAutorizacion.textContent = "Autorizar y abrir";
+  } finally {
+    if (!botonConfirmarAutorizacion.textContent.includes("¡Caja Abierta!")) {
+      botonConfirmarAutorizacion.disabled = false;
+      botonConfirmarAutorizacion.textContent = "Autorizar y abrir";
+    }
   }
 });
 

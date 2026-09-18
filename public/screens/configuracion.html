@@ -485,6 +485,13 @@
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span class="font-medium text-[11px] uppercase tracking-wider text-on-surface/80">En Línea</span>
         </div>
+        <div id="usuario-sesion-badge" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs text-primary font-medium">
+            <span class="material-symbols-outlined text-sm">person</span>
+            <span id="nombre-usuario-sesion">Usuario</span>
+        </div>
+        <button id="btn-cerrar-sesion" title="Cerrar sesión" class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error/10 transition-colors flex items-center justify-center cursor-pointer">
+            <span class="material-symbols-outlined text-lg">logout</span>
+        </button>
     </div>
 
 </header>
@@ -626,38 +633,13 @@
             <input id="cfg-copias" class="bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 py-1 text-center font-bold outline-none" type="number" value="1" min="1" max="5"/>
           </div>
         </div>
-        <button onclick="alert('Imprimiendo ticket de prueba...')" class="w-full py-3 bg-surface-container-highest text-on-surface hover:bg-surface-container-high transition-colors rounded-lg font-label-caps text-label-caps flex items-center justify-center gap-2">
+        <button onclick="showToast('Imprimiendo ticket de prueba...', 'info')" class="w-full py-3 bg-surface-container-highest text-on-surface hover:bg-surface-container-high transition-colors rounded-lg font-label-caps text-label-caps flex items-center justify-center gap-2">
           <span class="material-symbols-outlined text-lg">print_connect</span>
           Imprimir Ticket de Prueba
         </button>
       </div>
     </section>
 
-    <!-- Plantilla de Correo Electrónico (Firebase Auth) -->
-    <section class="md:col-span-12 bento-card rounded-xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border border-primary/30 bg-surface-container-low/60">
-      <div class="flex items-center gap-4">
-        <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-          <span class="material-symbols-outlined text-2xl">mark_email_read</span>
-        </div>
-        <div>
-          <h3 class="font-title-md text-title-md text-on-surface flex items-center gap-2">
-            Plantilla de Correo de Verificación
-            <span class="text-[10px] uppercase font-bold tracking-widest text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20">LM Scents</span>
-          </h3>
-          <p class="font-body-md text-xs sm:text-sm text-on-surface-variant mt-1">
-            Visualiza el diseño oficial de correo con el logo de la boutique, acentos dorados y el formato HTML listo para enviar al soporte de Firebase.
-          </p>
-        </div>
-      </div>
-      <a 
-        href="/email-preview.html" 
-        target="_blank"
-        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-surface font-bold text-xs uppercase tracking-wider transition-all shadow-md shrink-0 active:scale-95"
-      >
-        <span class="material-symbols-outlined text-[18px]">visibility</span>
-        Ver Plantilla Completa
-      </a>
-    </section>
 
   </div>
 </div>
@@ -668,6 +650,33 @@
 
 <script type="module">
 import { obtenerConfiguracion, guardarConfiguracion } from "/src/lib/configuracion.js";
+import {
+  verificarSesionOVolverAWelcome,
+  cerrarSesion,
+} from "/src/lib/movimientosCaja.js";
+
+// Validar que exista una sesión activa; de lo contrario redirigir a Bienvenida
+const sesionUsuario = verificarSesionOVolverAWelcome();
+if (sesionUsuario) {
+  const badge = document.getElementById("usuario-sesion-badge");
+  const nombreEl = document.getElementById("nombre-usuario-sesion");
+  if (badge && nombreEl) {
+    nombreEl.textContent = sesionUsuario.nombre || "Usuario";
+    badge.classList.remove("hidden");
+  }
+}
+
+const btnLogout = document.getElementById("btn-cerrar-sesion");
+if (btnLogout) {
+  btnLogout.addEventListener("click", () => {
+    cerrarSesion();
+    if (window.top && window.top !== window.self) {
+      window.top.location.href = "/";
+    } else {
+      window.location.assign("/screens/welcome.html");
+    }
+  });
+}
 
 let anchoPapel = "80mm";
 
