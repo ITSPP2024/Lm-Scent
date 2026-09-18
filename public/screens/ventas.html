@@ -884,11 +884,14 @@
       if (btnLogout) {
         btnLogout.addEventListener("click", () => {
           cerrarSesion();
-          if (window.top && window.top !== window.self) {
-            window.top.location.href = "/";
-          } else {
-            window.location.assign("/screens/welcome.html");
-          }
+          try {
+            if (window.parent && window.parent !== window) {
+              window.parent.postMessage({ type: "NAVIGATE_TO", path: "/" }, "*");
+            }
+          } catch (e) {}
+          try {
+            window.location.assign("./welcome.html");
+          } catch (e) {}
         });
       }
 

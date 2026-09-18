@@ -8,7 +8,7 @@ import {
   Timestamp,
   doc,
   getDoc,
-  updateDoc
+  updateDoc,
 } from "firebase/firestore";
 
 import { db } from "./firebase";
@@ -78,15 +78,74 @@ function obtenerFechaVenta(venta) {
 }
 
 // =========================================================
+// GESTIÓN DE SESIÓN DE USUARIO
+// =========================================================
+
+export function guardarSesionActiva(usuario) {
+  if (!usuario) return null;
+  const sesion = {
+    id: usuario.id || "",
+    nombre: usuario.nombre || usuario.usuario || "Usuario",
+    rol: usuario.rol || "VENDEDOR",
+    correo: usuario.correo || "",
+    timestamp: Date.now(),
+  };
+  try {
+    localStorage.setItem("lm_sesion_activa", JSON.stringify(sesion));
+    sessionStorage.setItem("lm_sesion_activa", JSON.stringify(sesion));
+  } catch (e) {
+    console.warn("No se pudo almacenar la sesión:", e);
+  }
+  return sesion;
+}
+
+export function obtenerSesionActiva() {
+  try {
+    const raw =
+      sessionStorage.getItem("lm_sesion_activa") || localStorage.getItem("lm_sesion_activa");
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (data && (data.nombre || data.id)) {
+      return data;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function cerrarSesion() {
+  try {
+    localStorage.removeItem("lm_sesion_activa");
+    sessionStorage.removeItem("lm_sesion_activa");
+  } catch (e) {
+    console.warn("Error al cerrar sesión:", e);
+  }
+}
+
+export function verificarSesionOVolverAWelcome() {
+  const sesion = obtenerSesionActiva();
+  if (!sesion) {
+    console.info("Sin sesión activa detectada.");
+    if (typeof window !== "undefined") {
+      try {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: "NAVIGATE_TO", path: "/" }, "*");
+        }
+      } catch (e) {
+        /* ignore cross-origin */
+      }
+    }
+    return null;
+  }
+  return sesion;
+}
+
+// =========================================================
 // REGISTRAR MOVIMIENTO
 // =========================================================
 
-export async function registrarMovimiento({
-  tipo,
-  monto,
-  descripcion,
-  cajaId
-}) {
+export async function registrarMovimiento({ tipo, monto, descripcion, cajaId, usuario = "" }) {
   if (!tipo) {
     throw new Error("El tipo de movimiento es obligatorio.");
   }
@@ -106,13 +165,10 @@ export async function registrarMovimiento({
 
   if (cajaId) {
     const snapshot = await getDocs(
-      query(
-        collection(db, TABLA_CAJAS),
-        where("abierta", "==", true)
-      )
+      query(collection(db, TABLA_CAJAS), where("abierta", "==", true)),
     );
 
-    const cajaEncontrada = snapshot.docs.find(d => d.id === cajaId);
+    const cajaEncontrada = snapshot.docs.find((d) => d.id === cajaId);
 
     if (!cajaEncontrada) {
       throw new Error("La caja no está abierta.");
@@ -120,20 +176,16 @@ export async function registrarMovimiento({
 
     cajaActual = cajaEncontrada;
   } else {
-    const snapshot = await getDocs(
-      query(
-        collection(db, TABLA_CAJAS),
-        where("abierta", "==", true)
-      )
-    );
+    cajaActual = await obtenerCajaAbierta();
 
-    if (snapshot.empty) {
+    if (!cajaActual) {
       throw new Error("No existe una caja abierta.");
     }
 
-    cajaActual = snapshot.docs[0];
     cajaId = cajaActual.id;
   }
+
+  const ahora = new Date();
 
   // Crear movimiento
   const movimiento = {
@@ -141,14 +193,12 @@ export async function registrarMovimiento({
     monto: cantidad,
     descripcion: descripcion?.trim() || "",
     cajaId,
-    fecha: new Date(),
-    timestamp: Date.now()
+    usuario: usuario || "",
+    fecha: ahora,
+    timestamp: ahora.getTime(),
   };
 
-  const movimientoRef = await addDoc(
-    collection(db, TABLA_MOVIMIENTOS),
-    movimiento
-  );
+  const movimientoRef = await addDoc(collection(db, TABLA_MOVIMIENTOS), movimiento);
 
   return movimientoRef;
 }
@@ -158,54 +208,83 @@ export async function registrarMovimiento({
 // =========================================================
 
 export async function obtenerCajaAbierta() {
-  const snapshot = await getDocs(
-    query(
-      collection(db, TABLA_CAJAS),
-      where("abierta", "==", true)
-    )
-  );
+  try {
+    const snapshot = await getDocs(
+      query(collection(db, TABLA_CAJAS), where("abierta", "==", true)),
+    );
 
-  if (snapshot.empty) {
+    if (snapshot.empty) {
+      return null;
+    }
+
+    // Ordenar de más reciente a más antigua para tomar estrictamente el turno actual
+    const cajas = snapshot.docs.map((d) => ({
+      id: d.id,
+      ...d.data(),
+    }));
+
+    cajas.sort((a, b) => {
+      const timeA = convertirFecha(a.fecha) || a.timestamp || 0;
+      const timeB = convertirFecha(b.fecha) || b.timestamp || 0;
+      const msA = timeA instanceof Date ? timeA.getTime() : Number(timeA) || 0;
+      const msB = timeB instanceof Date ? timeB.getTime() : Number(timeB) || 0;
+      return msB - msA;
+    });
+
+    const masReciente = cajas[0];
+
+    // Si por inconsistencias previas quedaron múltiples abiertas, cerrar en segundo plano las antiguas
+    if (cajas.length > 1) {
+      for (let i = 1; i < cajas.length; i++) {
+        updateDoc(doc(db, TABLA_CAJAS, cajas[i].id), {
+          abierta: false,
+          motivoCierre: "Cierre automático de caja duplicada anterior",
+        }).catch(() => {});
+      }
+    }
+
+    return masReciente;
+  } catch (error) {
+    console.error("Error al obtener caja abierta:", error);
     return null;
   }
-
-  const documento = snapshot.docs[0];
-
-  return {
-    id: documento.id,
-    ...documento.data()
-  };
 }
 
 // =========================================================
-// VALIDAR AUTORIZACIÓN PARA CERRAR CAJA
+// VALIDAR AUTORIZACIÓN PARA CAJA
 // =========================================================
 
 export async function validarUsuarioCaja(usuario, password) {
-  const identificador = String(usuario || "").trim().toLowerCase();
+  const identificador = String(usuario || "")
+    .trim()
+    .toLowerCase();
   const clave = String(password || "");
 
   if (!identificador || !clave) {
     return null;
   }
 
-  const documentoBase = await getDoc(
-    doc(db, TABLA_USUARIOS, "base")
-  );
+  const documentoBase = await getDoc(doc(db, TABLA_USUARIOS, "base"));
 
   const documentos = documentoBase.exists()
     ? [documentoBase]
     : (await getDocs(collection(db, TABLA_USUARIOS))).docs;
 
   const encontrado = documentos
-    .map(documento => ({
+    .map((documento) => ({
       id: documento.id,
-      ...documento.data()
+      ...documento.data(),
     }))
-    .find(datos => {
-      const nombre = String(datos.nombre || "").trim().toLowerCase();
-      const correo = String(datos.correo || "").trim().toLowerCase();
-      const usuarioGuardado = String(datos.usuario || "").trim().toLowerCase();
+    .find((datos) => {
+      const nombre = String(datos.nombre || "")
+        .trim()
+        .toLowerCase();
+      const correo = String(datos.correo || "")
+        .trim()
+        .toLowerCase();
+      const usuarioGuardado = String(datos.usuario || "")
+        .trim()
+        .toLowerCase();
 
       return (
         (nombre === identificador ||
@@ -222,7 +301,7 @@ export async function validarUsuarioCaja(usuario, password) {
   return {
     id: encontrado.id,
     nombre: encontrado.nombre || encontrado.correo || encontrado.id,
-    rol: encontrado.rol || ""
+    rol: encontrado.rol || "",
   };
 }
 
@@ -231,22 +310,38 @@ export async function validarUsuarioCaja(usuario, password) {
 // =========================================================
 
 export async function obtenerMovimientosHoy(cajaId = null, fechaApertura = null) {
-  const inicioFiltro = fechaApertura
-    ? (convertirFecha(fechaApertura) || obtenerInicioDelDia())
-    : obtenerInicioDelDia();
+  let inicioFiltro = null;
+  if (fechaApertura) {
+    inicioFiltro = convertirFecha(fechaApertura);
+  }
 
   try {
     const snapshot = await getDocs(collection(db, TABLA_MOVIMIENTOS));
     const movimientos = snapshot.docs
-      .map(d => ({
+      .map((d) => ({
         id: d.id,
-        ...d.data()
+        ...d.data(),
       }))
-      .filter(m => {
-        if (cajaId && m.cajaId && m.cajaId !== cajaId) return false;
-        const fechaM = convertirFecha(m.fecha) || convertirFecha(m.timestamp);
-        if (!fechaM) return false;
-        return fechaM >= inicioFiltro;
+      .filter((m) => {
+        // Aislamiento por turno: Si se especificó cajaId, debe pertenecer a esta caja
+        if (cajaId) {
+          if (m.cajaId) {
+            return m.cajaId === cajaId;
+          }
+          // Si no tiene cajaId, sólo incluir si fue registrado después de abrir esta caja
+          if (!inicioFiltro) return false;
+          const fechaM = convertirFecha(m.fecha) || convertirFecha(m.timestamp);
+          return fechaM && fechaM >= inicioFiltro;
+        }
+
+        // Si se especificó fechaApertura pero no cajaId, filtrar desde esa fecha
+        if (inicioFiltro) {
+          const fechaM = convertirFecha(m.fecha) || convertirFecha(m.timestamp);
+          return fechaM && fechaM >= inicioFiltro;
+        }
+
+        // Si no se proporcionó cajaId ni fechaApertura (historial general de caja), incluir todos los movimientos
+        return true;
       });
 
     return movimientos.sort((a, b) => {
@@ -265,65 +360,77 @@ export async function obtenerMovimientosHoy(cajaId = null, fechaApertura = null)
 // =========================================================
 
 export async function obtenerVentasHoy(cajaId = null, fechaApertura = null) {
-  const inicioFiltro = fechaApertura
-    ? (convertirFecha(fechaApertura) || obtenerInicioDelDia())
-    : obtenerInicioDelDia();
+  let inicioFiltro = null;
+  if (fechaApertura) {
+    inicioFiltro = convertirFecha(fechaApertura);
+  }
 
   try {
     const snapshot = await getDocs(collection(db, TABLA_VENTAS));
     const docs = snapshot.docs
-      .filter(d => d.id !== "base")
-      .map(d => ({
+      .filter((d) => d.id !== "base")
+      .map((d) => ({
         id: d.id,
-        ...d.data()
+        ...d.data(),
       }));
 
-    // Filtrar ventas que impactan la caja en EFECTIVO
-    const ventasEfectivo = docs.filter(v => {
-      const fecha = obtenerFechaVenta(v);
-      if (!fecha || fecha < inicioFiltro) return false;
+    // Filtrar ventas que impactan la caja en EFECTIVO en este corte
+    const ventasEfectivo = docs.filter((v) => {
+      // Aislamiento estricto por corte:
+      if (cajaId) {
+        if (v.cajaId) {
+          // Si la venta tiene cajaId asignado, debe coincidir exactamente con este corte
+          if (v.cajaId !== cajaId) return false;
+        } else {
+          // Si no tiene cajaId (pedidos app o ventas anteriores sin id de caja),
+          // únicamente entran si la fecha es estrictamente igual o posterior a la apertura de este turno
+          if (!inicioFiltro) return false;
+          const fecha = obtenerFechaVenta(v);
+          if (!fecha || fecha < inicioFiltro) return false;
+        }
+      } else if (inicioFiltro) {
+        const fecha = obtenerFechaVenta(v);
+        if (!fecha || fecha < inicioFiltro) return false;
+      }
 
-      const esApp = (
+      const esApp =
         v.origen === "app" ||
         v.origen === "app_movil" ||
         v.canal === "app_movil" ||
         v.canal === "app" ||
         v.esVentaApp === true ||
         Boolean(v.metodoEntrega) ||
-        Boolean(v.clienteMovil)
-      );
+        Boolean(v.clienteMovil);
 
       // Si es de la App Móvil:
       if (esApp) {
-        // 1. Debe estar ENTREGADO
         const estado = String(v.estado || v.estadoEntrega || v.estadoPedido || "").toLowerCase();
-        const esEntregado = (
+        const esEntregado =
           estado === "entregado" ||
           estado === "completado" ||
           estado === "despachado" ||
           v.entregado === true ||
-          v.completado === true
-        );
+          v.completado === true;
 
         if (!esEntregado) return false;
 
-        // 2. Debe haber sido pagado en EFECTIVO (contra entrega o en efectivo)
-        const esEfectivo = (
+        const esEfectivo =
           v.esEfectivo === true ||
-          String(v.metodoPago || "").toLowerCase().includes("efectivo") ||
-          String(v.tipoPago || "").toLowerCase().includes("efectivo") ||
-          (!v.esTarjeta && String(v.metodoPago || "").toLowerCase() !== "tarjeta")
-        );
+          String(v.metodoPago || "")
+            .toLowerCase()
+            .includes("efectivo") ||
+          String(v.tipoPago || "")
+            .toLowerCase()
+            .includes("efectivo") ||
+          (!v.esTarjeta && String(v.metodoPago || "").toLowerCase() !== "tarjeta");
 
         return esEfectivo;
       }
 
       // Si es venta directa del POS de la tienda:
-      // Se considera efectivo a menos que explícitamente se indique que es sólo tarjeta
-      const esTarjeta = (
+      const esTarjeta =
         v.esTarjeta === true ||
-        (String(v.metodoPago || "").toLowerCase() === "tarjeta" && v.esEfectivo !== true)
-      );
+        (String(v.metodoPago || "").toLowerCase() === "tarjeta" && v.esEfectivo !== true);
 
       return !esTarjeta;
     });
@@ -344,19 +451,29 @@ export async function obtenerVentasHoy(cajaId = null, fechaApertura = null) {
 // =========================================================
 
 export async function obtenerActividadCaja(cajaId = null) {
-  const caja = await obtenerCajaAbierta();
-  const idCaja = cajaId || caja?.id || null;
-  const fechaApertura = caja?.fecha || null;
+  let caja = null;
+  if (cajaId) {
+    const docSnap = await getDoc(doc(db, TABLA_CAJAS, cajaId));
+    if (docSnap.exists()) {
+      caja = { id: docSnap.id, ...docSnap.data() };
+    }
+  }
+  if (!caja) {
+    caja = await obtenerCajaAbierta();
+  }
+
+  const idCaja = caja?.id || cajaId || null;
+  const fechaApertura = caja?.fecha || caja?.timestamp || null;
 
   const [movimientos, ventas] = await Promise.all([
     obtenerMovimientosHoy(idCaja, fechaApertura),
-    obtenerVentasHoy(idCaja, fechaApertura)
+    obtenerVentasHoy(idCaja, fechaApertura),
   ]);
 
   return {
     caja,
     movimientos,
-    ventas
+    ventas,
   };
 }
 
@@ -364,20 +481,20 @@ export async function obtenerActividadCaja(cajaId = null) {
 // OBTENER RESUMEN COMPLETO DE CAJA
 // =========================================================
 
-export async function obtenerResumenCaja() {
-  const actividad = await obtenerActividadCaja();
+export async function obtenerResumenCaja(cajaId = null) {
+  const actividad = await obtenerActividadCaja(cajaId);
 
   const caja = actividad.caja;
   const movimientos = actividad.movimientos;
   const ventas = actividad.ventas;
 
   // -------------------------------------------------------
-  // FONDO INICIAL
+  // FONDO INICIAL (Estrictamente de esta caja/turno)
   // -------------------------------------------------------
   const fondoInicial = Number(caja?.fondoInicial || 0);
 
   // -------------------------------------------------------
-  // TOTAL DE VENTAS EN EFECTIVO (POS + APP MÓVIL ENTREGADOS)
+  // TOTAL DE VENTAS EN EFECTIVO
   // -------------------------------------------------------
   const totalVentas = ventas.reduce((total, venta) => {
     return total + (Number(venta.total) || 0);
@@ -387,14 +504,14 @@ export async function obtenerResumenCaja() {
   // TOTAL DE INGRESOS
   // -------------------------------------------------------
   const totalIngresos = movimientos
-    .filter(m => m.tipo === "ingreso")
+    .filter((m) => m.tipo === "ingreso")
     .reduce((total, m) => total + (Number(m.monto) || 0), 0);
 
   // -------------------------------------------------------
   // TOTAL DE RETIROS
   // -------------------------------------------------------
   const totalRetiros = movimientos
-    .filter(m => m.tipo === "retiro")
+    .filter((m) => m.tipo === "retiro")
     .reduce((total, m) => total + (Number(m.monto) || 0), 0);
 
   // -------------------------------------------------------
@@ -416,7 +533,7 @@ export async function obtenerResumenCaja() {
     totalIngresos,
     totalRetiros,
     totalEntradas,
-    efectivoEsperado
+    efectivoEsperado,
   };
 }
 
@@ -424,15 +541,28 @@ export async function obtenerResumenCaja() {
 // ABRIR CAJA
 // =========================================================
 
-export async function abrirCaja(
-  fondoInicial,
-  notas = "",
-  usuarioApertura = "",
-  rolApertura = ""
-) {
+export async function abrirCaja(fondoInicial, notas = "", usuarioApertura = "", rolApertura = "") {
   const fondo = Number(fondoInicial) || 0;
   const ahora = new Date();
 
+  // 1. Cerrar cualquier caja abierta previa para evitar mezcla o arrastre de montos
+  try {
+    const previasSnapshot = await getDocs(
+      query(collection(db, TABLA_CAJAS), where("abierta", "==", true)),
+    );
+    for (const d of previasSnapshot.docs) {
+      await updateDoc(doc(db, TABLA_CAJAS, d.id), {
+        abierta: false,
+        fechaCierre: ahora,
+        timestampCierre: ahora.getTime(),
+        motivoCierre: "Cierre automático al abrir un nuevo turno",
+      });
+    }
+  } catch (err) {
+    console.warn("Advertencia al cerrar cajas previas abiertas:", err);
+  }
+
+  // 2. Crear el nuevo documento de apertura de caja
   const docRef = await addDoc(collection(db, TABLA_CAJAS), {
     fecha: ahora,
     timestamp: ahora.getTime(),
@@ -446,71 +576,10 @@ export async function abrirCaja(
     abierta: true,
     totalVentas: 0,
     totalIngresos: 0,
-    totalRetiros: 0
+    totalRetiros: 0,
   });
 
   return docRef.id;
-}
-
-// =========================================================
-// GESTIÓN DE SESIÓN LOCAL (PERSISTENCIA AL RECARGAR)
-// =========================================================
-
-const CLAVE_SESION = "lm_scents_sesion_activa";
-const CLAVE_CARRITO = "lm_scents_carrito_temp";
-
-export function guardarSesionActiva(usuario) {
-  if (!usuario) return;
-  try {
-    localStorage.setItem(CLAVE_SESION, JSON.stringify({
-      id: usuario.id,
-      nombre: usuario.nombre,
-      rol: usuario.rol || "",
-      timestamp: Date.now()
-    }));
-  } catch (e) {
-    console.error("Error al guardar sesión en localStorage:", e);
-  }
-}
-
-export function obtenerSesionActiva() {
-  try {
-    const raw = localStorage.getItem(CLAVE_SESION);
-    if (!raw) return null;
-    return JSON.parse(raw);
-  } catch (e) {
-    return null;
-  }
-}
-
-export function cerrarSesionLocal() {
-  try {
-    localStorage.removeItem(CLAVE_SESION);
-    localStorage.removeItem(CLAVE_CARRITO);
-  } catch (e) {
-    console.error("Error al cerrar sesión local:", e);
-  }
-}
-
-export function guardarCarritoLocal(carrito) {
-  try {
-    if (!carrito || !carrito.length) {
-      localStorage.removeItem(CLAVE_CARRITO);
-    } else {
-      localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
-    }
-  } catch (e) {}
-}
-
-export function obtenerCarritoLocal() {
-  try {
-    const raw = localStorage.getItem(CLAVE_CARRITO);
-    if (!raw) return [];
-    const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? arr : [];
-  } catch (e) {
-    return [];
-  }
 }
 
 // =========================================================
@@ -522,13 +591,13 @@ export async function cerrarCaja({
   efectivoReal,
   denominaciones = {},
   usuarioCierre = "",
-  rolCierre = ""
+  rolCierre = "",
 }) {
   if (!cajaId) {
     throw new Error("No se proporcionó el ID de la caja a cerrar.");
   }
 
-  const resumen = await obtenerResumenCaja();
+  const resumen = await obtenerResumenCaja(cajaId);
   const esperado = Number(resumen.efectivoEsperado) || 0;
   const real = Number(efectivoReal) || 0;
   const diferencia = real - esperado;
@@ -546,17 +615,14 @@ export async function cerrarCaja({
     totalRetiros: Number(resumen.totalRetiros) || 0,
     denominaciones: denominaciones || {},
     usuarioCierre: usuarioCierre || "",
-    rolCierre: rolCierre || ""
+    rolCierre: rolCierre || "",
   };
 
   await updateDoc(doc(db, TABLA_CAJAS, cajaId), datosCierre);
 
-  // Limpiar sesión local al cerrar la caja
-  cerrarSesionLocal();
-
   return {
     id: cajaId,
-    ...datosCierre
+    ...datosCierre,
   };
 }
 
@@ -574,13 +640,13 @@ export async function actualizarEfectivoEsperado(cajaId, incremento) {
     throw new Error("El incremento debe ser un número válido.");
   }
 
-  const resumen = await obtenerResumenCaja();
+  const resumen = await obtenerResumenCaja(cajaId);
 
   await updateDoc(doc(db, TABLA_CAJAS, cajaId), {
     efectivoEsperado: resumen.efectivoEsperado,
     totalVentas: resumen.totalVentas,
     totalIngresos: resumen.totalIngresos,
-    totalRetiros: resumen.totalRetiros
+    totalRetiros: resumen.totalRetiros,
   });
 
   return resumen.efectivoEsperado;

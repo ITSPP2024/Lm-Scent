@@ -920,11 +920,14 @@ const btnLogout = document.getElementById("btn-cerrar-sesion");
 if (btnLogout) {
   btnLogout.addEventListener("click", () => {
     cerrarSesion();
-    if (window.top && window.top !== window.self) {
-      window.top.location.href = "/";
-    } else {
-      window.location.assign("/screens/welcome.html");
-    }
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: "NAVIGATE_TO", path: "/" }, "*");
+      }
+    } catch {}
+    try {
+      window.location.assign("./welcome.html");
+    } catch {}
   });
 }
 
@@ -1345,24 +1348,35 @@ async function cargar() {
       estadoEl.className = "text-xs mt-1 text-error";
     }
 
-    const [movimientos, ventas] = cajaActual
-      ? await Promise.all([
-          obtenerMovimientosHoy(cajaActual.id, cajaActual.fecha),
-          obtenerVentasHoy(cajaActual.id, cajaActual.fecha)
-        ])
-      : [[], []];
+    let movimientos = [];
+    let ventas = [];
+
+    if (cajaActual) {
+      [movimientos, ventas] = await Promise.all([
+        obtenerMovimientosHoy(cajaActual.id, cajaActual.fecha),
+        obtenerVentasHoy(cajaActual.id, cajaActual.fecha)
+      ]);
+    } else {
+      // Si no hay caja abierta actualmente, cargar historial reciente de movimientos y ventas
+      [movimientos, ventas] = await Promise.all([
+        obtenerMovimientosHoy(null, null),
+        obtenerVentasHoy(null, null)
+      ]);
+    }
 
     movimientosCache = movimientos;
     ventasCache = ventas;
 
-    // Calcular KPIs. Number() evita concatenar texto si Firestore devuelve
-    // algún importe almacenado como string.
-    const fondoInicial = numero(cajaActual?.fondoInicial);
-    const totalVentas = ventas.reduce((a, v) => a + numero(v.total), 0);
-    const totalIngresos = movimientos
+    // Calcular KPIs del turno activo. Si no hay caja abierta, los importes del turno son 0.
+    const fondoInicial = cajaActual ? numero(cajaActual.fondoInicial) : 0;
+    const ventasTurno = cajaActual ? ventas : [];
+    const movimientosTurno = cajaActual ? movimientos : [];
+
+    const totalVentas = ventasTurno.reduce((a, v) => a + numero(v.total), 0);
+    const totalIngresos = movimientosTurno
       .filter(m => m.tipo === "ingreso")
       .reduce((a, m) => a + numero(m.monto), 0);
-    const totalRetiros = movimientos
+    const totalRetiros = movimientosTurno
       .filter(m => m.tipo === "retiro")
       .reduce((a, m) => a + numero(m.monto), 0);
     const entradas = fondoInicial + totalVentas + totalIngresos;
@@ -1648,11 +1662,14 @@ formularioAutorizacion.addEventListener("submit", async event => {
     cerrarSesion();
     mostrarToastCaja(`Corte completado y caja cerrada por ${usuarioAutorizado.nombre}. Descargando Excel...`, "check_circle");
     setTimeout(() => {
-      if (window.top && window.top !== window.self) {
-        window.top.location.href = "/";
-      } else {
-        window.location.assign("/screens/welcome.html");
-      }
+      try {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: "NAVIGATE_TO", path: "/" }, "*");
+        }
+      } catch (e) {}
+      try {
+        window.location.assign("./welcome.html");
+      } catch (e) {}
     }, 1500);
   } catch (error) {
     console.error("Error al autorizar o cerrar la caja:", error);

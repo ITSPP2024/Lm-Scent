@@ -119,35 +119,21 @@ export async function subirImagenCloudinary(
 OBTENER
 */
 
+export async function obtenerProductos() {
+  try {
+    const snapshot = await getDocs(collection(db, tabla));
 
-export async function obtenerProductos(){
-
-
-    const snapshot =
-        await getDocs(
-            collection(
-                db,
-                tabla
-            )
-        );
-
-
-    return snapshot.docs.map(
-        d => ({
-
-
-            id: d.id,
-
-
-            ...d.data()
-
-
-        })
-    );
-
-
+    return snapshot.docs
+      .filter((d) => d.id !== "base")
+      .map((d) => ({
+        id: d.id,
+        ...d.data(),
+      }));
+  } catch (error) {
+    console.error("Error al obtener productos:", error);
+    return [];
+  }
 }
-
 
 /*
 AGREGAR
