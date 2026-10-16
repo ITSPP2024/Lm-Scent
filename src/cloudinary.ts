@@ -1,9 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 
-const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
-
-const DATA_URI_PATTERN =
-  /^data:image\/(?:jpeg|jpg|png|webp|gif|avif);base64,([a-zA-Z0-9+/=\s]+)$/;
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 
 cloudinary.config({
   cloud_name: "crdybz0f",
@@ -19,36 +16,33 @@ function safePublicId(value: unknown) {
     .replace(/^-+|-+$/g, "")
     .toLowerCase();
 
-  return `inventario/${normalized || "producto"}-${Date.now()}`;
+  return `inventario/${normalized || "producto"}-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 }
 
 export async function uploadToCloudinary(request: Request) {
   try {
     const body = await request.json();
 
-    const dataUri = String(body?.dataUri ?? "");
+    const dataUri = String(body?.dataUri ?? "").trim();
     const nombreProducto = body?.nombreProducto;
 
-    const match = dataUri.match(DATA_URI_PATTERN);
-
-    if (!match) {
+    if (!dataUri || !dataUri.toLowerCase().startsWith("data:image/")) {
       return Response.json(
         {
-          message: "La imagen enviada no tiene un formato válido.",
+          message: "La imagen enviada no tiene un formato válido (debe ser una imagen).",
         },
         { status: 400 },
       );
     }
 
-    const imageBytes = Buffer.from(
-      match[1].replace(/\s/g, ""),
-      "base64",
-    );
+    const commaIndex = dataUri.indexOf(",");
+    const base64Part = commaIndex !== -1 ? dataUri.slice(commaIndex + 1) : "";
+    const imageBytesLength = Buffer.byteLength(base64Part, "base64");
 
-    if (imageBytes.byteLength > MAX_IMAGE_BYTES) {
+    if (imageBytesLength > MAX_IMAGE_BYTES) {
       return Response.json(
         {
-          message: "La imagen no puede superar los 5 MB.",
+          message: "La imagen no puede superar los 10 MB.",
         },
         { status: 413 },
       );
@@ -78,15 +72,13 @@ export async function uploadToCloudinary(request: Request) {
       publicId: result.public_id,
     });
   } catch (error) {
-    console.error(
-      "Error al subir la imagen a Cloudinary:",
-      error,
-    );
+    console.error("Error al subir la imagen a Cloudinary:", error);
+    const mensaje =
+      error instanceof Error ? error.message : "Ocurrió un error al subir la imagen a Cloudinary.";
 
     return Response.json(
       {
-        message:
-          "Ocurrió un error al subir la imagen a Cloudinary.",
+        message: mensaje,
       },
       { status: 500 },
     );

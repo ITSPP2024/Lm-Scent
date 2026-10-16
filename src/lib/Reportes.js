@@ -1,9 +1,33 @@
-import {
-    getDocs,
-    collection
-} from "firebase/firestore";
+import { getDocs, collection } from "firebase/firestore";
 
 import { db } from "./firebase";
+import { verificarSesionOVolverAWelcome, cerrarSesion } from "./movimientosCaja.js";
+
+// Validar que exista una sesión activa; de lo contrario redirigir a Bienvenida
+const sesionUsuario = verificarSesionOVolverAWelcome();
+if (sesionUsuario) {
+  const badge = document.getElementById("usuario-sesion-badge");
+  const nombreEl = document.getElementById("nombre-usuario-sesion");
+  if (badge && nombreEl) {
+    nombreEl.textContent = sesionUsuario.nombre || "Usuario";
+    badge.classList.remove("hidden");
+  }
+}
+
+const btnLogout = document.getElementById("btn-cerrar-sesion");
+if (btnLogout) {
+  btnLogout.addEventListener("click", () => {
+    cerrarSesion();
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: "NAVIGATE_TO", path: "/" }, "*");
+      }
+    } catch (e) {}
+    try {
+      window.location.assign("./welcome.html");
+    } catch (e) {}
+  });
+}
 
 /* ========================================================= */
 /* CONFIGURACIÓN Y ESTADO */
@@ -21,11 +45,11 @@ let filtroFechaHasta = null;
 /* ========================================================= */
 
 function fmt(valor) {
-    return new Intl.NumberFormat("es-MX", {
-        style: "currency",
-        currency: "MXN",
-        minimumFractionDigits: 2
-    }).format(Number(valor) || 0);
+  return new Intl.NumberFormat("es-MX", {
+    style: "currency",
+    currency: "MXN",
+    minimumFractionDigits: 2,
+  }).format(Number(valor) || 0);
 }
 
 /* ========================================================= */
@@ -33,94 +57,94 @@ function fmt(valor) {
 /* ========================================================= */
 
 function fechaDesde(periodo) {
-    const fecha = new Date();
+  const fecha = new Date();
 
-    if (periodo === "hoy") {
-        fecha.setHours(0, 0, 0, 0);
-    } else if (periodo === "semana") {
-        fecha.setDate(fecha.getDate() - 6);
-        fecha.setHours(0, 0, 0, 0);
-    } else if (periodo === "mes") {
-        fecha.setDate(1);
-        fecha.setHours(0, 0, 0, 0);
-    }
+  if (periodo === "hoy") {
+    fecha.setHours(0, 0, 0, 0);
+  } else if (periodo === "semana") {
+    fecha.setDate(fecha.getDate() - 6);
+    fecha.setHours(0, 0, 0, 0);
+  } else if (periodo === "mes") {
+    fecha.setDate(1);
+    fecha.setHours(0, 0, 0, 0);
+  }
 
-    return fecha;
+  return fecha;
 }
 
 function convertirFechaInput(valor, finDelDia = false) {
-    if (!valor) return null;
+  if (!valor) return null;
 
-    const partes = valor.split("-").map(Number);
-    if (partes.length !== 3 || partes.some(Number.isNaN)) {
-        return null;
-    }
+  const partes = valor.split("-").map(Number);
+  if (partes.length !== 3 || partes.some(Number.isNaN)) {
+    return null;
+  }
 
-    const fecha = new Date(
-        partes[0],
-        partes[1] - 1,
-        partes[2],
-        finDelDia ? 23 : 0,
-        finDelDia ? 59 : 0,
-        finDelDia ? 59 : 0,
-        finDelDia ? 999 : 0
-    );
+  const fecha = new Date(
+    partes[0],
+    partes[1] - 1,
+    partes[2],
+    finDelDia ? 23 : 0,
+    finDelDia ? 59 : 0,
+    finDelDia ? 59 : 0,
+    finDelDia ? 999 : 0,
+  );
 
-    return Number.isNaN(fecha.getTime()) ? null : fecha;
+  return Number.isNaN(fecha.getTime()) ? null : fecha;
 }
 
 function formatoFechaInput(fecha) {
-    if (!fecha) return "";
+  if (!fecha) return "";
 
-    return [
-        fecha.getFullYear(),
-        String(fecha.getMonth() + 1).padStart(2, "0"),
-        String(fecha.getDate()).padStart(2, "0")
-    ].join("-");
+  return [
+    fecha.getFullYear(),
+    String(fecha.getMonth() + 1).padStart(2, "0"),
+    String(fecha.getDate()).padStart(2, "0"),
+  ].join("-");
 }
 
 function obtenerRangoActual() {
-    if (filtroFechaDesde && filtroFechaHasta) {
-        return {
-            inicio: filtroFechaDesde,
-            fin: filtroFechaHasta
-        };
-    }
-
-    const fin = new Date();
-    fin.setHours(23, 59, 59, 999);
-
+  if (filtroFechaDesde && filtroFechaHasta) {
     return {
-        inicio: fechaDesde(periodoActual),
-        fin: fin
+      inicio: filtroFechaDesde,
+      fin: filtroFechaHasta,
     };
+  }
+
+  const fin = new Date();
+  fin.setHours(23, 59, 59, 999);
+
+  return {
+    inicio: fechaDesde(periodoActual),
+    fin: fin,
+  };
 }
 
 function actualizarEtiquetaPeriodo() {
-    const etiqueta = document.getElementById("periodo-label");
-    if (!etiqueta) return;
+  const etiqueta = document.getElementById("periodo-label");
+  if (!etiqueta) return;
 
-    if (filtroFechaDesde && filtroFechaHasta) {
-        etiqueta.textContent = `Del ${filtroFechaDesde.toLocaleDateString("es-MX")} al ${filtroFechaHasta.toLocaleDateString("es-MX")}`;
-        return;
-    }
+  if (filtroFechaDesde && filtroFechaHasta) {
+    etiqueta.textContent = `Del ${filtroFechaDesde.toLocaleDateString("es-MX")} al ${filtroFechaHasta.toLocaleDateString("es-MX")}`;
+    return;
+  }
 
-    const hoy = new Date();
+  const hoy = new Date();
 
-    if (periodoActual === "hoy") {
-        etiqueta.textContent = `Hoy, ${hoy.toLocaleDateString("es-MX", {
-            day: "numeric",
-            month: "long",
-            year: "numeric"
-        })}`;
-    } else if (periodoActual === "semana") {
-        etiqueta.textContent = "Últimos 7 días";
-    } else {
-        etiqueta.textContent = `Mes de ${hoy.toLocaleDateString("es-MX", {
-            month: "long",
-            year: "numeric"
-        })}`;
-    }
+  if (periodoActual === "hoy") {
+    etiqueta.textContent = `Hoy, ${hoy.toLocaleDateString("es-MX", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })}`;
+  } else if (periodoActual === "semana") {
+    etiqueta.textContent = "Últimos 7 días";
+  } else {
+    etiqueta.textContent = `Mes de ${hoy.toLocaleDateString("es-MX", {
+      month: "long",
+      year: "numeric",
+    })}`;
+  }
 }
 
 /* ========================================================= */
@@ -128,49 +152,49 @@ function actualizarEtiquetaPeriodo() {
 /* ========================================================= */
 
 function convertirFecha(fecha) {
-    if (!fecha) return null;
+  if (!fecha) return null;
 
-    if (typeof fecha.toDate === "function") {
-        return fecha.toDate();
-    }
+  if (typeof fecha.toDate === "function") {
+    return fecha.toDate();
+  }
 
-    if (fecha instanceof Date) {
-        return Number.isNaN(fecha.getTime()) ? null : fecha;
-    }
+  if (fecha instanceof Date) {
+    return Number.isNaN(fecha.getTime()) ? null : fecha;
+  }
 
-    if (typeof fecha === "object" && typeof fecha.seconds === "number") {
-        return new Date(fecha.seconds * 1000);
-    }
+  if (typeof fecha === "object" && typeof fecha.seconds === "number") {
+    return new Date(fecha.seconds * 1000);
+  }
 
-    if (typeof fecha === "number") {
-        const d = new Date(fecha);
-        return Number.isNaN(d.getTime()) ? null : d;
-    }
+  if (typeof fecha === "number") {
+    const d = new Date(fecha);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
 
-    const resultado = new Date(fecha);
-    return Number.isNaN(resultado.getTime()) ? null : resultado;
+  const resultado = new Date(fecha);
+  return Number.isNaN(resultado.getTime()) ? null : resultado;
 }
 
 function obtenerFechaVenta(venta) {
-    // Para pedidos de la app móvil entregados, preferir la fecha de entrega o actualización si existe
-    if (venta.esVentaApp || venta.origen === "app" || venta.canal === "app_movil") {
-        return (
-            convertirFecha(venta.fechaEntrega) ||
-            convertirFecha(venta.fechaActualizacion) ||
-            convertirFecha(venta.fecha) ||
-            convertirFecha(venta.timestamp) ||
-            convertirFecha(venta.createdAt) ||
-            null
-        );
-    }
-
+  // Para pedidos de la app móvil entregados, preferir la fecha de entrega o actualización si existe
+  if (venta.esVentaApp || venta.origen === "app" || venta.canal === "app_movil") {
     return (
-        convertirFecha(venta.fecha) ||
-        convertirFecha(venta.timestamp) ||
-        convertirFecha(venta.createdAt) ||
-        convertirFecha(venta.fechaActualizacion) ||
-        null
+      convertirFecha(venta.fechaEntrega) ||
+      convertirFecha(venta.fechaActualizacion) ||
+      convertirFecha(venta.fecha) ||
+      convertirFecha(venta.timestamp) ||
+      convertirFecha(venta.createdAt) ||
+      null
     );
+  }
+
+  return (
+    convertirFecha(venta.fecha) ||
+    convertirFecha(venta.timestamp) ||
+    convertirFecha(venta.createdAt) ||
+    convertirFecha(venta.fechaActualizacion) ||
+    null
+  );
 }
 
 /* ========================================================= */
@@ -178,12 +202,12 @@ function obtenerFechaVenta(venta) {
 /* ========================================================= */
 
 function escaparHTML(valor) {
-    return String(valor ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+  return String(valor ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 /* ========================================================= */
@@ -191,13 +215,13 @@ function escaparHTML(valor) {
 /* ========================================================= */
 
 function obtenerProductosVenta(venta) {
-    if (Array.isArray(venta.productos)) {
-        return venta.productos;
-    }
-    if (Array.isArray(venta.items)) {
-        return venta.items;
-    }
-    return [];
+  if (Array.isArray(venta.productos)) {
+    return venta.productos;
+  }
+  if (Array.isArray(venta.items)) {
+    return venta.items;
+  }
+  return [];
 }
 
 /* ========================================================= */
@@ -205,67 +229,65 @@ function obtenerProductosVenta(venta) {
 /* ========================================================= */
 
 async function cargarVentas() {
-    const rango = obtenerRangoActual();
-    const fechaInicio = rango.inicio;
-    const fechaFin = rango.fin;
+  const rango = obtenerRangoActual();
+  const fechaInicio = rango.inicio;
+  const fechaFin = rango.fin;
 
-    try {
-        const snapshot = await getDocs(collection(db, tablaVentas));
-        const docs = snapshot.docs
-            .filter(d => d.id !== "base")
-            .map(d => ({
-                id: d.id,
-                ...d.data()
-            }));
+  try {
+    const snapshot = await getDocs(collection(db, tablaVentas));
+    const docs = snapshot.docs
+      .filter((d) => d.id !== "base")
+      .map((d) => ({
+        id: d.id,
+        ...d.data(),
+      }));
 
-        // Filtrar y procesar ventas
-        todasLasVentas = docs.filter(v => {
-            const esApp = (
-                v.origen === "app" ||
-                v.origen === "app_movil" ||
-                v.canal === "app_movil" ||
-                v.canal === "app" ||
-                v.esVentaApp === true ||
-                Boolean(v.metodoEntrega) ||
-                Boolean(v.clienteMovil)
-            );
+    // Filtrar y procesar ventas
+    todasLasVentas = docs.filter((v) => {
+      const esApp =
+        v.origen === "app" ||
+        v.origen === "app_movil" ||
+        v.canal === "app_movil" ||
+        v.canal === "app" ||
+        v.esVentaApp === true ||
+        Boolean(v.metodoEntrega) ||
+        Boolean(v.clienteMovil);
 
-            // Si es pedido de la App Móvil, solo se contabiliza en reportes si está ENTREGADO/COMPLETADO
-            if (esApp) {
-                const estado = String(v.estado || v.estadoEntrega || v.estadoPedido || "").toLowerCase();
-                const esEntregado = (
-                    estado === "entregado" ||
-                    estado === "completado" ||
-                    estado === "despachado" ||
-                    v.entregado === true ||
-                    v.completado === true
-                );
+      // Si es pedido de la App Móvil, solo se contabiliza en reportes si está ENTREGADO/COMPLETADO
+      if (esApp) {
+        const estado = String(v.estado || v.estadoEntrega || v.estadoPedido || "").toLowerCase();
+        const esEntregado =
+          estado === "entregado" ||
+          estado === "completado" ||
+          estado === "despachado" ||
+          v.entregado === true ||
+          v.completado === true;
 
-                if (!esEntregado) {
-                    return false; // Pedidos aún pendientes o cancelados no cuentan como venta realizada
-                }
-            }
+        if (!esEntregado) {
+          return false; // Pedidos aún pendientes o cancelados no cuentan como venta realizada
+        }
+      }
 
-            // Validar fecha dentro del rango del período
-            const fecha = obtenerFechaVenta(v);
-            if (!fecha) return false;
+      // Validar fecha dentro del rango del período
+      const fecha = obtenerFechaVenta(v);
+      if (!fecha) return false;
 
-            return fecha >= fechaInicio && fecha <= fechaFin;
-        });
+      return fecha >= fechaInicio && fecha <= fechaFin;
+    });
 
-        // Ordenar por fecha descendente
-        todasLasVentas.sort((a, b) => {
-            const fechaA = obtenerFechaVenta(a)?.getTime() || 0;
-            const fechaB = obtenerFechaVenta(b)?.getTime() || 0;
-            return fechaB - fechaA;
-        });
+    // Ordenar por fecha descendente
+    todasLasVentas.sort((a, b) => {
+      const fechaA = obtenerFechaVenta(a)?.getTime() || 0;
+      const fechaB = obtenerFechaVenta(b)?.getTime() || 0;
+      return fechaB - fechaA;
+    });
 
-        return todasLasVentas;
-    } catch (error) {
-        console.error("Error al cargar ventas en Reportes:", error);
-        todasLasVentas = [];
-        return [];
-    }
+    return todasLasVentas;
+  } catch (error) {
+    console.error("Error al cargar ventas en Reportes:", error);
+    todasLasVentas = [];
+    return [];
+  }
 }
 
 /* ========================================================= */
@@ -273,15 +295,15 @@ async function cargarVentas() {
 /* ========================================================= */
 
 function calcularUnidades() {
-    return todasLasVentas.reduce((acumulado, venta) => {
-        const productos = obtenerProductosVenta(venta);
-        const unidadesVenta = productos.reduce((suma, producto) => {
-            const cantidad = Number(producto.cantidad ?? producto.qty ?? 1);
-            return suma + (Number.isFinite(cantidad) && cantidad > 0 ? cantidad : 1);
-        }, 0);
-
-        return acumulado + (unidadesVenta > 0 ? unidadesVenta : (Number(venta.numArticulos) || 1));
+  return todasLasVentas.reduce((acumulado, venta) => {
+    const productos = obtenerProductosVenta(venta);
+    const unidadesVenta = productos.reduce((suma, producto) => {
+      const cantidad = Number(producto.cantidad ?? producto.qty ?? 1);
+      return suma + (Number.isFinite(cantidad) && cantidad > 0 ? cantidad : 1);
     }, 0);
+
+    return acumulado + (unidadesVenta > 0 ? unidadesVenta : Number(venta.numArticulos) || 1);
+  }, 0);
 }
 
 /* ========================================================= */
@@ -289,28 +311,28 @@ function calcularUnidades() {
 /* ========================================================= */
 
 function renderKPIs() {
-    const total = todasLasVentas.reduce((acumulado, venta) => {
-        return acumulado + (Number(venta.total) || 0);
-    }, 0);
+  const total = todasLasVentas.reduce((acumulado, venta) => {
+    return acumulado + (Number(venta.total) || 0);
+  }, 0);
 
-    const ventas = todasLasVentas.length;
-    const ticket = ventas > 0 ? total / ventas : 0;
-    const unidades = calcularUnidades();
+  const ventas = todasLasVentas.length;
+  const ticket = ventas > 0 ? total / ventas : 0;
+  const unidades = calcularUnidades();
 
-    const kpiIngresos = document.getElementById("kpi-ingresos");
-    const kpiTicket = document.getElementById("kpi-ticket");
-    const kpiVentas = document.getElementById("kpi-ventas");
-    const kpiUnidades = document.getElementById("kpi-unidades");
+  const kpiIngresos = document.getElementById("kpi-ingresos");
+  const kpiTicket = document.getElementById("kpi-ticket");
+  const kpiVentas = document.getElementById("kpi-ventas");
+  const kpiUnidades = document.getElementById("kpi-unidades");
 
-    if (kpiIngresos) kpiIngresos.textContent = fmt(total);
-    if (kpiTicket) kpiTicket.textContent = fmt(ticket);
-    if (kpiVentas) kpiVentas.textContent = String(ventas);
-    if (kpiUnidades) kpiUnidades.textContent = String(unidades);
+  if (kpiIngresos) kpiIngresos.textContent = fmt(total);
+  if (kpiTicket) kpiTicket.textContent = fmt(ticket);
+  if (kpiVentas) kpiVentas.textContent = String(ventas);
+  if (kpiUnidades) kpiUnidades.textContent = String(unidades);
 
-    const totalTxLabel = document.getElementById("total-tx");
-    if (totalTxLabel) {
-        totalTxLabel.textContent = `${ventas} transacción${ventas === 1 ? '' : 'es'}`;
-    }
+  const totalTxLabel = document.getElementById("total-tx");
+  if (totalTxLabel) {
+    totalTxLabel.textContent = `${ventas} transacción${ventas === 1 ? "" : "es"}`;
+  }
 }
 
 /* ========================================================= */
@@ -318,65 +340,75 @@ function renderKPIs() {
 /* ========================================================= */
 
 function renderTabla() {
-    const tabla = document.getElementById("tabla-tx");
-    if (!tabla) return;
+  const tabla = document.getElementById("tabla-tx");
+  if (!tabla) return;
 
-    if (todasLasVentas.length === 0) {
-        tabla.innerHTML = `
+  if (todasLasVentas.length === 0) {
+    tabla.innerHTML = `
             <tr>
                 <td colspan="5" class="px-8 py-8 text-center text-on-surface-variant">
                     No hay ventas o pedidos entregados en este periodo.
                 </td>
             </tr>
         `;
-        return;
-    }
+    return;
+  }
 
-    tabla.innerHTML = todasLasVentas.slice(0, 35).map((venta, indice) => {
-        const fecha = obtenerFechaVenta(venta);
-        const fechaTexto = fecha
-            ? fecha.toLocaleString("es-MX", { dateStyle: "short", timeStyle: "short" })
-            : "Sin fecha";
+  tabla.innerHTML = todasLasVentas
+    .slice(0, 35)
+    .map((venta, indice) => {
+      const fecha = obtenerFechaVenta(venta);
+      const fechaTexto = fecha
+        ? fecha.toLocaleString("es-MX", { dateStyle: "short", timeStyle: "short" })
+        : "Sin fecha";
 
-        const productos = obtenerProductosVenta(venta);
-        const productosTexto = productos.length
-            ? productos.map(p => {
-                const nombre = escaparHTML(p.nombre || p.name || "Producto");
-                const cantidad = Number(p.cantidad ?? p.qty ?? 1) || 1;
-                return `${nombre} ×${cantidad}`;
-            }).join(", ")
-            : (venta.cliente ? `Pedido de ${escaparHTML(venta.cliente)}` : "—");
+      const productos = obtenerProductosVenta(venta);
+      const productosTexto = productos.length
+        ? productos
+            .map((p) => {
+              const nombre = escaparHTML(p.nombre || p.name || "Producto");
+              const talla = p.talla || p.size || p.label || p.talla_volumen || "";
+              const tallaTexto = talla ? ` (${escaparHTML(talla)})` : "";
+              const cantidad = Number(p.cantidad ?? p.qty ?? 1) || 1;
+              return `${nombre}${tallaTexto} ×${cantidad}`;
+            })
+            .join(", ")
+        : venta.cliente
+          ? `Pedido de ${escaparHTML(venta.cliente)}`
+          : "—";
 
-        const total = Number(venta.total) || 0;
-        const ventaId = String(venta.id || indice + 1);
+      const total = Number(venta.total) || 0;
+      const ventaId = String(venta.id || indice + 1);
 
-        const esApp = (
-            venta.origen === "app" ||
-            venta.origen === "app_movil" ||
-            venta.canal === "app_movil" ||
-            venta.canal === "app" ||
-            venta.esVentaApp === true
-        );
+      const esApp =
+        venta.origen === "app" ||
+        venta.origen === "app_movil" ||
+        venta.canal === "app_movil" ||
+        venta.canal === "app" ||
+        venta.esVentaApp === true;
 
-        const esEfectivo = (
-            venta.esEfectivo === true ||
-            String(venta.metodoPago || "").toLowerCase().includes("efectivo") ||
-            String(venta.tipoPago || "").toLowerCase().includes("efectivo")
-        );
+      const esEfectivo =
+        venta.esEfectivo === true ||
+        String(venta.metodoPago || "")
+          .toLowerCase()
+          .includes("efectivo") ||
+        String(venta.tipoPago || "")
+          .toLowerCase()
+          .includes("efectivo");
 
-        const metodoTexto = esEfectivo ? "Efectivo" : (venta.metodoPago || "Tarjeta");
+      const metodoTexto = esEfectivo ? "Efectivo" : venta.metodoPago || "Tarjeta";
 
-        const badgeHtml = esApp
-            ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full text-[10px] font-label-caps font-bold">
+      const badgeHtml = esApp
+        ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full text-[10px] font-label-caps font-bold">
                 <span class="material-symbols-outlined text-[12px]">smartphone</span>
                 App Móvil (${metodoTexto})
                </span>`
-            : `<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-[10px] font-label-caps font-bold">
+        : `<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-[10px] font-label-caps font-bold">
                 <span class="material-symbols-outlined text-[12px]">point_of_sale</span>
                 Mostrador POS (${metodoTexto})
                </span>`;
 
-        return `
+      return `
             <tr class="hover:bg-surface-container-high transition-colors">
                 <td class="px-8 py-5 font-medium text-on-surface">
                     #${escaparHTML(ventaId.slice(0, 8).toUpperCase())}
@@ -395,7 +427,8 @@ function renderTabla() {
                 </td>
             </tr>
         `;
-    }).join("");
+    })
+    .join("");
 }
 
 /* ========================================================= */
@@ -403,79 +436,80 @@ function renderTabla() {
 /* ========================================================= */
 
 function renderChart() {
-    const barras = document.getElementById("chart-bars");
-    const etiquetas = document.getElementById("chart-labels");
+  const barras = document.getElementById("chart-bars");
+  const etiquetas = document.getElementById("chart-labels");
 
-    if (!barras || !etiquetas) return;
+  if (!barras || !etiquetas) return;
 
-    if (!todasLasVentas.length) {
-        barras.innerHTML = `
+  if (!todasLasVentas.length) {
+    barras.innerHTML = `
             <div class="text-on-surface-variant text-sm w-full text-center pt-8">
                 Sin datos en este período
             </div>
         `;
-        etiquetas.innerHTML = "";
-        return;
+    etiquetas.innerHTML = "";
+    return;
+  }
+
+  const grupos = new Map();
+
+  todasLasVentas.forEach((venta) => {
+    const fecha = obtenerFechaVenta(venta);
+    if (!fecha) return;
+
+    let clave;
+    let etiqueta;
+
+    if (periodoActual === "hoy") {
+      clave = [
+        fecha.getFullYear(),
+        String(fecha.getMonth() + 1).padStart(2, "0"),
+        String(fecha.getDate()).padStart(2, "0"),
+        String(fecha.getHours()).padStart(2, "0"),
+      ].join("-");
+      etiqueta = fecha.toLocaleTimeString("es-MX", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } else {
+      clave = [
+        fecha.getFullYear(),
+        String(fecha.getMonth() + 1).padStart(2, "0"),
+        String(fecha.getDate()).padStart(2, "0"),
+      ].join("-");
+      etiqueta = fecha.toLocaleDateString("es-MX", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+      });
     }
 
-    const grupos = new Map();
+    const grupo = grupos.get(clave) || { etiqueta, valor: 0 };
+    grupo.valor += Number(venta.total) || 0;
+    grupos.set(clave, grupo);
+  });
 
-    todasLasVentas.forEach(venta => {
-        const fecha = obtenerFechaVenta(venta);
-        if (!fecha) return;
+  const entradas = Array.from(grupos.entries())
+    .sort(([claveA], [claveB]) => claveA.localeCompare(claveB))
+    .slice(-7)
+    .map(([, grupo]) => grupo);
 
-        let clave;
-        let etiqueta;
-
-        if (periodoActual === "hoy") {
-            clave = [
-                fecha.getFullYear(),
-                String(fecha.getMonth() + 1).padStart(2, "0"),
-                String(fecha.getDate()).padStart(2, "0"),
-                String(fecha.getHours()).padStart(2, "0")
-            ].join("-");
-            etiqueta = fecha.toLocaleTimeString("es-MX", {
-                hour: "2-digit",
-                minute: "2-digit"
-            });
-        } else {
-            clave = [
-                fecha.getFullYear(),
-                String(fecha.getMonth() + 1).padStart(2, "0"),
-                String(fecha.getDate()).padStart(2, "0")
-            ].join("-");
-            etiqueta = fecha.toLocaleDateString("es-MX", {
-                weekday: "short",
-                day: "numeric",
-                month: "short"
-            });
-        }
-
-        const grupo = grupos.get(clave) || { etiqueta, valor: 0 };
-        grupo.valor += Number(venta.total) || 0;
-        grupos.set(clave, grupo);
-    });
-
-    const entradas = Array.from(grupos.entries())
-        .sort(([claveA], [claveB]) => claveA.localeCompare(claveB))
-        .slice(-7)
-        .map(([, grupo]) => grupo);
-
-    if (!entradas.length) {
-        barras.innerHTML = `
+  if (!entradas.length) {
+    barras.innerHTML = `
             <div class="text-on-surface-variant text-sm w-full text-center">
                 Sin datos para mostrar
             </div>
         `;
-        etiquetas.innerHTML = "";
-        return;
-    }
+    etiquetas.innerHTML = "";
+    return;
+  }
 
-    const maximo = Math.max(...entradas.map(g => g.valor), 1);
+  const maximo = Math.max(...entradas.map((g) => g.valor), 1);
 
-    barras.innerHTML = `
+  barras.innerHTML = `
         <div class="w-full h-full flex items-end gap-3">
-            ${entradas.map(grupo => {
+            ${entradas
+              .map((grupo) => {
                 const altura = Math.max(10, (grupo.valor / maximo) * 100);
 
                 return `
@@ -492,15 +526,20 @@ function renderChart() {
                         </div>
                     </div>
                 `;
-            }).join("")}
+              })
+              .join("")}
         </div>
     `;
 
-    etiquetas.innerHTML = entradas.map(grupo => `
+  etiquetas.innerHTML = entradas
+    .map(
+      (grupo) => `
         <span class="flex-1 text-center truncate text-[10px] text-on-surface-variant font-label-caps">
             ${escaparHTML(grupo.etiqueta)}
         </span>
-    `).join("");
+    `,
+    )
+    .join("");
 }
 
 /* ========================================================= */
@@ -508,44 +547,43 @@ function renderChart() {
 /* ========================================================= */
 
 function renderTopProductos() {
-    const contenedor = document.getElementById("top-productos");
-    if (!contenedor) return;
+  const contenedor = document.getElementById("top-productos");
+  if (!contenedor) return;
 
-    const conteo = {};
+  const conteo = {};
 
-    todasLasVentas.forEach(venta => {
-        obtenerProductosVenta(venta).forEach(producto => {
-            const nombre =
-                producto.nombre ||
-                producto.producto ||
-                producto.name ||
-                "Producto sin nombre";
-            const cantidad =
-                Number(producto.cantidad ?? producto.qty ?? 1) || 1;
+  todasLasVentas.forEach((venta) => {
+    obtenerProductosVenta(venta).forEach((producto) => {
+      const nombre = producto.nombre || producto.producto || producto.name || "Producto sin nombre";
+      const talla =
+        producto.talla || producto.size || producto.label || producto.talla_volumen || "";
+      const clave = talla ? `${nombre} (${talla})` : nombre;
+      const cantidad = Number(producto.cantidad ?? producto.qty ?? 1) || 1;
 
-            conteo[nombre] = (conteo[nombre] || 0) + cantidad;
-        });
+      conteo[clave] = (conteo[clave] || 0) + cantidad;
     });
+  });
 
-    const top = Object.entries(conteo)
-        .sort(([, cantidadA], [, cantidadB]) => cantidadB - cantidadA)
-        .slice(0, 5);
+  const top = Object.entries(conteo)
+    .sort(([, cantidadA], [, cantidadB]) => cantidadB - cantidadA)
+    .slice(0, 5);
 
-    if (!top.length) {
-        contenedor.innerHTML = `
+  if (!top.length) {
+    contenedor.innerHTML = `
             <div class="text-on-surface-variant text-sm text-center pt-6">
                 Sin ventas en este período
             </div>
         `;
-        return;
-    }
+    return;
+  }
 
-    const maximo = Math.max(Number(top[0][1]), 1);
+  const maximo = Math.max(Number(top[0][1]), 1);
 
-    contenedor.innerHTML = top.map(([nombre, cantidad], indice) => {
-        const porcentaje = (Number(cantidad) / maximo) * 100;
+  contenedor.innerHTML = top
+    .map(([nombre, cantidad], indice) => {
+      const porcentaje = (Number(cantidad) / maximo) * 100;
 
-        return `
+      return `
             <div class="flex items-center gap-3">
                 <div class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] text-primary font-bold shrink-0">
                     ${indice + 1}
@@ -568,7 +606,8 @@ function renderTopProductos() {
                 </div>
             </div>
         `;
-    }).join("");
+    })
+    .join("");
 }
 
 /* ========================================================= */
@@ -576,31 +615,31 @@ function renderTopProductos() {
 /* ========================================================= */
 
 async function actualizar() {
-    const kpiIngresos = document.getElementById("kpi-ingresos");
-    if (kpiIngresos) kpiIngresos.textContent = "...";
+  const kpiIngresos = document.getElementById("kpi-ingresos");
+  if (kpiIngresos) kpiIngresos.textContent = "...";
 
-    try {
-        await cargarVentas();
-        actualizarEtiquetaPeriodo();
-        renderKPIs();
-        renderChart();
-        renderTopProductos();
-        renderTabla();
-        return todasLasVentas;
-    } catch (error) {
-        console.error("ERROR AL CARGAR REPORTES:", error);
-        const tabla = document.getElementById("tabla-tx");
-        if (tabla) {
-            tabla.innerHTML = `
+  try {
+    await cargarVentas();
+    actualizarEtiquetaPeriodo();
+    renderKPIs();
+    renderChart();
+    renderTopProductos();
+    renderTabla();
+    return todasLasVentas;
+  } catch (error) {
+    console.error("ERROR AL CARGAR REPORTES:", error);
+    const tabla = document.getElementById("tabla-tx");
+    if (tabla) {
+      tabla.innerHTML = `
                 <tr>
                     <td colspan="5" class="px-8 py-8 text-center text-error">
                         Error al cargar los reportes de ventas.
                     </td>
                 </tr>
             `;
-        }
-        return [];
     }
+    return [];
+  }
 }
 
 /* ========================================================= */
@@ -608,29 +647,44 @@ async function actualizar() {
 /* ========================================================= */
 
 function exportarExcel() {
-    const rango = obtenerRangoActual();
-    const total = todasLasVentas.reduce((acumulado, venta) => acumulado + (Number(venta.total) || 0), 0);
-    const unidades = calcularUnidades();
+  const rango = obtenerRangoActual();
+  const total = todasLasVentas.reduce(
+    (acumulado, venta) => acumulado + (Number(venta.total) || 0),
+    0,
+  );
+  const unidades = calcularUnidades();
 
-    const filas = todasLasVentas.length
-        ? todasLasVentas.map((venta, indice) => {
-            const fecha = obtenerFechaVenta(venta);
-            const productos = obtenerProductosVenta(venta)
-                .map(p => `${p.nombre || p.producto || p.name || "Producto"} x${Number(p.cantidad ?? p.qty ?? 1) || 1}`)
-                .join(", ");
+  const filas = todasLasVentas.length
+    ? todasLasVentas
+        .map((venta, indice) => {
+          const fecha = obtenerFechaVenta(venta);
+          const productos = obtenerProductosVenta(venta)
+            .map((p) => {
+              const nombre = p.nombre || p.producto || p.name || "Producto";
+              const talla = p.talla || p.size || p.label || p.talla_volumen || "";
+              const tallaTexto = talla ? ` (${talla})` : "";
+              const cant = Number(p.cantidad ?? p.qty ?? 1) || 1;
+              return `${nombre}${tallaTexto} x${cant}`;
+            })
+            .join(", ");
 
-            const esApp = (
-                venta.origen === "app" ||
-                venta.origen === "app_movil" ||
-                venta.canal === "app_movil" ||
-                venta.canal === "app" ||
-                venta.esVentaApp === true
-            );
+          const esApp =
+            venta.origen === "app" ||
+            venta.origen === "app_movil" ||
+            venta.canal === "app_movil" ||
+            venta.canal === "app" ||
+            venta.esVentaApp === true;
 
-            const canalTexto = esApp ? "App Móvil (Entregado)" : "Mostrador POS";
-            const metodoTexto = (venta.esEfectivo || String(venta.metodoPago || '').toLowerCase().includes('efectivo')) ? 'Efectivo' : (venta.metodoPago || 'Tarjeta');
+          const canalTexto = esApp ? "App Móvil (Entregado)" : "Mostrador POS";
+          const metodoTexto =
+            venta.esEfectivo ||
+            String(venta.metodoPago || "")
+              .toLowerCase()
+              .includes("efectivo")
+              ? "Efectivo"
+              : venta.metodoPago || "Tarjeta";
 
-            return `
+          return `
                 <tr>
                     <td>${escaparHTML(venta.id || indice + 1)}</td>
                     <td>${escaparHTML(canalTexto)}</td>
@@ -641,14 +695,16 @@ function exportarExcel() {
                     <td>Completado</td>
                 </tr>
             `;
-        }).join("")
-        : `<tr><td colspan="7">No hay ventas en este periodo.</td></tr>`;
+        })
+        .join("")
+    : `<tr><td colspan="7">No hay ventas en este periodo.</td></tr>`;
 
-    const rangoTexto = filtroFechaDesde && filtroFechaHasta
-        ? `Del ${filtroFechaDesde.toLocaleDateString("es-MX")} al ${filtroFechaHasta.toLocaleDateString("es-MX")}`
-        : document.getElementById("periodo-label")?.textContent || periodoActual;
+  const rangoTexto =
+    filtroFechaDesde && filtroFechaHasta
+      ? `Del ${filtroFechaDesde.toLocaleDateString("es-MX")} al ${filtroFechaHasta.toLocaleDateString("es-MX")}`
+      : document.getElementById("periodo-label")?.textContent || periodoActual;
 
-    const contenido = `<!doctype html>
+  const contenido = `<!doctype html>
         <html>
         <head>
             <meta charset="utf-8">
@@ -690,19 +746,19 @@ function exportarExcel() {
         </body>
         </html>`;
 
-    const inicioArchivo = formatoFechaInput(rango.inicio);
-    const finArchivo = formatoFechaInput(rango.fin);
+  const inicioArchivo = formatoFechaInput(rango.inicio);
+  const finArchivo = formatoFechaInput(rango.fin);
 
-    const blob = new Blob(["\ufeff", contenido], { type: "application/vnd.ms-excel;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const enlace = document.createElement("a");
-    enlace.href = url;
-    enlace.download = `reporte-ventas-${inicioArchivo}-${finArchivo}.xls`;
-    enlace.style.display = "none";
-    document.body.appendChild(enlace);
-    enlace.click();
-    enlace.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  const blob = new Blob(["\ufeff", contenido], { type: "application/vnd.ms-excel;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const enlace = document.createElement("a");
+  enlace.href = url;
+  enlace.download = `reporte-ventas-${inicioArchivo}-${finArchivo}.xls`;
+  enlace.style.display = "none";
+  document.body.appendChild(enlace);
+  enlace.click();
+  enlace.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 /* ========================================================= */
@@ -710,89 +766,89 @@ function exportarExcel() {
 /* ========================================================= */
 
 function inicializarFiltroFechas() {
-    const inputDesde = document.getElementById("filtro-desde");
-    const inputHasta = document.getElementById("filtro-hasta");
-    const botonAplicar = document.getElementById("aplicar-filtro-fechas");
-    const botonExportar = document.getElementById("exportar-excel");
-    const error = document.getElementById("error-filtro-fechas");
+  const inputDesde = document.getElementById("filtro-desde");
+  const inputHasta = document.getElementById("filtro-hasta");
+  const botonAplicar = document.getElementById("aplicar-filtro-fechas");
+  const botonExportar = document.getElementById("exportar-excel");
+  const error = document.getElementById("error-filtro-fechas");
 
-    if (botonAplicar) {
-        botonAplicar.addEventListener("click", async () => {
-            const inicio = convertirFechaInput(inputDesde?.value);
-            const fin = convertirFechaInput(inputHasta?.value, true);
+  if (botonAplicar) {
+    botonAplicar.addEventListener("click", async () => {
+      const inicio = convertirFechaInput(inputDesde?.value);
+      const fin = convertirFechaInput(inputHasta?.value, true);
 
-            if (!inicio || !fin) {
-                if (error) {
-                    error.textContent = "Selecciona una fecha inicial y una fecha final.";
-                    error.classList.remove("hidden");
-                }
-                return;
-            }
+      if (!inicio || !fin) {
+        if (error) {
+          error.textContent = "Selecciona una fecha inicial y una fecha final.";
+          error.classList.remove("hidden");
+        }
+        return;
+      }
 
-            if (inicio > fin) {
-                if (error) {
-                    error.textContent = "La fecha inicial no puede ser posterior a la fecha final.";
-                    error.classList.remove("hidden");
-                }
-                return;
-            }
+      if (inicio > fin) {
+        if (error) {
+          error.textContent = "La fecha inicial no puede ser posterior a la fecha final.";
+          error.classList.remove("hidden");
+        }
+        return;
+      }
 
-            filtroFechaDesde = inicio;
-            filtroFechaHasta = fin;
-            periodoActual = "personalizado";
+      filtroFechaDesde = inicio;
+      filtroFechaHasta = fin;
+      periodoActual = "personalizado";
 
-            document.querySelectorAll(".periodo-btn").forEach(b => b.classList.remove("active"));
-            if (error) error.classList.add("hidden");
+      document.querySelectorAll(".periodo-btn").forEach((b) => b.classList.remove("active"));
+      if (error) error.classList.add("hidden");
 
-            await actualizar();
-        });
-    }
+      await actualizar();
+    });
+  }
 
-    if (botonExportar) {
-        botonExportar.addEventListener("click", exportarExcel);
-    }
+  if (botonExportar) {
+    botonExportar.addEventListener("click", exportarExcel);
+  }
 }
 
 function inicializarBotonesPeriodo() {
-    const botones = document.querySelectorAll(".periodo-btn");
+  const botones = document.querySelectorAll(".periodo-btn");
 
-    botones.forEach(boton => {
-        boton.addEventListener("click", async () => {
-            const periodo = boton.dataset.p;
-            if (!periodo || periodoActual === periodo) return;
+  botones.forEach((boton) => {
+    boton.addEventListener("click", async () => {
+      const periodo = boton.dataset.p;
+      if (!periodo || periodoActual === periodo) return;
 
-            botones.forEach(b => b.classList.remove("active"));
-            boton.classList.add("active");
+      botones.forEach((b) => b.classList.remove("active"));
+      boton.classList.add("active");
 
-            filtroFechaDesde = null;
-            filtroFechaHasta = null;
+      filtroFechaDesde = null;
+      filtroFechaHasta = null;
 
-            const inputDesde = document.getElementById("filtro-desde");
-            const inputHasta = document.getElementById("filtro-hasta");
-            if (inputDesde) inputDesde.value = "";
-            if (inputHasta) inputHasta.value = "";
+      const inputDesde = document.getElementById("filtro-desde");
+      const inputHasta = document.getElementById("filtro-hasta");
+      if (inputDesde) inputDesde.value = "";
+      if (inputHasta) inputHasta.value = "";
 
-            periodoActual = periodo;
-            await actualizar();
-        });
+      periodoActual = periodo;
+      await actualizar();
     });
+  });
 }
 
 export {
-    actualizar,
-    cargarVentas,
-    renderKPIs,
-    renderChart,
-    renderTopProductos,
-    renderTabla,
-    exportarExcel,
-    convertirFecha,
-    fechaDesde,
-    calcularUnidades
+  actualizar,
+  cargarVentas,
+  renderKPIs,
+  renderChart,
+  renderTopProductos,
+  renderTabla,
+  exportarExcel,
+  convertirFecha,
+  fechaDesde,
+  calcularUnidades,
 };
 
 if (typeof document !== "undefined") {
-    inicializarFiltroFechas();
-    inicializarBotonesPeriodo();
-    actualizar();
+  inicializarFiltroFechas();
+  inicializarBotonesPeriodo();
+  actualizar();
 }

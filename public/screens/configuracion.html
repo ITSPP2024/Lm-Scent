@@ -269,6 +269,97 @@
         }
 
 
+        .bento-card {
+
+            background: #1c1b1b;
+
+            border:
+                1px solid
+                rgba(153, 144, 124, 0.18);
+
+            box-shadow:
+                0 4px 20px -2px
+                rgba(0, 0, 0, 0.4);
+
+        }
+
+
+        .toast {
+
+            position: fixed;
+
+            bottom: 24px;
+
+            right: 24px;
+
+            background: #201f1f;
+
+            border:
+                1px solid
+                #f2ca50;
+
+            color: #ffffff;
+
+            padding: 14px 24px;
+
+            border-radius: 12px;
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+            box-shadow:
+                0 10px 30px
+                rgba(0, 0, 0, 0.6);
+
+            opacity: 0;
+
+            transform: translateY(20px);
+
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+            pointer-events: none;
+
+            z-index: 9999;
+
+            max-width: 90vw;
+
+        }
+
+
+        .toast.show {
+
+            opacity: 1;
+
+            transform: translateY(0);
+
+            pointer-events: auto;
+
+        }
+
+
+        .toast.error {
+
+            border-color: #ef4444;
+
+            background: #271414;
+
+            color: #fca5a5;
+
+        }
+
+
+        .toast.info {
+
+            border-color: #38bdf8;
+
+            background: #0d1e2e;
+
+            color: #bae6fd;
+
+        }
+
+
         .gold-border-top {
 
             border-top:
@@ -276,6 +367,7 @@
                 #f2ca50;
 
         }
+
 
 
         .tactile-press:active {
@@ -353,50 +445,27 @@
         }
 
 
-        .shine-button {
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #f2ca50 0%,
-                    #ffe088 50%,
-                    #f2ca50 100%
-                );
-
-            background-size: 200% auto;
-
-            transition: .3s;
-
-        }
-
-
-        .shine-button:hover {
-
-            animation:
-                subtle-shine 1.5s
-                infinite linear;
-
-        }
-
-
-        @keyframes subtle-shine {
-
-            0% {
-
-                background-position:
-                    -200% center;
-
+        @media print {
+            body * {
+                visibility: hidden !important;
             }
-
-            100% {
-
-                background-position:
-                    200% center;
-
+            #ticketPruebaImprimible,
+            #ticketPruebaImprimible * {
+                visibility: visible !important;
             }
-
+            #ticketPruebaImprimible {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                display: block !important;
+                background: white !important;
+                color: black !important;
+                padding: 10px !important;
+                margin: 0 !important;
+                font-family: monospace !important;
+            }
         }
-
     </style>
 
 </head>
@@ -481,10 +550,7 @@
     <!-- ===================================================== -->
 
     <div class="flex items-center gap-3 shrink-0">
-        <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-high/60 border border-outline-variant text-xs text-on-surface-variant">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span class="font-medium text-[11px] uppercase tracking-wider text-on-surface/80">En Línea</span>
-        </div>
+
         <div id="usuario-sesion-badge" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs text-primary font-medium">
             <span class="material-symbols-outlined text-sm">person</span>
             <span id="nombre-usuario-sesion">Usuario</span>
@@ -498,145 +564,264 @@
 
 
 <!-- Config Content -->
-<div class="p-10 max-w-full mx-auto w-full">
-  <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div class="p-6 sm:p-8 max-w-7xl mx-auto w-full">
+  <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
-      <h2 class="font-headline-lg text-headline-lg text-on-surface">Configuración de Sistema</h2>
-      <p class="font-body-lg text-body-lg text-on-surface-variant mt-2 max-w-3xl">Administre las preferencias de su boutique y configure los parámetros fiscales para sus operaciones.</p>
+      <h2 class="text-xl sm:text-2xl font-bold text-on-surface">Configuración de Sistema</h2>
+      <p class="text-xs sm:text-sm text-on-surface-variant mt-1">Preferencias del negocio, información de la boutique y parámetros generales.</p>
     </div>
-    <button id="btn-guardar" class="px-8 py-3 bg-gradient-to-r from-primary to-primary-container text-on-primary-container font-label-caps text-label-caps rounded-lg hover:shadow-[0_0_20px_rgba(242,202,80,0.3)] transition-all transform hover:-translate-y-0.5 active:scale-95">
-      Guardar Cambios
-    </button>
+
   </div>
 
   <!-- Bento Grid -->
   <div class="grid grid-cols-1 md:grid-cols-12 gap-card-gap">
 
-    <!-- Identidad -->
-    <section class="md:col-span-8 bento-card rounded-xl p-8">
-      <div class="flex items-center gap-4 mb-8">
-        <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-          <span class="material-symbols-outlined">store</span>
-        </div>
-        <h3 class="font-title-md text-title-md">Identidad de la Boutique</h3>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
-        <div class="flex flex-col gap-1.5">
-          <label class="font-label-caps text-label-caps text-on-surface-variant">Nombre Comercial</label>
-          <input id="cfg-nombre" class="bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 transition-colors py-2 text-body-md outline-none" type="text" placeholder="Nombre de tu negocio"/>
-        </div>
-        <div class="flex flex-col gap-1.5">
-          <label class="font-label-caps text-label-caps text-on-surface-variant">NIT / Tax ID</label>
-          <input id="cfg-nit" class="bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 transition-colors py-2 text-body-md outline-none" type="text" placeholder="000.000.000-0"/>
-        </div>
-        <div class="flex flex-col gap-1.5 sm:col-span-2">
-          <label class="font-label-caps text-label-caps text-on-surface-variant">Dirección Principal</label>
-          <input id="cfg-direccion" class="bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 transition-colors py-2 text-body-md outline-none" type="text" placeholder="Dirección del negocio"/>
-        </div>
-        <div class="flex flex-col gap-1.5">
-          <label class="font-label-caps text-label-caps text-on-surface-variant">Teléfono de Contacto</label>
-          <input id="cfg-telefono" class="bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 transition-colors py-2 text-body-md outline-none" type="text" placeholder="+52 (000) 000-0000"/>
-        </div>
-        <div class="flex flex-col gap-1.5">
-          <label class="font-label-caps text-label-caps text-on-surface-variant">Correo Electrónico</label>
-          <input id="cfg-email" class="bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 transition-colors py-2 text-body-md outline-none" type="email" placeholder="admin@tutienda.com"/>
-        </div>
-      </div>
-    </section>
-
-    <!-- Estética -->
-    <section class="md:col-span-4 bento-card rounded-xl p-8 relative overflow-hidden group">
-      <div class="absolute -right-12 -bottom-12 w-48 h-48 bg-primary opacity-5 rounded-full blur-3xl group-hover:opacity-10 transition-opacity"></div>
-      <div class="flex items-center gap-4 mb-8">
-        <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-          <span class="material-symbols-outlined">palette</span>
-        </div>
-        <h3 class="font-title-md text-title-md">Estética &amp; Entorno</h3>
-      </div>
-      <div class="flex flex-col gap-6">
-        <div class="p-6 bg-surface rounded-lg border border-primary/20 relative">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-            <span class="font-label-caps text-[10px] text-primary">Acento Gold Premium</span>
+    <!-- ========================================================= -->
+    <!-- APARTADO APP MÓVIL: SUCURSAL Y PICK-UP -->
+    <!-- ========================================================= -->
+    <section class="md:col-span-12 bento-card rounded-2xl p-6 sm:p-7 relative overflow-hidden border border-primary/25 bg-surface-container-low">
+      <!-- Cabecera de la sección -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-outline-variant/30 mb-6">
+        <div class="flex items-start sm:items-center gap-3.5">
+          <div class="w-10 h-10 rounded-xl bg-primary/10 border border-primary/25 flex items-center justify-center text-primary shrink-0 shadow-xs">
+            <span class="material-symbols-outlined text-2xl">storefront</span>
           </div>
-          <div class="h-2 w-full bg-gradient-to-r from-primary/10 via-primary to-primary/10 rounded-full"></div>
-        </div>
-        <p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
-          El diseño boutique de Scent LM está optimizado para entornos de alta gama, con contrastes suaves que reducen la fatiga visual.
-        </p>
-      </div>
-    </section>
-
-    <!-- Parámetros Fiscales -->
-    <section class="md:col-span-6 bento-card rounded-xl p-8">
-      <div class="flex items-center gap-4 mb-8">
-        <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-          <span class="material-symbols-outlined">receipt_long</span>
-        </div>
-        <h3 class="font-title-md text-title-md">Parámetros Fiscales</h3>
-      </div>
-      <div class="space-y-6">
-        <div class="flex items-center justify-between">
           <div>
-            <p class="font-body-md font-medium">Cálculo de IVA</p>
-            <p class="font-label-caps text-[10px] text-on-surface-variant">Porcentaje de impuesto</p>
-          </div>
-          <div class="flex items-center gap-2">
-            <input id="cfg-iva" class="w-16 bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 py-1 text-center font-bold outline-none" type="number" value="16" min="0" max="100"/>
-            <span class="text-on-surface-variant">%</span>
+            <h3 class="text-base sm:text-lg font-bold text-on-surface tracking-tight">
+              Información de Sucursal (App Móvil)
+            </h3>
+            <p class="text-xs text-on-surface-variant mt-0.5">
+              Dirección física, horarios de recogida y ubicación en mapa para clientes de la app móvil.
+            </p>
           </div>
         </div>
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="font-body-md font-medium">Facturación Electrónica</p>
-            <p class="font-label-caps text-[10px] text-on-surface-variant">Habilitado / DIAN</p>
-          </div>
-          <label class="relative inline-flex items-center cursor-pointer">
-            <input id="cfg-facturacion" class="sr-only peer" type="checkbox"/>
-            <div class="w-11 h-6 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            id="btn-guardar-pickup"
+            class="px-5 py-2 bg-gradient-to-r from-primary to-primary-container text-on-primary-container font-label-caps text-xs rounded-lg hover:shadow-[0_0_15px_rgba(242,202,80,0.3)] transition-all font-bold flex items-center gap-1.5 active:scale-95 cursor-pointer shadow-xs"
+          >
+            <span class="material-symbols-outlined text-sm">save</span>
+            Guardar
+          </button>
+        </div>
+      </div>
+
+      <!-- Formulario Limpio a Ancho Completo -->
+      <div class="space-y-5">
+        
+        <!-- Dirección Física de Pick-up -->
+        <div class="flex flex-col gap-1.5">
+          <label class="font-label-caps text-xs text-on-surface-variant flex items-center gap-1.5 font-bold">
+            <span class="material-symbols-outlined text-rose-400 text-base">location_on</span>
+            <span>Dirección de Pick-up / Sucursal</span>
           </label>
+          <textarea
+            id="cfg-pickup-direccion"
+            rows="2"
+            class="w-full bg-surface-container border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg px-3.5 py-2 text-xs sm:text-sm text-white outline-none transition-all resize-none placeholder:text-neutral-500"
+            placeholder="Blvd. Sonora y Calle Agustín de Iturbide, Puerto Peñasco, Sonora."
+          ></textarea>
         </div>
-        <div class="flex flex-col gap-1.5">
-          <label class="font-label-caps text-label-caps text-on-surface-variant">Resolución de Facturación</label>
-          <input id="cfg-resolucion" class="bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 transition-colors py-2 text-body-md font-mono text-sm outline-none" type="text" placeholder="RES-0000-000000-XX"/>
-        </div>
-      </div>
-    </section>
 
-    <!-- Impresión -->
-    <section class="md:col-span-6 bento-card rounded-xl p-8">
-      <div class="flex items-center gap-4 mb-8">
-        <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-          <span class="material-symbols-outlined">print</span>
-        </div>
-        <h3 class="font-title-md text-title-md">Impresión de Tickets</h3>
-      </div>
-      <div class="space-y-6">
-        <div class="flex flex-col gap-1.5">
-          <label class="font-label-caps text-label-caps text-on-surface-variant">Dispositivo Seleccionado</label>
-          <select id="cfg-impresora" class="bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 py-2 text-body-md appearance-none outline-none">
-            <option value="epson">Epson TM-T88VI (Thermal)</option>
-            <option value="star">Star Micronics mC-Print3</option>
-            <option value="red">Impresora de Red</option>
-          </select>
-        </div>
-        <div class="grid grid-cols-2 gap-4">
+        <!-- Horario y Enlace a Google Maps -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          
+          <!-- Horario de Atención -->
           <div class="flex flex-col gap-1.5">
-            <label class="font-label-caps text-label-caps text-on-surface-variant">Ancho de Papel</label>
-            <div class="flex items-center gap-2">
-              <button id="btn-80mm" onclick="setPapel('80mm')" class="px-3 py-1 bg-primary-container text-on-primary-container rounded font-bold text-xs transition-all">80mm</button>
-              <button id="btn-58mm" onclick="setPapel('58mm')" class="px-3 py-1 bg-surface-container-highest text-on-surface-variant rounded font-bold text-xs transition-all">58mm</button>
+            <label class="font-label-caps text-xs text-on-surface-variant flex items-center gap-1.5 font-bold">
+              <span class="material-symbols-outlined text-amber-400 text-base">schedule</span>
+              <span>Horario de Atención y Recogida</span>
+            </label>
+            <input
+              id="cfg-pickup-horario"
+              class="bg-surface-container border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg px-3.5 py-2 text-xs sm:text-sm text-white outline-none transition-all placeholder:text-neutral-500"
+              type="text"
+              placeholder="Lun - Sáb: 10:00 AM - 8:00 PM / Dom: 11:00 AM - 5:00 PM"
+            />
+            <div class="flex flex-wrap gap-1.5 mt-0.5">
+              <button type="button" data-horario="Lun - Sáb: 10:00 AM - 8:00 PM / Dom: 11:00 AM - 5:00 PM" class="btn-sugerencia-horario text-[10px] px-2 py-0.5 rounded bg-surface-container-high hover:bg-primary/20 text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Completo (Lun-Dom)</button>
+              <button type="button" data-horario="Lunes a Sábado: 10:00 AM - 8:00 PM" class="btn-sugerencia-horario text-[10px] px-2 py-0.5 rounded bg-surface-container-high hover:bg-primary/20 text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Lun a Sáb (10am-8pm)</button>
+              <button type="button" data-horario="Lun - Vie: 9:00 AM - 7:00 PM / Sáb: 10:00 AM - 4:00 PM" class="btn-sugerencia-horario text-[10px] px-2 py-0.5 rounded bg-surface-container-high hover:bg-primary/20 text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Oficina (Lun-Vie)</button>
             </div>
           </div>
+
+          <!-- Enlace a Google Maps -->
           <div class="flex flex-col gap-1.5">
-            <label class="font-label-caps text-label-caps text-on-surface-variant">Copias Autom.</label>
-            <input id="cfg-copias" class="bg-surface-container-low border-0 border-b border-outline-variant focus:border-primary focus:ring-0 py-1 text-center font-bold outline-none" type="number" value="1" min="1" max="5"/>
+            <label class="font-label-caps text-xs text-on-surface-variant flex items-center gap-1.5 font-bold">
+              <span class="material-symbols-outlined text-sky-400 text-base">map</span>
+              <span>Enlace a Google Maps</span>
+            </label>
+            <div class="flex items-center gap-2">
+              <input
+                id="cfg-pickup-maps"
+                class="flex-1 bg-surface-container border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg px-3.5 py-2 text-xs text-white outline-none font-mono transition-all placeholder:text-neutral-500"
+                type="url"
+                placeholder="https://maps.google.com/?q=..."
+              />
+              <button
+                type="button"
+                id="btn-probar-maps-link"
+                class="px-3 py-2 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-primary border border-primary/30 text-xs font-semibold flex items-center gap-1 transition-colors whitespace-nowrap cursor-pointer"
+                title="Abrir enlace para verificar"
+              >
+                <span class="material-symbols-outlined text-sm">open_in_new</span>
+                <span>Probar</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Fila 3: Nombre de la boutique y Teléfono de contacto / WhatsApp -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 pt-1">
+          <div class="flex flex-col gap-1.5">
+            <label class="font-label-caps text-xs text-on-surface-variant flex items-center gap-1 font-bold">
+              <span class="material-symbols-outlined text-primary text-sm">store</span>
+              <span>Nombre en la App</span>
+            </label>
+            <input
+              id="cfg-pickup-titulo"
+              class="bg-surface-container border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-white outline-none transition-all placeholder:text-neutral-500"
+              type="text"
+              placeholder="LM Scents Boutique"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label class="font-label-caps text-xs text-on-surface-variant flex items-center gap-1 font-bold">
+              <span class="material-symbols-outlined text-emerald-400 text-sm">call</span>
+              <span>Teléfono / WhatsApp</span>
+            </label>
+            <input
+              id="cfg-pickup-telefono"
+              class="bg-surface-container border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-white outline-none transition-all placeholder:text-neutral-500"
+              type="text"
+              placeholder="+52 638 123 4567"
+            />
+          </div>
+
+          <!-- Switch Habilitar Pick-up -->
+          <div class="p-3.5 rounded-xl bg-surface-container-low/70 border border-outline-variant/30 flex items-center justify-between sm:col-span-2 md:col-span-1">
+            <div>
+              <p class="text-xs font-bold text-white">Opción de Pick-up en App</p>
+              <p class="text-[11px] text-on-surface-variant">Habilitada para clientes</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input id="cfg-pickup-activo" class="sr-only peer" type="checkbox" checked />
+              <div class="w-10 h-5 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+            </label>
           </div>
         </div>
-        <button onclick="showToast('Imprimiendo ticket de prueba...', 'info')" class="w-full py-3 bg-surface-container-highest text-on-surface hover:bg-surface-container-high transition-colors rounded-lg font-label-caps text-label-caps flex items-center justify-center gap-2">
-          <span class="material-symbols-outlined text-lg">print_connect</span>
-          Imprimir Ticket de Prueba
-        </button>
+
+      </div>
+    </section>
+
+    <!-- Impresión de Tickets a Ancho Completo -->
+    <section class="md:col-span-12 bento-card rounded-2xl p-6 sm:p-7 relative overflow-hidden border border-primary/25 bg-surface-container-low">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-outline-variant/30 mb-6">
+        <div class="flex items-start sm:items-center gap-3.5">
+          <div class="w-10 h-10 rounded-xl bg-primary/10 border border-primary/25 flex items-center justify-center text-primary shrink-0 shadow-xs">
+            <span class="material-symbols-outlined text-2xl">print</span>
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-on-surface tracking-tight">
+              Impresión y Formato de Tickets
+            </h3>
+            <p class="text-xs text-on-surface-variant mt-0.5">
+              Configuración de impresora térmica para comprobantes y recibos de venta.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            id="btn-guardar-impresion"
+            class="px-5 py-2 bg-gradient-to-r from-primary to-primary-container text-on-primary-container font-label-caps text-xs rounded-lg hover:shadow-[0_0_15px_rgba(242,202,80,0.3)] transition-all font-bold flex items-center gap-1.5 active:scale-95 cursor-pointer shadow-xs"
+          >
+            <span class="material-symbols-outlined text-sm">save</span>
+            Guardar
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+        <!-- Dispositivo -->
+        <div class="flex flex-col gap-1.5">
+          <label class="font-label-caps text-xs text-on-surface-variant flex items-center gap-1.5 font-bold">
+            <span class="material-symbols-outlined text-primary text-base">devices</span>
+            <span>Impresora de Tickets</span>
+          </label>
+          <select id="cfg-impresora" class="w-full bg-surface-container border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg px-3.5 py-2 text-xs sm:text-sm text-white outline-none transition-all">
+            <option value="epson">Epson TM-T88 (Térmica USB / Red)</option>
+            <option value="star">Star Micronics mC-Print3</option>
+            <option value="pos58">Impresora Térmica Genérica POS-58</option>
+            <option value="pos80">Impresora Térmica Genérica POS-80</option>
+            <option value="red">Impresora de Red / IP</option>
+          </select>
+          <p class="text-[11px] text-on-surface-variant/70">Dispositivo para emisión de comprobantes.</p>
+        </div>
+
+        <!-- Ancho de papel -->
+        <div class="flex flex-col gap-1.5">
+          <label class="font-label-caps text-xs text-on-surface-variant flex items-center gap-1.5 font-bold">
+            <span class="material-symbols-outlined text-amber-400 text-base">straighten</span>
+            <span>Ancho de Papel</span>
+          </label>
+          <div class="flex items-center gap-2 pt-0.5">
+            <button
+              type="button"
+              id="btn-80mm"
+              onclick="setPapel('80mm')"
+              class="flex-1 py-2 px-3 bg-primary text-on-primary rounded-lg font-bold text-xs transition-all border border-primary/30 flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+            >
+              <span class="material-symbols-outlined text-sm">receipt</span>
+              80 mm (Estándar)
+            </button>
+            <button
+              type="button"
+              id="btn-58mm"
+              onclick="setPapel('58mm')"
+              class="flex-1 py-2 px-3 bg-surface-container text-on-surface-variant hover:text-on-surface rounded-lg font-bold text-xs transition-all border border-outline-variant/40 flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <span class="material-symbols-outlined text-sm">receipt_long</span>
+              58 mm (Compacto)
+            </button>
+          </div>
+          <p class="text-[11px] text-on-surface-variant/70">Ancho del rollo de papel para el ticket.</p>
+        </div>
+
+        <!-- Copias y Prueba -->
+        <div class="flex flex-col gap-1.5">
+          <label class="font-label-caps text-xs text-on-surface-variant flex items-center gap-1.5 font-bold">
+            <span class="material-symbols-outlined text-emerald-400 text-base">content_copy</span>
+            <span>Copias y Prueba</span>
+          </label>
+          <div class="flex items-center gap-2">
+            <div class="relative w-28 shrink-0">
+              <input
+                id="cfg-copias"
+                class="w-full bg-surface-container border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg px-3 py-2 text-xs sm:text-sm text-center font-bold text-white outline-none"
+                type="number"
+                value="1"
+                min="1"
+                max="5"
+              />
+              <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-on-surface-variant pointer-events-none">copia(s)</span>
+            </div>
+            <button
+              type="button"
+              id="btn-imprimir-prueba"
+              class="flex-1 py-2 px-3 bg-surface-container-high hover:bg-surface-container-highest text-primary border border-primary/30 transition-colors rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap shadow-xs"
+            >
+              <span class="material-symbols-outlined text-base">print_connect</span>
+              <span>Probar Ticket</span>
+            </button>
+          </div>
+          <p class="text-[11px] text-on-surface-variant/70">Envía un ticket de prueba a la impresora.</p>
+        </div>
       </div>
     </section>
 
@@ -649,13 +834,13 @@
 <div id="toast" class="toast"></div>
 
 <script type="module">
-import { obtenerConfiguracion, guardarConfiguracion } from "/src/lib/configuracion.js";
+import { obtenerConfiguracion, guardarConfiguracion, CONFIG_DEFAULTS } from "/src/lib/configuracion.js";
 import {
   verificarSesionOVolverAWelcome,
   cerrarSesion,
 } from "/src/lib/movimientosCaja.js";
 
-// Validar que exista una sesión activa; de lo contrario redirigir a Bienvenida
+// Validar sesión
 const sesionUsuario = verificarSesionOVolverAWelcome();
 if (sesionUsuario) {
   const badge = document.getElementById("usuario-sesion-badge");
@@ -670,11 +855,14 @@ const btnLogout = document.getElementById("btn-cerrar-sesion");
 if (btnLogout) {
   btnLogout.addEventListener("click", () => {
     cerrarSesion();
-    if (window.top && window.top !== window.self) {
-      window.top.location.href = "/";
-    } else {
-      window.location.assign("/screens/welcome.html");
-    }
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: "NAVIGATE_TO", path: "/" }, "*");
+      }
+    } catch (e) {}
+    try {
+      window.location.assign("./welcome.html");
+    } catch (e) {}
   });
 }
 
@@ -682,70 +870,227 @@ let anchoPapel = "80mm";
 
 window.setPapel = function(val) {
   anchoPapel = val;
-  document.getElementById("btn-80mm").className = val === "80mm"
-    ? "px-3 py-1 bg-primary-container text-on-primary-container rounded font-bold text-xs transition-all"
-    : "px-3 py-1 bg-surface-container-highest text-on-surface-variant rounded font-bold text-xs transition-all";
-  document.getElementById("btn-58mm").className = val === "58mm"
-    ? "px-3 py-1 bg-primary-container text-on-primary-container rounded font-bold text-xs transition-all"
-    : "px-3 py-1 bg-surface-container-highest text-on-surface-variant rounded font-bold text-xs transition-all";
+  const btn80 = document.getElementById("btn-80mm");
+  const btn58 = document.getElementById("btn-58mm");
+  if (btn80) {
+    btn80.className = val === "80mm"
+      ? "px-3 py-1 bg-primary-container text-on-primary-container rounded font-bold text-xs transition-all"
+      : "px-3 py-1 bg-surface-container-highest text-on-surface-variant rounded font-bold text-xs transition-all";
+  }
+  if (btn58) {
+    btn58.className = val === "58mm"
+      ? "px-3 py-1 bg-primary-container text-on-primary-container rounded font-bold text-xs transition-all"
+      : "px-3 py-1 bg-surface-container-highest text-on-surface-variant rounded font-bold text-xs transition-all";
+  }
 };
 
 function showToast(msg, tipo = "success") {
   const t = document.getElementById("toast");
+  if (!t) return;
   t.textContent = msg;
   t.className = `toast ${tipo} show`;
-  setTimeout(() => t.classList.remove("show"), 3000);
+  setTimeout(() => t.classList.remove("show"), 3500);
 }
 
+// -------------------------------------------------------------
+// RECOLECCIÓN DEL PAYLOAD COMPLETO
+// -------------------------------------------------------------
+function recopilarDatosFormulario() {
+  const nombreComercial = (document.getElementById("cfg-nombre")?.value || "").trim() || "Lm Scents Boutique";
+  const taxId = (document.getElementById("cfg-nit")?.value || "").trim() || "1";
+  const direccion = (document.getElementById("cfg-pickup-direccion")?.value || document.getElementById("cfg-direccion")?.value || "").trim();
+  const horario = (document.getElementById("cfg-pickup-horario")?.value || "").trim();
+  const googleMapsUrl = (document.getElementById("cfg-pickup-maps")?.value || "").trim();
+  const telefono = (document.getElementById("cfg-pickup-telefono")?.value || document.getElementById("cfg-telefono")?.value || "").trim();
+  const correo = (document.getElementById("cfg-email")?.value || "").trim() || "Lmscents@gmail.com";
+  const nombreTienda = (document.getElementById("cfg-pickup-titulo")?.value || "").trim() || "LM Scents";
+  const pickupActivo = document.getElementById("cfg-pickup-activo") ? document.getElementById("cfg-pickup-activo").checked : true;
+
+  const iva = Number(document.getElementById("cfg-iva")?.value) || 16;
+  const facturacionElectronica = Boolean(document.getElementById("cfg-facturacion")?.checked);
+  const resolucionFacturacion = (document.getElementById("cfg-resolucion")?.value || "").trim();
+  const impresora = document.getElementById("cfg-impresora")?.value || "epson";
+  const copiasTicket = Number(document.getElementById("cfg-copias")?.value) || 1;
+
+  return {
+    correo,
+    email: correo,
+    direccion,
+    googleMapsUrl,
+    horario,
+    linkMaps: googleMapsUrl,
+    mapsUrl: googleMapsUrl,
+    nombreComercial,
+    nombreTienda,
+    pickupActivo,
+    pickupBadge: "Inmediato",
+    pickupDireccion: direccion,
+    pickupHorario: horario,
+    pickupMapsUrl: googleMapsUrl,
+    pickupTitulo: nombreTienda,
+    taxId,
+    nit: taxId,
+    telefono,
+    iva,
+    facturacionElectronica,
+    resolucionFacturacion,
+    impresora,
+    copiasTicket,
+    anchoPapel,
+  };
+}
+
+// -------------------------------------------------------------
+// GUARDADO EN FIRESTORE
+// -------------------------------------------------------------
+async function ejecutarGuardado(origen = "general") {
+  const btnPrincipal = document.getElementById("btn-guardar");
+  const btnPickup = document.getElementById("btn-guardar-pickup");
+
+  const textoBtnPrincipal = btnPrincipal ? btnPrincipal.innerHTML : "";
+  const textoBtnPickup = btnPickup ? btnPickup.innerHTML : "";
+
+  if (btnPrincipal) {
+    btnPrincipal.disabled = true;
+    btnPrincipal.textContent = "Guardando...";
+  }
+  if (btnPickup) {
+    btnPickup.disabled = true;
+    btnPickup.innerHTML = '<span class="material-symbols-outlined text-base animate-spin">sync</span> Guardando...';
+  }
+
+  try {
+    const payload = recopilarDatosFormulario();
+    await guardarConfiguracion(payload);
+
+    // Sincronizar visualmente campos complementarios
+    const inputDirGral = document.getElementById("cfg-direccion");
+    if (inputDirGral && !inputDirGral.value.trim() && payload.direccion) {
+      inputDirGral.value = payload.direccion;
+    }
+    const inputTelGral = document.getElementById("cfg-telefono");
+    if (inputTelGral && !inputTelGral.value.trim() && payload.telefono) {
+      inputTelGral.value = payload.telefono;
+    }
+
+    showToast("Configuración guardada correctamente", "success");
+  } catch (e) {
+    console.error("Error al guardar:", e);
+    showToast("Error al guardar: " + (e?.message || e), "error");
+  } finally {
+    if (btnPrincipal) {
+      btnPrincipal.disabled = false;
+      btnPrincipal.innerHTML = textoBtnPrincipal;
+    }
+    if (btnPickup) {
+      btnPickup.disabled = false;
+      btnPickup.innerHTML = textoBtnPickup;
+    }
+  }
+}
+
+
+const elBtnGuardarPickup = document.getElementById("btn-guardar-pickup");
+if (elBtnGuardarPickup) elBtnGuardarPickup.onclick = () => ejecutarGuardado("pickup");
+
+// -------------------------------------------------------------
+// AYUDANTES RÁPIDOS Y EVENTOS
+// -------------------------------------------------------------
+
+// 3. Probar enlace de Google Maps
+const btnProbarMaps = document.getElementById("btn-probar-maps-link");
+if (btnProbarMaps) {
+  btnProbarMaps.addEventListener("click", () => {
+    const url = (document.getElementById("cfg-pickup-maps")?.value || "").trim();
+    if (!url || !url.startsWith("http")) {
+      showToast("Ingrese un enlace válido de Google Maps primero", "error");
+      return;
+    }
+    window.open(url, "_blank", "noopener,noreferrer");
+  });
+}
+
+// 4. Botones de sugerencias de horario
+document.querySelectorAll(".btn-sugerencia-horario").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const horario = btn.getAttribute("data-horario");
+    const inputHorario = document.getElementById("cfg-pickup-horario");
+    if (horario && inputHorario) {
+      inputHorario.value = horario;
+    }
+  });
+});
+
+// -------------------------------------------------------------
+// CARGA INICIAL DESDE FIRESTORE
+// -------------------------------------------------------------
 async function cargar() {
   try {
     const cfg = await obtenerConfiguracion();
-    document.getElementById("cfg-nombre").value = cfg.nombreComercial || "";
-    document.getElementById("cfg-nit").value = cfg.nit || "";
-    document.getElementById("cfg-direccion").value = cfg.direccion || "";
-    document.getElementById("cfg-telefono").value = cfg.telefono || "";
-    document.getElementById("cfg-email").value = cfg.email || "";
-    document.getElementById("cfg-iva").value = cfg.iva ?? 16;
-    document.getElementById("cfg-facturacion").checked = cfg.facturacionElectronica || false;
-    document.getElementById("cfg-resolucion").value = cfg.resolucionFacturacion || "";
-    document.getElementById("cfg-impresora").value = cfg.impresora || "epson";
-    document.getElementById("cfg-copias").value = cfg.copiasTicket || 1;
+
+    // Campos generales
+    const elNombre = document.getElementById("cfg-nombre");
+    if (elNombre) elNombre.value = cfg.nombreComercial || cfg.nombreTienda || "";
+
+    const elNit = document.getElementById("cfg-nit");
+    if (elNit) elNit.value = cfg.taxId || cfg.nit || "";
+
+    const elDir = document.getElementById("cfg-direccion");
+    if (elDir) elDir.value = cfg.direccion || cfg.pickupDireccion || "";
+
+    const elTel = document.getElementById("cfg-telefono");
+    if (elTel) elTel.value = cfg.telefono || cfg.pickupTelefono || "";
+
+    const elEmail = document.getElementById("cfg-email");
+    if (elEmail) elEmail.value = cfg.correo || cfg.email || "";
+
+    const elIva = document.getElementById("cfg-iva");
+    if (elIva) elIva.value = cfg.iva ?? 16;
+
+    const elFact = document.getElementById("cfg-facturacion");
+    if (elFact) elFact.checked = Boolean(cfg.facturacionElectronica);
+
+    const elRes = document.getElementById("cfg-resolucion");
+    if (elRes) elRes.value = cfg.resolucionFacturacion || "";
+
+    const elImp = document.getElementById("cfg-impresora");
+    if (elImp) elImp.value = cfg.impresora || "epson";
+
+    const elCopias = document.getElementById("cfg-copias");
+    if (elCopias) elCopias.value = cfg.copiasTicket || 1;
+
     anchoPapel = cfg.anchoPapel || "80mm";
-    setPapel(anchoPapel);
+    if (typeof window.setPapel === "function") {
+      window.setPapel(anchoPapel);
+    }
+
+    // Campos de la App Móvil (Pick-up)
+    const elPickupTitulo = document.getElementById("cfg-pickup-titulo");
+    if (elPickupTitulo) elPickupTitulo.value = cfg.nombreTienda || cfg.nombreComercial || cfg.pickupTitulo || "";
+
+    const elPickupDir = document.getElementById("cfg-pickup-direccion");
+    if (elPickupDir) elPickupDir.value = cfg.pickupDireccion || cfg.direccion || "";
+
+    const elPickupHorario = document.getElementById("cfg-pickup-horario");
+    if (elPickupHorario) elPickupHorario.value = cfg.pickupHorario || cfg.horario || "";
+
+    const elPickupMaps = document.getElementById("cfg-pickup-maps");
+    if (elPickupMaps) elPickupMaps.value = cfg.pickupMapsUrl || cfg.googleMapsUrl || cfg.mapsUrl || cfg.linkMaps || "";
+
+    const elPickupTel = document.getElementById("cfg-pickup-telefono");
+    if (elPickupTel) elPickupTel.value = cfg.telefono || cfg.pickupTelefono || "";
+
+    const elPickupActivo = document.getElementById("cfg-pickup-activo");
+    if (elPickupActivo) elPickupActivo.checked = typeof cfg.pickupActivo === "boolean" ? cfg.pickupActivo : true;
+
   } catch (e) {
-    console.error("Error cargando config:", e);
+    console.error("Error cargando configuración:", e);
+    showToast("Aviso: no se pudo cargar la configuración", "info");
   }
 }
 
-document.getElementById("btn-guardar").onclick = async () => {
-  const btn = document.getElementById("btn-guardar");
-  btn.textContent = "Guardando...";
-  btn.disabled = true;
-  try {
-    await guardarConfiguracion({
-      nombreComercial: document.getElementById("cfg-nombre").value,
-      nit: document.getElementById("cfg-nit").value,
-      direccion: document.getElementById("cfg-direccion").value,
-      telefono: document.getElementById("cfg-telefono").value,
-      email: document.getElementById("cfg-email").value,
-      iva: Number(document.getElementById("cfg-iva").value),
-      facturacionElectronica: document.getElementById("cfg-facturacion").checked,
-      resolucionFacturacion: document.getElementById("cfg-resolucion").value,
-      impresora: document.getElementById("cfg-impresora").value,
-      copiasTicket: Number(document.getElementById("cfg-copias").value),
-      anchoPapel
-    });
-    showToast("✓ Configuración guardada correctamente");
-  } catch (e) {
-    showToast("Error al guardar: " + e.message, "error");
-  } finally {
-    btn.textContent = "Guardar Cambios";
-    btn.disabled = false;
-  }
-};
-
 // Focus effects
-document.querySelectorAll("input, select").forEach(input => {
+document.querySelectorAll("input, select, textarea").forEach(input => {
   input.addEventListener("focus", () => {
     input.parentElement.querySelector("label")?.classList.add("text-primary");
   });
@@ -754,12 +1099,12 @@ document.querySelectorAll("input, select").forEach(input => {
   });
 });
 
+// Ejecutar carga al montar
 cargar();
 
 /* =========================================================
    NAVEGACIÓN RÁPIDA (PREFETCHING)
 ========================================================= */
-
 document.querySelectorAll('nav a[href]').forEach(link => {
     link.addEventListener('mouseenter', () => {
         const href = link.getAttribute('href');
@@ -771,7 +1116,6 @@ document.querySelectorAll('nav a[href]').forEach(link => {
         }
     }, { once: true });
 });
-
 </script>
 </body>
 </html>

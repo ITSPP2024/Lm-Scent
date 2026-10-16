@@ -24729,6 +24729,9 @@ function updateDoc(e2, t2, n2, ...r2) {
   (t2 = getModularInstance(t2)) || t2 instanceof FieldPath2 ? __PRIVATE_parseUpdateVarargs(a, "updateDoc", e2._key, t2, n2, r2) : __PRIVATE_parseUpdateData(a, "updateDoc", e2._key, t2);
   return executeWrite(s2, [o2.toMutation(e2._key, Precondition.exists(true))]);
 }
+function deleteDoc(e2) {
+  return executeWrite(ra(e2.firestore, da), [new __PRIVATE_DeleteMutation(e2._key, Precondition.none())]);
+}
 function addDoc(e2, t2) {
   const n2 = ra(e2.firestore, da), r2 = doc(e2), s2 = __PRIVATE_applyFirestoreDataConverter(e2.converter, t2), a = la(e2.firestore);
   return executeWrite(n2, [__PRIVATE_parseSetData(a, "addDoc", r2._key, s2, null !== e2.converter, {}).toMutation(r2._key, Precondition.exists(false))]).then((() => r2));
@@ -24789,24 +24792,6 @@ var db = getFirestore(
 
 // src/lib/ventas.js
 var tabla = "ventas";
-function limpiarParaFirestore(obj) {
-  if (obj === null || obj === void 0) return null;
-  if (typeof obj !== "object") {
-    if (typeof obj === "number" && Number.isNaN(obj)) return 0;
-    return obj;
-  }
-  if (obj instanceof Date) return obj;
-  if (Array.isArray(obj)) {
-    return obj.map(limpiarParaFirestore).filter((v2) => v2 !== void 0);
-  }
-  const res = {};
-  for (const [k2, v2] of Object.entries(obj)) {
-    if (v2 !== void 0 && typeof v2 !== "function") {
-      res[k2] = limpiarParaFirestore(v2);
-    }
-  }
-  return res;
-}
 function parsearFecha(valor) {
   if (!valor) return 0;
   if (typeof valor === "number") return valor;
@@ -24818,27 +24803,14 @@ function parsearFecha(valor) {
 }
 async function registrarVenta(data) {
   const ahora = /* @__PURE__ */ new Date();
-  const subtotal = Number(data.subtotal) || 0;
-  const total = Number(data.total) || subtotal;
-  const numArticulos = Number(data.numArticulos) || (Array.isArray(data.productos) ? data.productos.reduce((a, b2) => a + (Number(b2.cantidad) || 1), 0) : 1);
-  const docData = limpiarParaFirestore({
+  return await addDoc(collection(db, tabla), {
     origen: "pos",
     canal: "pos",
-    esVentaPOS: true,
-    estado: "completado",
-    estadoEntrega: "entregado",
-    estadoPedido: "completado",
-    entregado: true,
-    completado: true,
     ...data,
-    subtotal,
-    total,
-    numArticulos,
     fecha: ahora,
     timestamp: ahora.getTime(),
     createdAt: ahora
   });
-  return await addDoc(collection(db, tabla), docData);
 }
 async function obtenerTodasLasVentas() {
   try {
@@ -24893,49 +24865,74 @@ async function actualizarEstadoPedido(id, nuevoEstado, extras = {}) {
     datosActualizacion.entregado = true;
     datosActualizacion.completado = true;
   }
-  return await updateDoc(
-    doc(db, tabla, id),
-    datosActualizacion
-  );
+  return await updateDoc(doc(db, tabla, id), datosActualizacion);
 }
 async function crearPedidoMovil(data) {
   const ahora = /* @__PURE__ */ new Date();
   const esEfectivo = data.esEfectivo ?? (String(data.metodoPago || "").toLowerCase().includes("efectivo") || data.tipoPago === "efectivo" || !data.esTarjeta);
-  return await addDoc(
-    collection(db, tabla),
-    {
-      origen: "app",
-      canal: "app_movil",
-      esVentaApp: true,
-      cliente: data.cliente || "Cliente LM Scents",
-      telefono: data.telefono || data.cliente?.telefono || "",
-      correo: data.correo || data.cliente?.correo || "",
-      direccion: data.direccion || data.cliente?.direccion || "",
-      ciudad: data.ciudad || "Ciudad de M\xE9xico",
-      codigoPostal: data.codigoPostal || "",
-      metodoEntrega: data.metodoEntrega || (data.tipoEntrega === "tienda" ? "En Tienda" : "A Domicilio"),
-      tipoEntrega: data.tipoEntrega || (data.metodoEntrega === "En Tienda" ? "tienda" : "domicilio"),
-      metodoPago: data.metodoPago || (esEfectivo ? "Efectivo" : "Tarjeta"),
-      tipoPago: data.tipoPago || (esEfectivo ? "efectivo" : "tarjeta"),
-      esEfectivo,
-      esTarjeta: !esEfectivo,
-      estado: data.estado || "pendiente",
-      estadoEntrega: data.estado || "pendiente",
-      estadoPedido: data.estado || "pendiente",
-      productos: data.productos || [],
-      descuento: Number(data.descuento) || 0,
-      envio: Number(data.envio || data.costoEnvio) || 0,
-      subtotal: Number(data.subtotal) || 0,
-      total: Number(data.total) || 0,
-      fecha: ahora.toISOString(),
-      timestamp: ahora.getTime(),
-      createdAt: ahora
-    }
-  );
+  return await addDoc(collection(db, tabla), {
+    origen: "app",
+    canal: "app_movil",
+    esVentaApp: true,
+    cliente: data.cliente || "Cliente LM Scents",
+    telefono: data.telefono || data.cliente?.telefono || "",
+    correo: data.correo || data.cliente?.correo || "",
+    direccion: data.direccion || data.cliente?.direccion || "",
+    ciudad: data.ciudad || "Ciudad de M\xE9xico",
+    codigoPostal: data.codigoPostal || "",
+    metodoEntrega: data.metodoEntrega || (data.tipoEntrega === "tienda" ? "En Tienda" : "A Domicilio"),
+    tipoEntrega: data.tipoEntrega || (data.metodoEntrega === "En Tienda" ? "tienda" : "domicilio"),
+    metodoPago: data.metodoPago || (esEfectivo ? "Efectivo" : "Tarjeta"),
+    tipoPago: data.tipoPago || (esEfectivo ? "efectivo" : "tarjeta"),
+    esEfectivo,
+    esTarjeta: !esEfectivo,
+    estado: data.estado || "pendiente",
+    estadoEntrega: data.estado || "pendiente",
+    estadoPedido: data.estado || "pendiente",
+    productos: data.productos || [],
+    descuento: Number(data.descuento) || 0,
+    envio: Number(data.envio || data.costoEnvio) || 0,
+    subtotal: Number(data.subtotal) || 0,
+    total: Number(data.total) || 0,
+    fecha: ahora.toISOString(),
+    timestamp: ahora.getTime(),
+    createdAt: ahora
+  });
+}
+async function eliminarPedidoMovil(id) {
+  if (!id) throw new Error("ID de pedido no especificado");
+  return await deleteDoc(doc(db, tabla, id));
+}
+async function editarPedidoMovil(id, datosActualizados) {
+  if (!id) throw new Error("ID de pedido no especificado");
+  const ahora = /* @__PURE__ */ new Date();
+  const actualizacion = {
+    ...datosActualizados,
+    fechaActualizacion: ahora,
+    timestampActualizacion: ahora.getTime()
+  };
+  const datosActualizacion = actualizacion;
+  const estado = String(
+    datosActualizados?.estado || datosActualizados?.estadoPedido || datosActualizados?.estadoEntrega || ""
+  ).toLowerCase();
+  if (estado === "entregado" || estado === "completado") {
+    actualizacion.entregado = true;
+    actualizacion.completado = true;
+    actualizacion.fechaEntrega = actualizacion.fechaEntrega || ahora;
+    actualizacion.timestampEntrega = actualizacion.timestampEntrega || ahora.getTime();
+  }
+  return await updateDoc(doc(db, tabla, id), actualizacion);
+}
+async function actualizarPedidoDirecto(id, datos) {
+  if (!id) throw new Error("ID de pedido no especificado");
+  return await updateDoc(doc(db, tabla, id), datos);
 }
 export {
   actualizarEstadoPedido,
+  actualizarPedidoDirecto,
   crearPedidoMovil,
+  editarPedidoMovil,
+  eliminarPedidoMovil,
   obtenerPedidosMoviles,
   obtenerTodasLasVentas,
   registrarVenta

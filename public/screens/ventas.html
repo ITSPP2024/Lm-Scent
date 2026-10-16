@@ -346,19 +346,19 @@
       <!-- ===================================================== -->
 
       <div class="flex items-center gap-3 shrink-0">
+        
         <div
-          class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-high/60 border border-outline-variant text-xs text-on-surface-variant"
+          id="usuario-sesion-badge"
+          class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs text-primary font-medium"
         >
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="font-medium text-[11px] uppercase tracking-wider text-on-surface/80"
-            >En Línea</span
-          >
-        </div>
-        <div id="usuario-sesion-badge" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs text-primary font-medium">
           <span class="material-symbols-outlined text-sm">person</span>
           <span id="nombre-usuario-sesion">Usuario</span>
         </div>
-        <button id="btn-cerrar-sesion" title="Cerrar sesión" class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error/10 transition-colors flex items-center justify-center cursor-pointer">
+        <button
+          id="btn-cerrar-sesion"
+          title="Cerrar sesión"
+          class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error/10 transition-colors flex items-center justify-center cursor-pointer"
+        >
           <span class="material-symbols-outlined text-lg">logout</span>
         </button>
       </div>
@@ -381,67 +381,81 @@
           <!-- ENCABEZADO -->
 
           <div
-            class="px-container-desktop py-gutter bg-surface/50 backdrop-blur-md sticky top-0 z-10 flex flex-col gap-4"
+            class="px-container-desktop py-2.5 bg-surface/70 backdrop-blur-md sticky top-0 z-20 flex flex-col gap-2 border-b border-outline-variant/30"
           >
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
+            <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+              <div class="flex items-center gap-2.5 shrink-0">
                 <div>
-                  <h2 class="font-headline-lg text-headline-lg text-on-surface">Venta en Curso</h2>
-                  <p class="text-xs text-on-surface-variant">
-                    Punto de venta y facturación directa
+                  <h2 class="text-base sm:text-lg font-bold text-on-surface leading-tight">Venta en Curso</h2>
+                  <p class="text-[11px] text-on-surface-variant">
+                    Punto de venta y facturación
                   </p>
                 </div>
               </div>
-              <!-- BUSCADOR -->
 
-              <div class="relative group max-w-5xl mx-auto w-full">
-                <span
-                  class="material-symbols-outlined absolute left-6 top-1/2 -translate-y-1/2 text-primary"
-                >
-                  barcode_scanner
-                </span>
+              <!-- BUSCADOR COMPACTO -->
+              <div class="relative flex-1 max-w-2xl mx-auto md:mx-4 w-full z-40">
+                <div class="relative flex items-center">
+                  <span
+                    class="material-symbols-outlined absolute left-3.5 text-primary text-[19px] pointer-events-none"
+                  >
+                    barcode_scanner
+                  </span>
 
-                <input
-                  id="buscador"
-                  autofocus
-                  class="w-full bg-surface-container-low border-2 border-outline-variant focus:border-primary focus:ring-0 rounded-full pl-16 pr-6 py-5 text-title-md font-body-md transition-all placeholder:text-on-surface-variant/40"
-                  placeholder="Buscar o escanear producto..."
-                  type="text"
-                />
+                  <input
+                    id="buscador"
+                    autofocus
+                    autocomplete="off"
+                    class="w-full bg-surface-container-low border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary rounded-xl pl-10 pr-9 py-2 sm:py-2.5 text-xs sm:text-sm text-on-surface transition-all placeholder:text-on-surface-variant/40 shadow-inner"
+                    placeholder="Buscar producto por nombre o código / escanear..."
+                    type="text"
+                  />
+
+                  <button
+                    type="button"
+                    id="btnLimpiarBuscadorPOS"
+                    class="hidden absolute right-2.5 p-1 text-on-surface-variant hover:text-on-surface bg-surface-container hover:bg-surface-container-high rounded-lg transition-all cursor-pointer"
+                    title="Limpiar búsqueda"
+                  >
+                    <span class="material-symbols-outlined text-[17px]">close</span>
+                  </button>
+                </div>
+
+                <!-- SUGERENCIAS DESPLEGABLES EN TIEMPO REAL DEL PUNTO DE VENTA -->
+                <div
+                  id="resultadosBuscadorPOS"
+                  class="hidden absolute left-0 right-0 top-full mt-1.5 bg-surface-container-low border border-primary/40 rounded-xl shadow-2xl p-1.5 max-h-80 overflow-y-auto custom-scrollbar z-50 backdrop-blur-md"
+                ></div>
               </div>
 
-              <div class="flex flex-wrap items-center gap-3">
+              <div class="flex items-center gap-2 shrink-0">
                 <!-- BOTÓN IR A PANTALLA DE PEDIDOS APP MÓVIL -->
-
                 <button
                   id="btnIrAPedidosMoviles"
                   type="button"
                   onclick="window.irAPedidosMoviles && window.irAPedidosMoviles()"
-                  class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500/20 via-primary/20 to-primary-container/25 border border-primary/60 text-primary rounded-full hover:bg-primary/30 transition-all font-label-caps text-[10px] font-bold tracking-wider tactile-press shadow-md shadow-amber-500/10 hover:shadow-amber-500/20 cursor-pointer"
+                  class="flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-amber-500/15 via-primary/15 to-primary-container/20 border border-primary/40 text-primary rounded-xl hover:bg-primary/25 transition-all text-xs font-bold tracking-wide tactile-press shadow-sm cursor-pointer"
                   title="Ir a la pantalla de pedidos realizados desde la App Móvil"
                 >
-                  <span class="material-symbols-outlined text-[18px]"> local_shipping </span>
-
+                  <span class="material-symbols-outlined text-[17px]"> local_shipping </span>
                   <span>PEDIDOS APP MÓVIL</span>
-
                   <span
                     id="badgePedidosPendientes"
-                    class="px-2 py-0.5 bg-primary text-on-primary text-[10px] font-bold rounded-full"
+                    class="px-1.5 py-0.2 bg-primary text-on-primary text-[10px] font-bold rounded-full min-w-[18px] text-center"
                   >
                     0
                   </span>
                 </button>
 
                 <!-- NUEVA VENTA -->
-
                 <button
                   id="btnNuevaVenta"
                   type="button"
-                  class="flex items-center gap-2 px-5 py-2.5 bg-primary-container/10 border border-primary/30 text-primary rounded-full hover:bg-primary/20 transition-all font-label-caps text-[10px] font-bold tracking-wider tactile-press"
+                  class="flex items-center gap-1.5 px-3 py-2 bg-surface-container-high hover:bg-surface-container-highest border border-outline-variant text-on-surface rounded-xl transition-all text-xs font-semibold tactile-press cursor-pointer"
+                  title="Reiniciar venta actual"
                 >
-                  <span class="material-symbols-outlined text-[18px]"> add </span>
-
-                  NUEVA VENTA
+                  <span class="material-symbols-outlined text-[17px]"> add </span>
+                  <span class="hidden sm:inline">NUEVA VENTA</span>
                 </button>
               </div>
             </div>
@@ -464,7 +478,7 @@
 
                 <div class="col-span-2 text-center">CANTIDAD</div>
 
-                <div class="col-span-2 text-right">SUBTOTAL</div>
+                <div class="col-span-2 text-right">TOTAL</div>
               </div>
 
               <!-- CONTENEDOR DINÁMICO -->
@@ -476,61 +490,43 @@
           </div>
 
           <!-- ================================================= -->
-          <!-- TOTALES -->
+          <!-- TOTALES COMPACTO -->
           <!-- ================================================= -->
 
           <div
-            class="px-container-desktop py-6 bg-surface-container-low border-t border-outline-variant sticky bottom-0 z-10"
+            class="px-container-desktop py-2.5 sm:py-3 bg-surface-container-low/95 backdrop-blur-md border-t border-outline-variant sticky bottom-0 z-20 shadow-lg"
           >
-            <div class="max-w-5xl mx-auto">
-              <div class="grid grid-cols-12 gap-gutter items-end">
-                <div class="col-span-5 space-y-2">
-                  <div class="flex justify-between text-body-md text-on-surface-variant">
-                    <span> Subtotal </span>
+            <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
+              <div class="flex items-center gap-1.5 text-xs text-on-surface-variant">
+                <span class="text-on-surface-variant/70 font-medium">Artículos:</span>
+                <span id="subtotal" class="hidden">$0.00</span>
+                <span id="numArticulos" class="font-bold text-on-surface text-sm">0</span>
+              </div>
 
-                    <span id="subtotal"> $0.00 </span>
-                  </div>
-
-                  <!-- NUMERO DE ARTÍCULOS EN LUGAR DE IVA -->
-
-                  <div class="flex justify-between text-body-md text-on-surface-variant">
-                    <span> Num. Art </span>
-
-                    <span id="numArticulos" class="font-bold text-on-surface"> 0 </span>
-                  </div>
+              <div class="flex items-center gap-4 sm:gap-6">
+                <div class="flex items-baseline gap-2">
+                  <span class="text-[11px] uppercase tracking-wider text-on-surface-variant font-bold">Total:</span>
+                  <span
+                    id="total"
+                    class="font-price-display text-2xl sm:text-3xl text-primary font-bold leading-none"
+                  >
+                    $0.00
+                  </span>
                 </div>
 
-                <div class="col-span-7 flex flex-col items-end">
-                  <div class="flex items-baseline gap-4 mb-4">
-                    <span class="font-headline-lg text-headline-lg text-on-surface"> Total </span>
-
-                    <span
-                      id="total"
-                      class="font-price-display text-[48px] text-primary leading-none"
-                    >
-                      $0.00
-                    </span>
-                  </div>
-
-                  <div class="flex gap-4 w-full">
-                    <!-- PAGAR -->
-
-                    <button
-                      id="btnPagar"
-                      type="button"
-                      class="flex-1 bg-primary py-4 rounded-xl text-on-primary font-display-lg text-[20px] font-bold tracking-widest gold-glow hover:brightness-110 transition-all tactile-press flex items-center justify-center gap-4"
-                    >
-                      PAGAR AHORA
-
-                      <span
-                        class="material-symbols-outlined"
-                        style="font-variation-settings: &quot;FILL&quot; 1"
-                      >
-                        check_circle
-                      </span>
-                    </button>
-                  </div>
-                </div>
+                <button
+                  id="btnPagar"
+                  type="button"
+                  class="bg-primary px-5 py-2 sm:py-2.5 rounded-xl text-on-primary font-bold text-xs sm:text-sm tracking-wider gold-glow hover:brightness-110 transition-all tactile-press flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-primary/20"
+                >
+                  <span>PAGAR AHORA</span>
+                  <span
+                    class="material-symbols-outlined text-[17px]"
+                    style="font-variation-settings: 'FILL' 1"
+                  >
+                    check_circle
+                  </span>
+                </button>
               </div>
             </div>
           </div>
@@ -546,45 +542,44 @@
         >
           <!-- ENCABEZADO DE PANTALLA DE PEDIDOS -->
           <div
-            class="px-container-desktop py-gutter bg-surface/70 backdrop-blur-md border-b border-outline-variant/50 sticky top-0 z-10 flex flex-col gap-4"
+            class="px-container-desktop py-3 bg-surface/80 backdrop-blur-md border-b border-outline-variant/40 sticky top-0 z-10 flex flex-col gap-2.5"
           >
-            <div class="flex flex-wrap items-center justify-between gap-4">
-              <div class="flex items-center gap-3">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div class="flex items-center gap-2.5">
                 <div
-                  class="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary shadow-sm"
+                  class="w-9 h-9 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0"
                 >
-                  <span class="material-symbols-outlined text-[28px]">smartphone</span>
+                  <span class="material-symbols-outlined text-[20px]">smartphone</span>
                 </div>
 
                 <div>
                   <div class="flex items-center gap-2">
                     <h2
-                      class="font-headline-lg text-xl md:text-2xl text-on-surface font-bold tracking-tight"
+                      class="text-base sm:text-lg text-on-surface font-bold tracking-tight"
                     >
-                      Pedidos de la App Móvil
+                      Pedidos App Móvil
                     </h2>
                     <span
-                      class="px-2.5 py-0.5 bg-primary/20 text-primary border border-primary/30 text-[10px] font-bold rounded-full uppercase tracking-wider"
+                      class="px-2 py-0.2 bg-primary/15 text-primary border border-primary/25 text-[10px] font-semibold rounded-full uppercase tracking-wider"
                     >
                       En Vivo
                     </span>
                   </div>
-                  <p class="text-xs text-on-surface-variant mt-0.5">
-                    Control y despacho de pedidos para recoger en tienda (Pick-up) y entrega a
-                    domicilio (Delivery).
+                  <p class="text-[11px] text-on-surface-variant">
+                    Despacho de pedidos en tienda y a domicilio
                   </p>
                 </div>
               </div>
 
-              <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2">
                 <!-- BOTÓN RECARGAR -->
                 <button
                   id="btnRecargarPedidos"
                   type="button"
-                  class="flex items-center gap-1.5 px-4 py-2.5 bg-surface-container-high hover:bg-surface-container-highest text-on-surface border border-outline-variant rounded-xl text-xs font-semibold transition-all shadow-sm tactile-press"
+                  class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-high hover:bg-surface-container-highest text-on-surface border border-outline-variant text-xs font-medium rounded-lg transition-all shadow-xs tactile-press cursor-pointer"
                   title="Actualizar listado de pedidos"
                 >
-                  <span class="material-symbols-outlined text-[18px]">refresh</span>
+                  <span class="material-symbols-outlined text-[16px]">refresh</span>
                   <span>Actualizar</span>
                 </button>
 
@@ -593,81 +588,81 @@
                   id="btnVolverAPuntoVenta"
                   type="button"
                   onclick="window.volverAPuntoVenta && window.volverAPuntoVenta()"
-                  class="flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-full hover:brightness-110 transition-all font-label-caps text-[10px] font-bold tracking-wider shadow-md shadow-primary/20 tactile-press cursor-pointer"
+                  class="flex items-center gap-1.5 px-3.5 py-1.5 bg-primary text-on-primary rounded-lg hover:brightness-110 transition-all text-xs font-bold tracking-wide shadow-sm tactile-press cursor-pointer"
                   title="Regresar al punto de venta en curso"
                 >
-                  <span class="material-symbols-outlined text-[18px]">point_of_sale</span>
-                  <span>VOLVER A PUNTO DE VENTA</span>
+                  <span class="material-symbols-outlined text-[16px]">point_of_sale</span>
+                  <span>VOLVER A VENTAS</span>
                 </button>
               </div>
             </div>
 
-            <!-- MÉTRICAS DE PEDIDOS MÓVILES -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+            <!-- MÉTRICAS DE PEDIDOS MÓVILES (COMPACTAS Y DESATURADAS) -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
               <div
-                class="p-3.5 bg-surface-container-low rounded-xl border border-outline-variant/40 flex items-center gap-3.5 shadow-sm"
+                class="p-2.5 bg-surface-container-low rounded-lg border border-outline-variant/30 flex items-center gap-2.5 shadow-xs"
               >
                 <div
-                  class="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0"
+                  class="w-7 h-7 rounded-md bg-surface-container-high flex items-center justify-center text-primary shrink-0"
                 >
-                  <span class="material-symbols-outlined text-[22px]">shopping_bag</span>
+                  <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
                 </div>
                 <div>
-                  <p class="text-[11px] font-medium text-on-surface-variant">Total Pedidos</p>
-                  <p id="statTotalPedidos" class="text-xl font-bold text-on-surface">0</p>
+                  <p class="text-[10px] font-medium text-on-surface-variant">Total</p>
+                  <p id="statTotalPedidos" class="text-sm sm:text-base font-bold text-on-surface leading-tight">0</p>
                 </div>
               </div>
 
               <div
-                class="p-3.5 bg-surface-container-low rounded-xl border border-outline-variant/40 flex items-center gap-3.5 shadow-sm"
+                class="p-2.5 bg-surface-container-low rounded-lg border border-outline-variant/30 flex items-center gap-2.5 shadow-xs"
               >
                 <div
-                  class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0"
+                  class="w-7 h-7 rounded-md bg-surface-container-high flex items-center justify-center text-amber-300 shrink-0"
                 >
-                  <span class="material-symbols-outlined text-[22px]">storefront</span>
+                  <span class="material-symbols-outlined text-[16px]">storefront</span>
                 </div>
                 <div>
-                  <p class="text-[11px] font-medium text-on-surface-variant">Recoger en Tienda</p>
-                  <p id="statRecogerTienda" class="text-xl font-bold text-amber-400">0</p>
+                  <p class="text-[10px] font-medium text-on-surface-variant">En Tienda</p>
+                  <p id="statRecogerTienda" class="text-sm sm:text-base font-bold text-on-surface leading-tight">0</p>
                 </div>
               </div>
 
               <div
-                class="p-3.5 bg-surface-container-low rounded-xl border border-outline-variant/40 flex items-center gap-3.5 shadow-sm"
+                class="p-2.5 bg-surface-container-low rounded-lg border border-outline-variant/30 flex items-center gap-2.5 shadow-xs"
               >
                 <div
-                  class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0"
+                  class="w-7 h-7 rounded-md bg-surface-container-high flex items-center justify-center text-sky-300 shrink-0"
                 >
-                  <span class="material-symbols-outlined text-[22px]">two_wheeler</span>
+                  <span class="material-symbols-outlined text-[16px]">two_wheeler</span>
                 </div>
                 <div>
-                  <p class="text-[11px] font-medium text-on-surface-variant">Para Llevar / Envío</p>
-                  <p id="statLlevarDomicilio" class="text-xl font-bold text-cyan-400">0</p>
+                  <p class="text-[10px] font-medium text-on-surface-variant">A Domicilio</p>
+                  <p id="statLlevarDomicilio" class="text-sm sm:text-base font-bold text-on-surface leading-tight">0</p>
                 </div>
               </div>
 
               <div
-                class="p-3.5 bg-surface-container-low rounded-xl border border-outline-variant/40 flex items-center gap-3.5 shadow-sm"
+                class="p-2.5 bg-surface-container-low rounded-lg border border-outline-variant/30 flex items-center gap-2.5 shadow-xs"
               >
                 <div
-                  class="w-10 h-10 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-400 shrink-0"
+                  class="w-7 h-7 rounded-md bg-surface-container-high flex items-center justify-center text-yellow-300 shrink-0"
                 >
-                  <span class="material-symbols-outlined text-[22px]">pending_actions</span>
+                  <span class="material-symbols-outlined text-[16px]">pending_actions</span>
                 </div>
                 <div>
-                  <p class="text-[11px] font-medium text-on-surface-variant">Por Despachar</p>
-                  <p id="statPendientes" class="text-xl font-bold text-yellow-400">0</p>
+                  <p class="text-[10px] font-medium text-on-surface-variant">Por Despachar</p>
+                  <p id="statPendientes" class="text-sm sm:text-base font-bold text-yellow-300 leading-tight">0</p>
                 </div>
               </div>
             </div>
 
             <!-- FILTROS Y BÚSQUEDA DE PEDIDOS -->
-            <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+            <div class="flex flex-wrap items-center justify-between gap-2.5 pt-1">
               <!-- Pestañas de filtro -->
-              <div class="flex flex-wrap items-center gap-1.5">
+              <div class="flex flex-wrap items-center gap-1 text-xs">
                 <button
                   type="button"
-                  class="tab-filtro-pedido px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-primary text-on-primary transition-all shadow-sm"
+                  class="tab-filtro-pedido px-2.5 py-1 rounded-lg text-xs font-semibold bg-primary text-on-primary transition-all shadow-xs"
                   data-filtro="todos"
                 >
                   Todos
@@ -675,48 +670,56 @@
 
                 <button
                   type="button"
-                  class="tab-filtro-pedido px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-surface-container text-on-surface-variant hover:text-on-surface transition-all"
+                  class="tab-filtro-pedido px-2.5 py-1 rounded-lg text-xs font-medium bg-surface-container text-on-surface-variant hover:text-on-surface transition-all"
                   data-filtro="pendiente"
                 >
-                  ⏳ Por Entregar
+                  Por Entregar
                 </button>
 
                 <button
                   type="button"
-                  class="tab-filtro-pedido px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-surface-container text-on-surface-variant hover:text-on-surface transition-all"
+                  class="tab-filtro-pedido px-2.5 py-1 rounded-lg text-xs font-medium bg-surface-container text-on-surface-variant hover:text-on-surface transition-all"
                   data-filtro="tienda"
                 >
-                  🏪 Recoger en Tienda
+                  En Tienda
                 </button>
 
                 <button
                   type="button"
-                  class="tab-filtro-pedido px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-surface-container text-on-surface-variant hover:text-on-surface transition-all"
+                  class="tab-filtro-pedido px-2.5 py-1 rounded-lg text-xs font-medium bg-surface-container text-on-surface-variant hover:text-on-surface transition-all"
                   data-filtro="domicilio"
                 >
-                  🛵 Envío a Domicilio
+                  A Domicilio
                 </button>
 
                 <button
                   type="button"
-                  class="tab-filtro-pedido px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-surface-container text-on-surface-variant hover:text-on-surface transition-all"
+                  class="tab-filtro-pedido px-2.5 py-1 rounded-lg text-xs font-medium bg-surface-container text-on-surface-variant hover:text-on-surface transition-all cursor-pointer"
                   data-filtro="entregado"
                 >
-                  ✅ Entregados
+                  Entregados
+                </button>
+
+                <button
+                  type="button"
+                  class="tab-filtro-pedido px-2.5 py-1 rounded-lg text-xs font-medium bg-surface-container text-on-surface-variant hover:text-on-surface transition-all cursor-pointer"
+                  data-filtro="cancelado"
+                >
+                  Cancelados
                 </button>
               </div>
 
               <!-- Buscador en tiempo real de pedidos -->
-              <div class="relative min-w-[280px] flex-1 max-w-sm">
+              <div class="relative min-w-[220px] flex-1 max-w-xs">
                 <span
-                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]"
+                  class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px] pointer-events-none"
                   >search</span
                 >
                 <input
                   id="inputBuscarPedidos"
                   type="text"
-                  placeholder="Buscar cliente, folio, teléfono, destino..."
-                  class="w-full bg-surface-container border border-outline-variant rounded-xl pl-9 pr-4 py-2 text-xs text-on-surface placeholder:text-on-surface-variant/50 focus:border-primary focus:ring-0 transition-all"
+                  placeholder="Buscar cliente, folio, teléfono..."
+                  class="w-full bg-surface-container border border-outline-variant/60 rounded-lg pl-8 pr-3 py-1.5 text-xs text-on-surface placeholder:text-on-surface-variant/50 focus:border-primary focus:ring-0 transition-all"
                 />
               </div>
             </div>
@@ -810,14 +813,27 @@
         class="bg-surface-container-lowest border border-outline-variant rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl text-on-surface"
       >
         <div class="p-6 text-center space-y-3">
-          <div class="w-12 h-12 mx-auto rounded-full bg-primary/10 text-primary flex items-center justify-center">
-            <span class="material-symbols-outlined text-[28px]" id="iconoModalConfirmacion">point_of_sale</span>
+          <div
+            class="w-12 h-12 mx-auto rounded-full bg-primary/10 text-primary flex items-center justify-center"
+          >
+            <span class="material-symbols-outlined text-[28px]" id="iconoModalConfirmacion"
+              >point_of_sale</span
+            >
           </div>
-          <h3 class="font-bold text-base text-on-surface" id="tituloModalConfirmacion">Confirmar Venta</h3>
-          <p class="text-xs text-on-surface-variant leading-relaxed" id="mensajeModalConfirmacion">¿Deseas procesar y registrar esta venta?</p>
-          <div id="extraModalConfirmacion" class="py-2.5 px-4 bg-surface-container-low rounded-xl text-center border border-outline-variant/50 hidden">
+          <h3 class="font-bold text-base text-on-surface" id="tituloModalConfirmacion">
+            Confirmar Venta
+          </h3>
+          <p class="text-xs text-on-surface-variant leading-relaxed" id="mensajeModalConfirmacion">
+            ¿Deseas procesar y registrar esta venta?
+          </p>
+          <div
+            id="extraModalConfirmacion"
+            class="py-2.5 px-4 bg-surface-container-low rounded-xl text-center border border-outline-variant/50 hidden"
+          >
             <span class="text-[11px] text-on-surface-variant font-medium">Total a cobrar:</span>
-            <p class="text-2xl font-black text-primary font-mono" id="montoTotalConfirmacion">$0.00</p>
+            <p class="text-2xl font-black text-primary font-mono" id="montoTotalConfirmacion">
+              $0.00
+            </p>
           </div>
         </div>
         <div class="p-4 bg-surface-container-low border-t border-outline-variant flex gap-3">
@@ -840,12 +856,305 @@
       </div>
     </div>
 
+    <!-- ========================================================= -->
+    <!-- MODAL: SELECCIONAR TALLA / PRESENTACIÓN -->
+    <!-- ========================================================= -->
+    <div
+      id="modalSeleccionarTalla"
+      class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 select-none"
+    >
+      <div
+        class="bg-surface-container-lowest border border-outline-variant rounded-2xl w-full max-w-md overflow-hidden shadow-2xl text-on-surface"
+      >
+        <div class="p-5 border-b border-outline-variant flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0"
+            >
+              <span class="material-symbols-outlined text-[24px]">straighten</span>
+            </div>
+            <div class="min-w-0">
+              <h3 class="font-bold text-sm text-on-surface truncate" id="nombreProductoModalTalla">
+                Seleccionar Talla
+              </h3>
+              <p
+                class="text-xs text-on-surface-variant font-mono truncate"
+                id="skuProductoModalTalla"
+              >
+                SKU: ---
+              </p>
+            </div>
+          </div>
+          <button
+            id="btnCerrarModalTalla"
+            type="button"
+            class="p-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg transition-colors cursor-pointer"
+          >
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+
+        <div class="p-5 space-y-4">
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            Este producto cuenta con múltiples presentaciones. Elige la que deseas agregar a la
+            venta:
+          </p>
+          <div
+            id="listaOpcionesTallas"
+            class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[320px] overflow-y-auto pr-1"
+          >
+            <!-- Botones dinámicos de tallas -->
+          </div>
+        </div>
+
+        <div class="p-4 bg-surface-container-low border-t border-outline-variant flex justify-end">
+          <button
+            id="btnCancelarModalTalla"
+            type="button"
+            class="px-5 py-2 bg-surface-container border border-outline-variant text-on-surface text-xs font-bold rounded-xl hover:bg-surface-container-high transition-all active:scale-95 cursor-pointer"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- MODAL: EDITAR PEDIDO DE LA APP MÓVIL -->
+    <!-- ========================================================= -->
+    <div
+      id="modalEditarPedido"
+      class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-4 select-none"
+    >
+      <div
+        class="bg-surface-container-lowest border border-outline-variant rounded-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden shadow-2xl text-on-surface"
+      >
+        <!-- CABECERA MODAL -->
+        <div
+          class="p-4 sm:p-5 border-b border-outline-variant flex items-center justify-between bg-surface-container-low shrink-0"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0"
+            >
+              <span class="material-symbols-outlined text-[24px]">edit_note</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-bold text-sm sm:text-base text-on-surface">
+                  Editar Pedido Móvil
+                </h3>
+                <span
+                  id="folioModalEditarPedido"
+                  class="font-mono text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20"
+                >
+                  #APP
+                </span>
+              </div>
+              <p class="text-xs text-on-surface-variant">
+                Modifica los productos, cantidades, entrega o datos del cliente
+              </p>
+            </div>
+          </div>
+          <button
+            id="btnCerrarModalEditarPedido"
+            type="button"
+            class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-xl transition-colors cursor-pointer"
+            title="Cerrar modal"
+          >
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+
+        <!-- CUERPO MODAL (SCROLLABLE) -->
+        <div class="p-4 sm:p-5 space-y-4 sm:space-y-5 overflow-y-auto custom-scrollbar flex-1">
+          <!-- SECCIÓN 1: DATOS DEL CLIENTE (SOLO LECTURA) Y CONFIGURACIÓN -->
+          <div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant/40 space-y-3">
+            <div class="flex items-center justify-between">
+              <p class="text-xs font-bold text-on-surface uppercase tracking-wider flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px] text-primary">person</span>
+                Información del Cliente
+              </p>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-surface-container-high text-on-surface-variant border border-outline-variant/40 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[12px]">visibility</span>
+                Solo lectura
+              </span>
+            </div>
+
+            <!-- FICHA INFORMATIVA DEL CLIENTE (SOLO LECTURA) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 text-xs">
+              <div class="bg-surface-container/70 p-2.5 rounded-xl border border-outline-variant/30">
+                <span class="text-[10px] text-on-surface-variant font-medium block">Cliente</span>
+                <p id="viewPedidoCliente" class="font-bold text-on-surface text-xs mt-0.5 truncate">-</p>
+              </div>
+              <div class="bg-surface-container/70 p-2.5 rounded-xl border border-outline-variant/30">
+                <span class="text-[10px] text-on-surface-variant font-medium block">Teléfono</span>
+                <p id="viewPedidoTelefono" class="font-mono font-semibold text-on-surface text-xs mt-0.5 truncate">-</p>
+              </div>
+              <div class="bg-surface-container/70 p-2.5 rounded-xl border border-outline-variant/30">
+                <span class="text-[10px] text-on-surface-variant font-medium block">Correo Electrónico</span>
+                <p id="viewPedidoCorreo" class="text-on-surface text-xs mt-0.5 truncate">-</p>
+              </div>
+              <div class="bg-surface-container/70 p-2.5 rounded-xl border border-outline-variant/30">
+                <span class="text-[10px] text-on-surface-variant font-medium block">Modalidad de Entrega</span>
+                <div id="viewPedidoEntregaBadge" class="mt-0.5">-</div>
+              </div>
+              <div class="bg-surface-container/70 p-2.5 rounded-xl border border-outline-variant/30 sm:col-span-2">
+                <span class="text-[10px] text-on-surface-variant font-medium block">Dirección de Entrega</span>
+                <p id="viewPedidoDireccion" class="text-on-surface text-xs mt-0.5 truncate">-</p>
+              </div>
+              <div class="bg-surface-container/70 p-2.5 rounded-xl border border-outline-variant/30 sm:col-span-2 md:col-span-3">
+                <span class="text-[10px] text-on-surface-variant font-medium block">Notas / Indicaciones del Cliente</span>
+                <p id="viewPedidoNotas" class="text-on-surface-variant text-xs mt-0.5 italic">-</p>
+              </div>
+            </div>
+
+            <!-- CONFIGURACIÓN EDITABLE: ESTADO Y MÉTODO DE PAGO (SOLO EFECTIVO Y TARJETA) -->
+            <div class="pt-2 border-t border-outline-variant/30 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div>
+                <label class="block text-[11px] text-on-surface font-semibold mb-1 flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[15px] text-primary">payments</span>
+                  Método de Pago *
+                </label>
+                <select
+                  id="editPedidoMetodoPago"
+                  class="w-full bg-surface-container border border-outline-variant rounded-xl px-3 py-2 text-on-surface font-semibold focus:outline-none focus:border-primary text-xs cursor-pointer shadow-sm"
+                >
+                  <option value="Efectivo">💵 Efectivo</option>
+                  <option value="Tarjeta">💳 Tarjeta</option>
+                </select>
+                <p class="text-[10px] text-on-surface-variant mt-1">Opciones disponibles: Efectivo o Tarjeta</p>
+              </div>
+
+              <div>
+                <label class="block text-[11px] text-on-surface font-semibold mb-1 flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[15px] text-primary">flag</span>
+                  Estado del Pedido
+                </label>
+                <select
+                  id="editPedidoEstado"
+                  class="w-full bg-surface-container border border-outline-variant rounded-xl px-3 py-2 text-on-surface font-semibold focus:outline-none focus:border-primary text-xs cursor-pointer shadow-sm"
+                >
+                  <option value="pendiente">🟡 Pendiente</option>
+                  <option value="listo">🔵 Listo para entrega / En camino</option>
+                  <option value="entregado">🟢 Entregado / Completado</option>
+                  <option value="cancelado">🔴 Cancelado</option>
+                </select>
+                <p class="text-[10px] text-on-surface-variant mt-1">Actualiza el progreso en el tablero de pedidos</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 2: ARTÍCULOS DEL PEDIDO (EDITABLE MEDIANTE BARRA DE BÚSQUEDA) -->
+          <div class="space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <p class="text-xs font-bold text-on-surface uppercase tracking-wider flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px] text-primary">inventory_2</span>
+                Artículos del Pedido (<span id="editPedidoContadorArticulos">0</span>)
+              </p>
+              <span class="text-[11px] text-on-surface-variant">Usa la barra de búsqueda para agregar productos</span>
+            </div>
+
+            <!-- BARRA DE BÚSQUEDA DE PRODUCTOS -->
+            <div class="relative w-full">
+              <div class="relative flex items-center">
+                <span class="material-symbols-outlined absolute left-3 text-on-surface-variant text-[18px] pointer-events-none">search</span>
+                <input
+                  type="text"
+                  id="inputBuscarProductoEditPedido"
+                  placeholder="Buscar producto por nombre o código para agregar al pedido..."
+                  class="w-full bg-surface-container border border-outline-variant rounded-xl pl-9 pr-9 py-2.5 text-on-surface text-xs placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-inner"
+                  autocomplete="off"
+                />
+                <button
+                  type="button"
+                  id="btnLimpiarBuscarProductoEdit"
+                  class="hidden absolute right-3 text-on-surface-variant hover:text-on-surface p-0.5 rounded cursor-pointer transition-colors"
+                  title="Limpiar búsqueda"
+                >
+                  <span class="material-symbols-outlined text-[16px]">close</span>
+                </button>
+              </div>
+
+              <!-- DROPDOWN FLOTANTE DE RESULTADOS DE BÚSQUEDA -->
+              <div
+                id="resultadosBuscarProductoEdit"
+                class="hidden absolute left-0 right-0 top-full mt-1.5 bg-surface-container-high border border-outline-variant rounded-xl shadow-2xl max-h-60 overflow-y-auto custom-scrollbar z-30 p-1.5 space-y-1 divide-y divide-outline-variant/20"
+              >
+                <!-- Inyectado dinámicamente -->
+              </div>
+            </div>
+
+            <!-- TABLA / LISTA DE ARTÍCULOS EN EL PEDIDO -->
+            <div class="bg-surface-container-low rounded-xl border border-outline-variant/40 overflow-hidden">
+              <div class="p-2 sm:p-3 space-y-2 max-h-56 overflow-y-auto custom-scrollbar" id="listaArticulosEditPedido">
+                <!-- Se inyecta dinámicamente -->
+              </div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 3: TOTALES Y COSTOS (SIN DESCUENTO) -->
+          <div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant/40">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div>
+                <label class="block text-[11px] text-on-surface-variant font-medium mb-1">Subtotal Artículos ($)</label>
+                <input
+                  type="number"
+                  id="editPedidoSubtotal"
+                  readonly
+                  step="0.01"
+                  class="w-full bg-surface-container-high border border-outline-variant rounded-lg px-3 py-2 text-on-surface font-mono font-bold text-xs cursor-not-allowed"
+                />
+              </div>
+              <div>
+                <label class="block text-[11px] text-on-surface-variant font-medium mb-1">Costo de Envío ($)</label>
+                <input
+                  type="number"
+                  id="editPedidoEnvio"
+                  min="0"
+                  step="0.01"
+                  class="w-full bg-surface-container border border-outline-variant rounded-lg px-3 py-2 text-on-surface font-mono text-xs focus:outline-none focus:border-primary"
+                  value="0"
+                />
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-3 mt-3 border-t border-outline-variant/40">
+              <span class="text-xs font-bold text-on-surface">TOTAL DEL PEDIDO:</span>
+              <span class="text-xl font-mono font-extrabold text-primary" id="editPedidoTotalDisplay">$0.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PIE DEL MODAL -->
+        <div class="p-4 bg-surface-container-low border-t border-outline-variant flex items-center justify-end gap-3 shrink-0">
+          <button
+            id="btnCancelarModalEditarPedido"
+            type="button"
+            class="px-4 py-2 bg-surface-container border border-outline-variant text-on-surface text-xs font-bold rounded-xl hover:bg-surface-container-high transition-all cursor-pointer"
+          >
+            Cancelar
+          </button>
+          <button
+            id="btnGuardarCambiosPedido"
+            type="button"
+            class="px-5 py-2 bg-primary text-on-primary text-xs font-bold rounded-xl hover:brightness-110 transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-1.5"
+          >
+            <span class="material-symbols-outlined text-[18px]">save</span>
+            Guardar Cambios
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- TOAST NOTIFICACIÓN NO BLOQUEANTE -->
     <div
       id="toastPOS"
       class="fixed bottom-6 right-6 z-50 bg-surface-container-highest text-on-surface border border-outline-variant px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 transition-all duration-300 transform translate-y-4 opacity-0 pointer-events-none"
     >
-      <span class="material-symbols-outlined text-primary text-[20px]" id="iconoToastPOS">info</span>
+      <span class="material-symbols-outlined text-primary text-[20px]" id="iconoToastPOS"
+        >info</span
+      >
       <span class="text-xs font-semibold" id="textoToastPOS">Mensaje</span>
     </div>
 
@@ -861,6 +1170,8 @@
         obtenerPedidosMoviles,
         actualizarEstadoPedido,
         crearPedidoMovil,
+        eliminarPedidoMovil,
+        editarPedidoMovil,
       } from "/src/lib/ventas.js";
 
       import {
@@ -905,6 +1216,8 @@
       let filtroPedidoActivo = "todos";
       let busquedaPedidoTexto = "";
       let pedidoParaTicket = null;
+      let pedidoEnEdicion = null;
+      let productosEditPedido = [];
 
       /* =========================================================
    SELECTORES
@@ -1089,6 +1402,9 @@
           }
         }, 60);
       }
+      const btnLimpiarBuscadorPOS = document.getElementById("btnLimpiarBuscadorPOS");
+      const resultadosBuscadorPOS = document.getElementById("resultadosBuscadorPOS");
+
       window.enfocarBuscador = enfocarBuscador;
 
       buscador.addEventListener("click", () => {
@@ -1097,7 +1413,201 @@
         buscador.focus();
       });
 
+      // Búsqueda en tiempo real conforme se escribe en el Punto de Venta
+      buscador.addEventListener("input", (e) => {
+        const texto = e.target.value.trim();
+        if (btnLimpiarBuscadorPOS) {
+          if (texto) {
+            btnLimpiarBuscadorPOS.classList.remove("hidden");
+          } else {
+            btnLimpiarBuscadorPOS.classList.add("hidden");
+          }
+        }
+        buscarProductosPOS(texto);
+      });
+
+      buscador.addEventListener("focus", (e) => {
+        const texto = e.target.value.trim();
+        if (texto) {
+          buscarProductosPOS(texto);
+        }
+      });
+
+      btnLimpiarBuscadorPOS?.addEventListener("click", () => {
+        buscador.value = "";
+        btnLimpiarBuscadorPOS.classList.add("hidden");
+        cerrarResultadosPOS();
+        enfocarBuscador();
+      });
+
+      function cerrarResultadosPOS() {
+        if (resultadosBuscadorPOS) {
+          resultadosBuscadorPOS.classList.add("hidden");
+          resultadosBuscadorPOS.innerHTML = "";
+        }
+      }
+
+      function buscarProductosPOS(texto) {
+        if (!resultadosBuscadorPOS) return;
+
+        const q = String(texto || "").trim().toLowerCase();
+        if (!q || q.length < 1) {
+          cerrarResultadosPOS();
+          return;
+        }
+
+        const matches = inventario
+          .filter((p) => {
+            const nom = String(p.nombre || "").toLowerCase();
+            const cod = String(p.codigo || "").toLowerCase();
+            const sku = String(p.sku || "").toLowerCase();
+            const barcode = String(p.codigoBarras || "").toLowerCase();
+            const cat = String(p.categoria || "").toLowerCase();
+            return (
+              nom.includes(q) ||
+              cod.includes(q) ||
+              sku.includes(q) ||
+              barcode.includes(q) ||
+              cat.includes(q)
+            );
+          })
+          .slice(0, 10);
+
+        if (matches.length === 0) {
+          resultadosBuscadorPOS.innerHTML = `
+            <div class="p-4 text-center text-xs text-on-surface-variant flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-[18px] text-on-surface-variant/70">search_off</span>
+              <span>No se encontraron productos coincidentes con "${escaparHTML(q)}"</span>
+            </div>
+          `;
+          resultadosBuscadorPOS.classList.remove("hidden");
+          return;
+        }
+
+        resultadosBuscadorPOS.innerHTML = matches
+          .map((prod) => {
+            const nom = escaparHTML(prod.nombre || "Producto");
+            const precioBase = Number(prod.precioVenta || 0).toFixed(2);
+            const stock = Number(prod.stock ?? prod.existencias ?? 0);
+            const rawImg = String(prod.imagenUrl || prod.imagen || "").trim();
+            const imgUrl = rawImg ? rawImg.split(",")[0].trim() : "";
+            const tallas = Array.isArray(prod.sizes) && prod.sizes.length > 0 ? prod.sizes : null;
+            const tieneStock = stock > 0;
+
+            return `
+              <div
+                class="p-2.5 hover:bg-surface-container rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors cursor-pointer border border-transparent hover:border-outline-variant/40 group mb-1 last:mb-0"
+                onclick="window.seleccionarProductoDesdePOS('${prod.id}')"
+              >
+                <div class="flex items-center gap-3 min-w-0 flex-1">
+                  ${
+                    imgUrl
+                      ? `<img src="${imgUrl}" alt="${nom}" class="w-12 h-12 rounded-xl object-cover bg-surface-container-lowest shrink-0 border border-outline-variant/30" />`
+                      : `<div class="w-12 h-12 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary font-bold text-xs shrink-0 border border-outline-variant/30">
+                          <span class="material-symbols-outlined text-[20px]">inventory_2</span>
+                        </div>`
+                  }
+                  <div class="min-w-0 flex-1">
+                    <p class="font-bold text-sm text-on-surface truncate group-hover:text-primary transition-colors">${nom}</p>
+                    <div class="flex flex-wrap items-center gap-2 text-xs text-on-surface-variant mt-0.5">
+                      <span class="font-mono font-bold text-primary">$${precioBase}</span>
+                      <span>•</span>
+                      <span class="${tieneStock ? "text-on-surface" : "text-error font-semibold"}">
+                        Stock: ${stock} pz
+                      </span>
+                      ${prod.sku ? `<span class="hidden md:inline">• SKU: <span class="font-mono">${escaparHTML(prod.sku)}</span></span>` : ""}
+                      ${prod.codigo ? `<span class="hidden md:inline">• Cód: <span class="font-mono">${escaparHTML(prod.codigo)}</span></span>` : ""}
+                      ${tallas && tallas.length > 1 ? `<span class="text-amber-400 font-semibold">• ${tallas.length} tallas</span>` : ""}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-1.5 shrink-0 self-end sm:self-center" onclick="event.stopPropagation()">
+                  ${
+                    tallas && tallas.length > 1
+                      ? tallas
+                          .map((s) => {
+                            const lbl = s.label || s.talla || s.size || "";
+                            const prc = Number(s.precioVenta ?? s.price ?? prod.precioVenta ?? 0);
+                            const stk = Number(s.stock ?? 0);
+                            const stkOk = stk > 0 && s.inStock !== false;
+                            return `
+                              <button
+                                type="button"
+                                ${stkOk ? `onclick="window.seleccionarProductoDesdePOS('${prod.id}', '${escaparHTML(lbl)}')"` : "disabled"}
+                                class="px-2.5 py-1 text-xs font-bold rounded-lg border transition-all cursor-pointer ${
+                                  stkOk
+                                    ? "bg-surface-container-lowest hover:bg-primary hover:text-on-primary text-on-surface border-outline-variant/40"
+                                    : "bg-surface-container-lowest/40 opacity-40 text-on-surface-variant cursor-not-allowed border-transparent"
+                                }"
+                                title="${stkOk ? `Agregar talla ${escaparHTML(lbl)}` : "Agotado"}"
+                              >
+                                ${escaparHTML(lbl)} $${prc.toFixed(2)}
+                              </button>
+                            `;
+                          })
+                          .join("")
+                      : `
+                        <button
+                          type="button"
+                          ${tieneStock ? `onclick="window.seleccionarProductoDesdePOS('${prod.id}')"` : "disabled"}
+                          class="px-3.5 py-1.5 ${
+                            tieneStock
+                              ? "bg-primary/10 group-hover:bg-primary group-hover:text-on-primary text-primary border-primary/30 cursor-pointer"
+                              : "bg-surface-container opacity-40 text-on-surface-variant cursor-not-allowed border-transparent"
+                          } text-xs font-bold rounded-xl border flex items-center gap-1.5 transition-all"
+                        >
+                          <span class="material-symbols-outlined text-[16px]">add_shopping_cart</span>
+                          <span>${tieneStock ? "Agregar" : "Agotado"}</span>
+                        </button>
+                      `
+                  }
+                </div>
+              </div>
+            `;
+          })
+          .join("");
+
+        resultadosBuscadorPOS.classList.remove("hidden");
+      }
+
+      // Función global para seleccionar desde las opciones en el POS
+      window.seleccionarProductoDesdePOS = function (id, tallaLabel = null) {
+        const prod = inventario.find((x) => x.id === id);
+        if (!prod) return;
+
+        let tallaObj = null;
+        if (tallaLabel && Array.isArray(prod.sizes)) {
+          tallaObj = prod.sizes.find(
+            (s) => (s.label || s.talla || s.size || "") === tallaLabel,
+          );
+        }
+
+        agregar(prod, tallaObj);
+        buscador.value = "";
+        if (btnLimpiarBuscadorPOS) btnLimpiarBuscadorPOS.classList.add("hidden");
+        cerrarResultadosPOS();
+        enfocarBuscador();
+      };
+
+      // Cerrar resultados de búsqueda del POS si se hace clic fuera
+      document.addEventListener("click", (e) => {
+        if (
+          resultadosBuscadorPOS &&
+          !resultadosBuscadorPOS.contains(e.target) &&
+          e.target !== buscador &&
+          e.target !== btnLimpiarBuscadorPOS
+        ) {
+          cerrarResultadosPOS();
+        }
+      });
+
       buscador.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          cerrarResultadosPOS();
+          return;
+        }
+
         if (e.key !== "Enter") return;
 
         e.preventDefault();
@@ -1109,6 +1619,8 @@
         buscar(valor);
 
         buscador.value = "";
+        if (btnLimpiarBuscadorPOS) btnLimpiarBuscadorPOS.classList.add("hidden");
+        cerrarResultadosPOS();
         enfocarBuscador();
       });
 
@@ -1119,6 +1631,9 @@
           (x) =>
             x.nombre?.toLowerCase().includes(valorNormalizado) ||
             x.sku === valor ||
+            x.sku?.toLowerCase() === valorNormalizado ||
+            x.codigo === valor ||
+            x.codigo?.toLowerCase() === valorNormalizado ||
             x.codigoBarras === valor,
         );
 
@@ -1132,21 +1647,139 @@
       }
 
       /* =========================================================
-   AGREGAR PRODUCTO
+   GESTIÓN DE SELECCIÓN DE TALLA
 ========================================================= */
 
-      function agregar(p) {
-        if (p.stock <= 0) {
-          mostrarToastAlerta("El producto no tiene stock disponible.", "warning");
+      let productoPendienteTalla = null;
+
+      function abrirModalSeleccionarTalla(producto) {
+        if (!producto) return;
+        productoPendienteTalla = producto;
+
+        const modal = document.getElementById("modalSeleccionarTalla");
+        const nombreUI = document.getElementById("nombreProductoModalTalla");
+        const skuUI = document.getElementById("skuProductoModalTalla");
+        const listaUI = document.getElementById("listaOpcionesTallas");
+
+        if (nombreUI) nombreUI.textContent = producto.nombre || "Producto";
+        if (skuUI) skuUI.textContent = `SKU: ${producto.sku || "Sin SKU"}`;
+        if (listaUI) {
+          listaUI.innerHTML = "";
+          const tallas = Array.isArray(producto.sizes) ? producto.sizes : [];
+
+          tallas.forEach((talla) => {
+            const label = talla.label || talla.talla || talla.size || "Unitalla";
+            const precioV = Number(talla.precioVenta ?? talla.price ?? producto.precioVenta) || 0;
+            const stockDisp = Number(talla.stock ?? producto.stock) || 0;
+            const tieneStock = stockDisp > 0 && talla.inStock !== false;
+
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = `p-3.5 rounded-xl border text-left transition-all flex flex-col justify-between gap-2 ${
+              tieneStock
+                ? "bg-surface-container-low border-outline-variant hover:border-primary hover:bg-primary/5 cursor-pointer group active:scale-98"
+                : "bg-surface-container-highest/20 border-outline-variant/30 opacity-50 cursor-not-allowed"
+            }`;
+
+            btn.innerHTML = `
+              <div class="flex items-center justify-between w-full">
+                <span class="font-bold text-sm text-on-surface group-hover:text-primary transition-colors">
+                  ${escaparHTML(label)}
+                </span>
+                <span class="font-mono font-bold text-sm text-primary">
+                  $${precioV.toFixed(2)}
+                </span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-on-surface-variant w-full pt-1 border-t border-outline-variant/40">
+                <span>Existencias:</span>
+                <span class="font-semibold font-mono ${tieneStock ? "text-on-surface" : "text-error"}">
+                  ${tieneStock ? `${stockDisp} pz` : "Agotado"}
+                </span>
+              </div>
+            `;
+
+            if (tieneStock) {
+              btn.onclick = () => {
+                const prod = productoPendienteTalla;
+                cerrarModalSeleccionarTalla();
+                if (prod) {
+                  agregar(prod, talla);
+                }
+              };
+            }
+
+            listaUI.appendChild(btn);
+          });
+        }
+
+        if (modal) {
+          modal.classList.remove("hidden");
+          modal.classList.add("flex");
+        }
+      }
+
+      function cerrarModalSeleccionarTalla() {
+        const modal = document.getElementById("modalSeleccionarTalla");
+        if (modal) {
+          modal.classList.add("hidden");
+          modal.classList.remove("flex");
+        }
+        productoPendienteTalla = null;
+        enfocarBuscador();
+      }
+
+      document
+        .getElementById("btnCerrarModalTalla")
+        ?.addEventListener("click", cerrarModalSeleccionarTalla);
+      document
+        .getElementById("btnCancelarModalTalla")
+        ?.addEventListener("click", cerrarModalSeleccionarTalla);
+
+      /* =========================================================
+   AGREGAR PRODUCTO (CON SOPORTE MULTI-TALLA)
+========================================================= */
+
+      function agregar(p, tallaElegida = null) {
+        const tallas = Array.isArray(p.sizes) ? p.sizes : [];
+
+        // Si tiene múltiples tallas y no se especificó talla aún, abrir modal selector
+        if (tallas.length > 1 && !tallaElegida) {
+          abrirModalSeleccionarTalla(p);
+          return;
+        }
+
+        const tallaObj = tallaElegida || (tallas.length === 1 ? tallas[0] : null);
+        const tallaLabel = tallaObj ? tallaObj.label || tallaObj.talla || tallaObj.size || "" : "";
+        const precioVenta =
+          Number(
+            tallaObj ? (tallaObj.precioVenta ?? tallaObj.price ?? p.precioVenta) : p.precioVenta,
+          ) || 0;
+        const precioCompra =
+          Number(
+            tallaObj
+              ? (tallaObj.precioCompra ?? tallaObj.costPrice ?? p.precioCompra)
+              : p.precioCompra || 0,
+          ) || 0;
+        const stockDisponible = Number(tallaObj ? (tallaObj.stock ?? p.stock) : p.stock) || 0;
+        const cartKey = tallaLabel ? `${p.id}__${tallaLabel}` : `${p.id}`;
+
+        if (stockDisponible <= 0) {
+          mostrarToastAlerta(
+            `El producto ${tallaLabel ? `(${tallaLabel})` : ""} no tiene existencias disponibles.`,
+            "warning",
+          );
           enfocarBuscador();
           return;
         }
 
-        const existe = carrito.find((x) => x.id === p.id);
+        const existe = carrito.find((x) => x.cartKey === cartKey);
 
         if (existe) {
-          if (existe.cantidad >= p.stock) {
-            mostrarToastAlerta("Stock insuficiente para este producto.", "warning");
+          if (existe.cantidad >= stockDisponible) {
+            mostrarToastAlerta(
+              `Stock insuficiente para esta talla (Máximo: ${stockDisponible} pz).`,
+              "warning",
+            );
             enfocarBuscador();
             return;
           }
@@ -1155,12 +1788,18 @@
         } else {
           carrito.push({
             ...p,
-
+            cartKey,
+            talla: tallaLabel,
+            talla_volumen: tallaLabel,
+            precioVenta,
+            precioCompra,
+            stock: stockDisponible,
             cantidad: 1,
           });
         }
 
         render();
+        enfocarBuscador();
       }
 
       /* =========================================================
@@ -1217,18 +1856,28 @@
 
                     <div class="col-span-6">
 
-                        <div class="font-title-md text-on-surface">
-                            ${item.nombre}
+                        <div class="font-title-md text-on-surface flex items-center gap-2 flex-wrap">
+                            <span>${escaparHTML(item.nombre)}</span>
+                            ${
+                              item.talla
+                                ? `
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
+                                    Talla: ${escaparHTML(item.talla)}
+                                </span>
+                                `
+                                : ""
+                            }
                         </div>
 
-                        <span class="text-xs text-on-surface-variant">
-                            SKU: ${item.sku || "Sin SKU"}
-                        </span>
+                        <div class="flex items-center gap-3 text-xs text-on-surface-variant mt-1">
+                            <span>SKU: ${escaparHTML(item.sku || "Sin SKU")}</span>
+                            <span class="text-[11px] text-on-surface-variant/70 font-mono">Disponible: ${item.stock} pz</span>
+                        </div>
 
                     </div>
 
 
-                    <div class="col-span-2 text-center">
+                    <div class="col-span-2 text-center font-mono font-semibold">
 
                         $${Number(item.precioVenta).toFixed(2)}
 
@@ -1412,16 +2061,56 @@
         }
 
         try {
-          // Descontar inventario
-          for (const p of carrito) {
-            await editarProducto(p.id, {
-              stock: p.stock - p.cantidad,
-              ventas24h: (p.ventas24h || 0) + p.precioVenta * p.cantidad,
-            });
+          // Descontar inventario por producto y por talla correspondiente
+          for (const item of carrito) {
+            const prodOriginal = inventario.find((x) => x.id === item.id);
+            if (!prodOriginal) continue;
+
+            if (Array.isArray(prodOriginal.sizes) && prodOriginal.sizes.length > 0) {
+              const nuevosSizes = prodOriginal.sizes.map((s) => {
+                const sLabel = s.label || s.talla || s.size || "";
+                if (sLabel === (item.talla || "")) {
+                  const nuevoStockTalla = Math.max(0, (Number(s.stock) || 0) - item.cantidad);
+                  return {
+                    ...s,
+                    stock: nuevoStockTalla,
+                    inStock: nuevoStockTalla > 0,
+                  };
+                }
+                return s;
+              });
+
+              const nuevoStockTotal = nuevosSizes.reduce(
+                (sum, s) => sum + (Number(s.stock) || 0),
+                0,
+              );
+
+              await editarProducto(item.id, {
+                sizes: nuevosSizes,
+                stock: nuevoStockTotal,
+                ventas24h: (prodOriginal.ventas24h || 0) + item.precioVenta * item.cantidad,
+              });
+            } else {
+              const nuevoStock = Math.max(0, (Number(prodOriginal.stock) || 0) - item.cantidad);
+              await editarProducto(item.id, {
+                stock: nuevoStock,
+                ventas24h: (prodOriginal.ventas24h || 0) + item.precioVenta * item.cantidad,
+              });
+            }
           }
 
-          // Copia de productos para el ticket
-          const productosVendidos = carrito.map((item) => ({ ...item }));
+          // Copia de productos para el ticket y registro de venta
+          const productosVendidos = carrito.map((item) => ({
+            id: item.id,
+            nombre: item.nombre,
+            sku: item.sku || "",
+            talla: item.talla || "",
+            talla_volumen: item.talla || "",
+            precioVenta: item.precioVenta,
+            precioCompra: item.precioCompra || 0,
+            cantidad: item.cantidad,
+            subtotal: item.precioVenta * item.cantidad,
+          }));
 
           const cajaActual = await obtenerCajaAbierta();
 
@@ -1596,13 +2285,18 @@
             return st !== "entregado" && st !== "completado" && st !== "cancelado";
           });
         } else if (filtroPedidoActivo === "tienda") {
-          lista = lista.filter((p) => esRecogerTienda(p));
+          lista = lista.filter((p) => esRecogerTienda(p) && (p.estado || "").toLowerCase() !== "cancelado");
         } else if (filtroPedidoActivo === "domicilio") {
-          lista = lista.filter((p) => !esRecogerTienda(p));
+          lista = lista.filter((p) => !esRecogerTienda(p) && (p.estado || "").toLowerCase() !== "cancelado");
         } else if (filtroPedidoActivo === "entregado") {
           lista = lista.filter((p) => {
             const st = (p.estado || p.estadoPedido || p.estadoEntrega || "").toLowerCase();
             return st === "entregado" || st === "completado";
+          });
+        } else if (filtroPedidoActivo === "cancelado") {
+          lista = lista.filter((p) => {
+            const st = (p.estado || p.estadoPedido || p.estadoEntrega || "").toLowerCase();
+            return st === "cancelado";
           });
         }
 
@@ -1729,6 +2423,13 @@
                     Entregado
                 </span>
             `;
+            } else if (estado === "cancelado") {
+              badgeEstado = `
+                <span class="px-2.5 py-1 bg-rose-500/15 border border-rose-500/30 text-rose-400 text-[11px] font-bold rounded-full flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">cancel</span>
+                    Cancelado
+                </span>
+            `;
             }
 
             // Tipo de entrega badge
@@ -1758,7 +2459,8 @@
                 const subtotalItem = Number(
                   item.subtotal ?? cant * Number(item.precio ?? item.precioVenta ?? 0),
                 ).toFixed(2);
-                const imgUrl = item.imagenUrl || item.imagen || item.image || "";
+                const rawImg = String(item.imagenUrl || item.imagen || item.image || "").trim();
+                const imgUrl = rawImg ? rawImg.split(",")[0].trim() : "";
 
                 return `
                 <div class="flex items-center justify-between py-2 border-b border-outline-variant/20 last:border-0 text-xs">
@@ -1908,11 +2610,33 @@
                         <button
                             type="button"
                             onclick="abrirTicketDespacho('${pedido.id}')"
-                            class="px-3 py-1.5 bg-surface-container-high hover:bg-surface-container-highest border border-outline-variant text-on-surface text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all"
-                            title="Imprimir ticket o nota de entrega"
+                            class="px-3 py-1.5 bg-surface-container-high hover:bg-surface-container-highest border border-outline-variant text-on-surface text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer"
+                            title="Imprimir ticket o comprobante de entrega"
                         >
                             <span class="material-symbols-outlined text-[16px]">receipt_long</span>
                             Ticket
+                        </button>
+
+                        <!-- BOTÓN EDITAR PEDIDO -->
+                        <button
+                            type="button"
+                            onclick="abrirModalEditarPedido('${pedido.id}')"
+                            class="px-3 py-1.5 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer"
+                            title="Editar productos, cantidades o datos del cliente"
+                        >
+                            <span class="material-symbols-outlined text-[16px]">edit</span>
+                            Editar
+                        </button>
+
+                        <!-- BOTÓN ELIMINAR PEDIDO -->
+                        <button
+                            type="button"
+                            onclick="eliminarPedidoUI('${pedido.id}')"
+                            class="px-3 py-1.5 bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/40 text-rose-300 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer"
+                            title="Eliminar pedido no recogido o cancelado"
+                        >
+                            <span class="material-symbols-outlined text-[16px]">delete</span>
+                            Eliminar
                         </button>
 
                         ${
@@ -1922,7 +2646,7 @@
                             <button
                                 type="button"
                                 onclick="actualizarEstadoPedidoUI('${pedido.id}', 'listo')"
-                                class="px-3.5 py-1.5 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-300 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all"
+                                class="px-3.5 py-1.5 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-300 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer"
                             >
                                 <span class="material-symbols-outlined text-[16px]">check</span>
                                 ${recogidaTienda ? "Listo en Tienda" : "Listo para Envío"}
@@ -1938,7 +2662,7 @@
                             <button
                                 type="button"
                                 onclick="actualizarEstadoPedidoUI('${pedido.id}', 'entregado')"
-                                class="px-4 py-1.5 bg-primary text-on-primary hover:brightness-110 font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-sm transition-all"
+                                class="px-4 py-1.5 bg-primary text-on-primary hover:brightness-110 font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
                             >
                                 <span class="material-symbols-outlined text-[16px]">task_alt</span>
                                 Marcar Entregado
@@ -1981,6 +2705,645 @@
           mostrarToastAlerta("No se pudo actualizar el estado del pedido.", "error");
         }
       };
+
+      // =========================================================
+      // ELIMINAR PEDIDO DE LA APP MÓVIL
+      // =========================================================
+      window.eliminarPedidoUI = async function (pedidoId) {
+        const pedido = pedidosMoviles.find((p) => p.id === pedidoId);
+        if (!pedido) return;
+
+        const folio = pedido.id ? (pedido.id.startsWith("#") ? pedido.id : `#${pedido.id}`) : "#APP";
+        const cliente =
+          typeof pedido.cliente === "string" ? pedido.cliente : pedido.cliente?.nombre || "Cliente";
+
+        const confirmar = await pedirConfirmacion({
+          titulo: "Eliminar Pedido",
+          mensaje: `¿Deseas eliminar definitivamente el pedido ${folio} de "${cliente}"? Utiliza esta opción si el cliente nunca recogió el paquete o canceló la compra.`,
+          textoBoton: "Sí, Eliminar Pedido",
+          icono: "delete_forever",
+        });
+        if (!confirmar) return;
+
+        try {
+          mostrarToastAlerta("Eliminando pedido...", "info");
+          await eliminarPedidoMovil(pedidoId);
+          await cargarPedidosMoviles(false);
+          mostrarToastAlerta(`Pedido ${folio} eliminado del sistema.`, "check_circle");
+        } catch (error) {
+          console.error("Error al eliminar pedido móvil:", error);
+          mostrarToastAlerta("No se pudo eliminar el pedido.", "error");
+        }
+      };
+
+      // =========================================================
+      // EDITAR PEDIDO DE LA APP MÓVIL
+      // =========================================================
+      const modalEditarPedido = document.getElementById("modalEditarPedido");
+      const folioModalEditarPedido = document.getElementById("folioModalEditarPedido");
+      const btnCerrarModalEditarPedido = document.getElementById("btnCerrarModalEditarPedido");
+      const btnCancelarModalEditarPedido = document.getElementById("btnCancelarModalEditarPedido");
+      const btnGuardarCambiosPedido = document.getElementById("btnGuardarCambiosPedido");
+
+      // Vistas de sólo lectura para datos del cliente
+      const viewPedidoCliente = document.getElementById("viewPedidoCliente");
+      const viewPedidoTelefono = document.getElementById("viewPedidoTelefono");
+      const viewPedidoCorreo = document.getElementById("viewPedidoCorreo");
+      const viewPedidoEntregaBadge = document.getElementById("viewPedidoEntregaBadge");
+      const viewPedidoDireccion = document.getElementById("viewPedidoDireccion");
+      const viewPedidoNotas = document.getElementById("viewPedidoNotas");
+
+      // Parámetros editables del pedido
+      const editPedidoMetodoPago = document.getElementById("editPedidoMetodoPago");
+      const editPedidoEstado = document.getElementById("editPedidoEstado");
+
+      // Barra de búsqueda de productos
+      const inputBuscarProductoEditPedido = document.getElementById("inputBuscarProductoEditPedido");
+      const btnLimpiarBuscarProductoEdit = document.getElementById("btnLimpiarBuscarProductoEdit");
+      const resultadosBuscarProductoEdit = document.getElementById("resultadosBuscarProductoEdit");
+
+      // Artículos y costos
+      const listaArticulosEditPedido = document.getElementById("listaArticulosEditPedido");
+      const editPedidoContadorArticulos = document.getElementById("editPedidoContadorArticulos");
+      const editPedidoSubtotal = document.getElementById("editPedidoSubtotal");
+      const editPedidoEnvio = document.getElementById("editPedidoEnvio");
+      const editPedidoTotalDisplay = document.getElementById("editPedidoTotalDisplay");
+
+      window.abrirModalEditarPedido = function (pedidoId) {
+        const pedido = pedidosMoviles.find((p) => p.id === pedidoId);
+        if (!pedido) return;
+
+        pedidoEnEdicion = pedido;
+
+        // Clonar productos para poder modificarlos libremente
+        productosEditPedido = (Array.isArray(pedido.productos) ? pedido.productos : []).map(
+          (item) => ({
+            id: item.id || item.productoId || "",
+            nombre: item.nombre || item.producto || item.name || "Producto",
+            talla_volumen: item.talla_volumen || item.talla || item.size || item.sizeLabel || "",
+            talla: item.talla_volumen || item.talla || item.size || item.sizeLabel || "",
+            precio: Number(item.precio ?? item.precioVenta ?? 0),
+            precioVenta: Number(item.precio ?? item.precioVenta ?? 0),
+            cantidad: Math.max(1, Number(item.cantidad || item.qty || 1)),
+            imagenUrl: item.imagenUrl || item.imagen || item.image || "",
+            subtotal: Number(
+              item.subtotal ??
+                Number(item.precio ?? item.precioVenta ?? 0) * Number(item.cantidad || 1),
+            ),
+          }),
+        );
+
+        const folio = pedido.id ? (pedido.id.startsWith("#") ? pedido.id : `#${pedido.id}`) : "#APP";
+        if (folioModalEditarPedido) folioModalEditarPedido.textContent = folio;
+
+        // Cargar vista informativa del cliente (SOLO LECTURA)
+        const clienteNombre =
+          typeof pedido.cliente === "string"
+            ? pedido.cliente
+            : pedido.cliente?.nombre || pedido.clienteNombre || "Cliente General";
+        if (viewPedidoCliente) viewPedidoCliente.textContent = clienteNombre;
+
+        const tel = pedido.telefono || pedido.cliente?.telefono || pedido.clienteTelefono || "";
+        if (viewPedidoTelefono) viewPedidoTelefono.textContent = tel || "No especificado";
+
+        const email = pedido.correo || pedido.cliente?.correo || "";
+        if (viewPedidoCorreo) viewPedidoCorreo.textContent = email || "No especificado";
+
+        const esTienda = esRecogerTienda(pedido);
+        if (viewPedidoEntregaBadge) {
+          viewPedidoEntregaBadge.innerHTML = esTienda
+            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 inline-flex items-center gap-1">
+                 <span class="material-symbols-outlined text-[12px]">store</span>
+                 Recolección en Tienda
+               </span>`
+            : `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/15 text-purple-400 border border-purple-500/30 inline-flex items-center gap-1">
+                 <span class="material-symbols-outlined text-[12px]">two_wheeler</span>
+                 Entrega a Domicilio
+               </span>`;
+        }
+
+        if (viewPedidoDireccion) {
+          const dir = [
+            pedido.direccion,
+            pedido.ciudad,
+            pedido.codigoPostal ? `C.P. ${pedido.codigoPostal}` : "",
+          ]
+            .filter(Boolean)
+            .join(", ");
+          viewPedidoDireccion.textContent = esTienda
+            ? "Recolección directa en mostrador de sucursal"
+            : (dir || pedido.cliente?.direccion || "Sin dirección especificada");
+        }
+
+        if (viewPedidoNotas) {
+          viewPedidoNotas.textContent =
+            pedido.notas || pedido.cliente?.notas || pedido.notasEntrega || "Sin notas adicionales";
+        }
+
+        // Método de pago: Solo 2 opciones: "Efectivo" y "Tarjeta"
+        if (editPedidoMetodoPago) {
+          const mpRaw = String(
+            pedido.metodoPago ||
+              pedido.tipoPago ||
+              (pedido.esTarjeta ? "Tarjeta" : "Efectivo"),
+          ).toLowerCase();
+          editPedidoMetodoPago.value = mpRaw.includes("tarjeta") ? "Tarjeta" : "Efectivo";
+        }
+
+        // Estado del pedido
+        if (editPedidoEstado) {
+          const st = String(
+            pedido.estado || pedido.estadoPedido || pedido.estadoEntrega || "pendiente",
+          ).toLowerCase();
+          editPedidoEstado.value = ["pendiente", "listo", "entregado", "cancelado"].includes(st)
+            ? st
+            : "pendiente";
+        }
+
+        // Costo de envío
+        if (editPedidoEnvio) {
+          editPedidoEnvio.value = Number(pedido.envio || pedido.costoEnvio || 0);
+        }
+
+        // Limpiar buscador de productos
+        if (inputBuscarProductoEditPedido) inputBuscarProductoEditPedido.value = "";
+        if (btnLimpiarBuscarProductoEdit) btnLimpiarBuscarProductoEdit.classList.add("hidden");
+        if (resultadosBuscarProductoEdit) {
+          resultadosBuscarProductoEdit.classList.add("hidden");
+          resultadosBuscarProductoEdit.innerHTML = "";
+        }
+
+        renderizarArticulosEditPedido();
+
+        if (modalEditarPedido) {
+          modalEditarPedido.classList.remove("hidden");
+          modalEditarPedido.classList.add("flex");
+        }
+      };
+
+      function cerrarModalEditarPedido() {
+        if (modalEditarPedido) {
+          modalEditarPedido.classList.add("hidden");
+          modalEditarPedido.classList.remove("flex");
+        }
+        if (resultadosBuscarProductoEdit) {
+          resultadosBuscarProductoEdit.classList.add("hidden");
+        }
+        pedidoEnEdicion = null;
+        productosEditPedido = [];
+      }
+      window.cerrarModalEditarPedido = cerrarModalEditarPedido;
+
+      function renderizarArticulosEditPedido() {
+        if (!listaArticulosEditPedido) return;
+
+        if (productosEditPedido.length === 0) {
+          listaArticulosEditPedido.innerHTML = `
+            <div class="text-center py-8 text-on-surface-variant/60">
+              <span class="material-symbols-outlined text-[32px] mb-1">remove_shopping_cart</span>
+              <p class="text-xs">No hay productos en este pedido. Usa la barra de búsqueda de arriba para agregar.</p>
+            </div>
+          `;
+        } else {
+          listaArticulosEditPedido.innerHTML = productosEditPedido
+            .map((item, index) => {
+              const cant = Number(item.cantidad || 1);
+              const precio = Number(item.precio || item.precioVenta || 0);
+              const subtotal = (cant * precio).toFixed(2);
+              const nombre = escaparHTML(item.nombre || "Producto");
+              const talla = escaparHTML(item.talla_volumen || item.talla || "");
+              const rawImg = String(item.imagenUrl || item.imagen || "").trim();
+              const imgUrl = rawImg ? rawImg.split(",")[0].trim() : "";
+
+              return `
+                <div class="flex items-center justify-between gap-3 p-2 bg-surface-container rounded-lg border border-outline-variant/30 text-xs">
+                  <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                    ${
+                      imgUrl
+                        ? `<img src="${imgUrl}" alt="${nombre}" class="w-9 h-9 rounded-lg object-cover bg-surface-container-high shrink-0 border border-outline-variant/30" />`
+                        : `<div class="w-9 h-9 rounded-lg bg-surface-container-high flex items-center justify-center text-primary font-bold text-[11px] shrink-0">
+                            <span class="material-symbols-outlined text-[16px]">image</span>
+                          </div>`
+                    }
+                    <div class="min-w-0">
+                      <p class="font-bold text-on-surface truncate">${nombre}</p>
+                      <div class="flex items-center gap-2 mt-0.5">
+                        ${talla ? `<span class="px-1.5 py-0.2 bg-primary/10 text-primary border border-primary/20 rounded text-[10px] font-bold">${talla}</span>` : ""}
+                        <span class="text-[10px] text-on-surface-variant font-mono">$${precio.toFixed(2)} c/u</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- CONTROLES DE CANTIDAD -->
+                  <div class="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onclick="window.cambiarCantidadArticuloEdit(${index}, -1)"
+                      class="w-7 h-7 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface flex items-center justify-center transition-colors cursor-pointer"
+                      title="Restar cantidad"
+                    >
+                      <span class="material-symbols-outlined text-[15px]">remove</span>
+                    </button>
+                    <input
+                      type="number"
+                      min="1"
+                      value="${cant}"
+                      onchange="window.cambiarCantidadArticuloEditInput(${index}, this.value)"
+                      class="w-12 text-center bg-surface-container-lowest border border-outline-variant rounded-lg py-1 font-bold font-mono text-xs text-on-surface focus:outline-none focus:border-primary"
+                    />
+                    <button
+                      type="button"
+                      onclick="window.cambiarCantidadArticuloEdit(${index}, 1)"
+                      class="w-7 h-7 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface flex items-center justify-center transition-colors cursor-pointer"
+                      title="Sumar cantidad"
+                    >
+                      <span class="material-symbols-outlined text-[15px]">add</span>
+                    </button>
+                  </div>
+
+                  <!-- SUBTOTAL Y BOTÓN QUITAR -->
+                  <div class="flex items-center gap-3 shrink-0 pl-1">
+                    <span class="font-mono font-bold text-primary min-w-[55px] text-right">$${subtotal}</span>
+                    <button
+                      type="button"
+                      onclick="window.quitarArticuloEdit(${index})"
+                      class="w-7 h-7 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center transition-colors cursor-pointer"
+                      title="Quitar artículo del pedido"
+                    >
+                      <span class="material-symbols-outlined text-[15px]">delete</span>
+                    </button>
+                  </div>
+                </div>
+              `;
+            })
+            .join("");
+        }
+
+        recalcularTotalesEditPedido();
+      }
+
+      function recalcularTotalesEditPedido() {
+        const subtotal = productosEditPedido.reduce((acc, item) => {
+          const c = Number(item.cantidad || 1);
+          const p = Number(item.precio ?? item.precioVenta ?? 0);
+          return acc + c * p;
+        }, 0);
+
+        const envio = Math.max(0, Number(editPedidoEnvio?.value || 0));
+        // SIN DESCUENTO: Total = subtotal + envio
+        const total = Math.max(0, subtotal + envio);
+
+        if (editPedidoContadorArticulos) {
+          const totalPiezas = productosEditPedido.reduce(
+            (acc, item) => acc + Number(item.cantidad || 1),
+            0,
+          );
+          editPedidoContadorArticulos.textContent = `${productosEditPedido.length} (${totalPiezas} pz)`;
+        }
+        if (editPedidoSubtotal) {
+          editPedidoSubtotal.value = subtotal.toFixed(2);
+        }
+        if (editPedidoTotalDisplay) {
+          editPedidoTotalDisplay.textContent = "$" + total.toFixed(2);
+        }
+      }
+
+      window.cambiarCantidadArticuloEdit = function (index, delta) {
+        if (!productosEditPedido[index]) return;
+        const nuevaCant = Number(productosEditPedido[index].cantidad || 1) + delta;
+        if (nuevaCant <= 0) {
+          window.quitarArticuloEdit(index);
+          return;
+        }
+        productosEditPedido[index].cantidad = nuevaCant;
+        productosEditPedido[index].subtotal =
+          nuevaCant *
+          Number(productosEditPedido[index].precio ?? productosEditPedido[index].precioVenta ?? 0);
+        renderizarArticulosEditPedido();
+      };
+
+      window.cambiarCantidadArticuloEditInput = function (index, valor) {
+        if (!productosEditPedido[index]) return;
+        const nuevaCant = Math.max(1, parseInt(valor, 10) || 1);
+        productosEditPedido[index].cantidad = nuevaCant;
+        productosEditPedido[index].subtotal =
+          nuevaCant *
+          Number(productosEditPedido[index].precio ?? productosEditPedido[index].precioVenta ?? 0);
+        renderizarArticulosEditPedido();
+      };
+
+      window.quitarArticuloEdit = function (index) {
+        if (!productosEditPedido[index]) return;
+        const nombre = productosEditPedido[index].nombre || "Producto";
+        productosEditPedido.splice(index, 1);
+        mostrarToastAlerta(`"${nombre}" quitado del pedido.`, "info");
+        renderizarArticulosEditPedido();
+      };
+
+      // =========================================================
+      // BARRA DE BÚSQUEDA DE PRODUCTOS PARA EL PEDIDO
+      // =========================================================
+      function buscarProductosParaEdit(query) {
+        if (!resultadosBuscarProductoEdit) return;
+        const q = String(query || "").trim().toLowerCase();
+        if (!q) {
+          resultadosBuscarProductoEdit.classList.add("hidden");
+          resultadosBuscarProductoEdit.innerHTML = "";
+          btnLimpiarBuscarProductoEdit?.classList.add("hidden");
+          return;
+        }
+
+        btnLimpiarBuscarProductoEdit?.classList.remove("hidden");
+
+        const matches = inventario
+          .filter((p) => {
+            const nom = String(p.nombre || "").toLowerCase();
+            const cod = String(p.codigo || "").toLowerCase();
+            const cat = String(p.categoria || "").toLowerCase();
+            return nom.includes(q) || cod.includes(q) || cat.includes(q);
+          })
+          .slice(0, 12);
+
+        if (matches.length === 0) {
+          resultadosBuscarProductoEdit.innerHTML = `
+            <div class="p-3 text-center text-xs text-on-surface-variant">
+              No se encontraron productos coincidentes con "${escaparHTML(q)}"
+            </div>
+          `;
+          resultadosBuscarProductoEdit.classList.remove("hidden");
+          return;
+        }
+
+        resultadosBuscarProductoEdit.innerHTML = matches
+          .map((prod) => {
+            const nom = escaparHTML(prod.nombre || "Producto");
+            const precioBase = Number(prod.precioVenta || 0).toFixed(2);
+            const stock = Number(prod.stock ?? prod.existencias ?? 0);
+            const rawImg = String(prod.imagenUrl || prod.imagen || "").trim();
+            const imgUrl = rawImg ? rawImg.split(",")[0].trim() : "";
+            const tallas = Array.isArray(prod.sizes) && prod.sizes.length > 0 ? prod.sizes : null;
+
+            return `
+              <div class="p-2 hover:bg-surface-container rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 transition-colors cursor-pointer group" onclick="window.agregarProductoDesdeBusquedaEdit('${prod.id}')">
+                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                  ${
+                    imgUrl
+                      ? `<img src="${imgUrl}" alt="${nom}" class="w-10 h-10 rounded-lg object-cover bg-surface-container-lowest shrink-0 border border-outline-variant/30" />`
+                      : `<div class="w-10 h-10 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary font-bold text-[10px] shrink-0 border border-outline-variant/30">
+                          <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+                        </div>`
+                  }
+                  <div class="min-w-0 flex-1">
+                    <p class="font-bold text-xs text-on-surface truncate group-hover:text-primary transition-colors">${nom}</p>
+                    <div class="flex items-center gap-2 text-[10px] text-on-surface-variant mt-0.5">
+                      <span class="font-mono font-bold text-primary">$${precioBase}</span>
+                      <span>•</span>
+                      <span>Stock: ${stock}</span>
+                      ${tallas && tallas.length > 1 ? `<span class="text-amber-400 font-semibold">• ${tallas.length} tallas</span>` : ""}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-1.5 shrink-0 self-end sm:self-center" onclick="event.stopPropagation()">
+                  ${
+                    tallas && tallas.length > 1
+                      ? tallas
+                          .map((s) => {
+                            const lbl = s.label || s.talla || s.size || "";
+                            const prc = Number(s.precioVenta ?? s.price ?? prod.precioVenta ?? 0);
+                            return `
+                              <button
+                                type="button"
+                                onclick="window.agregarProductoDesdeBusquedaEdit('${prod.id}', '${escaparHTML(lbl)}', ${prc})"
+                                class="px-2 py-1 bg-surface-container-lowest hover:bg-primary hover:text-on-primary text-on-surface text-[10px] font-bold rounded-lg border border-outline-variant/40 transition-all cursor-pointer"
+                                title="Agregar talla ${escaparHTML(lbl)}"
+                              >
+                                ${escaparHTML(lbl)} $${prc.toFixed(2)}
+                              </button>
+                            `;
+                          })
+                          .join("")
+                      : `
+                        <button
+                          type="button"
+                          onclick="window.agregarProductoDesdeBusquedaEdit('${prod.id}')"
+                          class="px-3 py-1 bg-primary/10 group-hover:bg-primary group-hover:text-on-primary text-primary text-xs font-bold rounded-lg border border-primary/20 flex items-center gap-1 transition-all cursor-pointer"
+                        >
+                          <span class="material-symbols-outlined text-[14px]">add</span>
+                          Agregar
+                        </button>
+                      `
+                  }
+                </div>
+              </div>
+            `;
+          })
+          .join("");
+
+        resultadosBuscarProductoEdit.classList.remove("hidden");
+      }
+
+      window.agregarProductoDesdeBusquedaEdit = function (prodId, tallaElegida, precioElegido) {
+        const prod = inventario.find((p) => String(p.id) === String(prodId));
+        if (!prod) return;
+
+        let talla = tallaElegida ?? "";
+        let precio = precioElegido ?? Number(prod.precioVenta || 0);
+
+        if (!talla && Array.isArray(prod.sizes) && prod.sizes.length > 0) {
+          const s = prod.sizes[0];
+          talla = s.label || s.talla || s.size || "";
+          precio = Number(s.precioVenta ?? s.price ?? prod.precioVenta ?? 0);
+        }
+
+        const existente = productosEditPedido.find(
+          (item) =>
+            String(item.id) === String(prod.id) &&
+            String(item.talla_volumen || item.talla || "") === String(talla),
+        );
+
+        if (existente) {
+          existente.cantidad = Number(existente.cantidad || 1) + 1;
+          existente.subtotal = existente.cantidad * precio;
+          mostrarToastAlerta(`Se incrementó la cantidad de "${prod.nombre}".`, "check_circle");
+        } else {
+          const rawImg = String(prod.imagenUrl || prod.imagen || "").trim();
+          const imgUrl = rawImg ? rawImg.split(",")[0].trim() : "";
+          productosEditPedido.push({
+            id: prod.id,
+            nombre: prod.nombre,
+            precio: precio,
+            precioVenta: precio,
+            cantidad: 1,
+            talla_volumen: talla,
+            talla: talla,
+            imagenUrl: imgUrl,
+            subtotal: precio,
+          });
+          mostrarToastAlerta(`"${prod.nombre}" añadido al pedido.`, "check_circle");
+        }
+
+        // Limpiar buscador y cerrar sugerencias
+        if (inputBuscarProductoEditPedido) inputBuscarProductoEditPedido.value = "";
+        if (btnLimpiarBuscarProductoEdit) btnLimpiarBuscarProductoEdit.classList.add("hidden");
+        if (resultadosBuscarProductoEdit) {
+          resultadosBuscarProductoEdit.classList.add("hidden");
+          resultadosBuscarProductoEdit.innerHTML = "";
+        }
+
+        renderizarArticulosEditPedido();
+      };
+
+      inputBuscarProductoEditPedido?.addEventListener("input", (e) => {
+        buscarProductosParaEdit(e.target.value);
+      });
+
+      inputBuscarProductoEditPedido?.addEventListener("focus", (e) => {
+        if (e.target.value.trim()) {
+          buscarProductosParaEdit(e.target.value);
+        }
+      });
+
+      btnLimpiarBuscarProductoEdit?.addEventListener("click", () => {
+        if (inputBuscarProductoEditPedido) inputBuscarProductoEditPedido.value = "";
+        btnLimpiarBuscarProductoEdit?.classList.add("hidden");
+        if (resultadosBuscarProductoEdit) {
+          resultadosBuscarProductoEdit.classList.add("hidden");
+          resultadosBuscarProductoEdit.innerHTML = "";
+        }
+        inputBuscarProductoEditPedido?.focus();
+      });
+
+      // Cerrar resultados de búsqueda al hacer clic fuera
+      document.addEventListener("click", (e) => {
+        if (
+          resultadosBuscarProductoEdit &&
+          !resultadosBuscarProductoEdit.contains(e.target) &&
+          e.target !== inputBuscarProductoEditPedido &&
+          e.target !== btnLimpiarBuscarProductoEdit
+        ) {
+          resultadosBuscarProductoEdit.classList.add("hidden");
+        }
+      });
+
+      // Recalcular cuando cambie envío
+      editPedidoEnvio?.addEventListener("input", recalcularTotalesEditPedido);
+
+      // Guardar cambios del pedido en Firestore
+      btnGuardarCambiosPedido?.addEventListener("click", async () => {
+        if (!pedidoEnEdicion || !pedidoEnEdicion.id) {
+          mostrarToastAlerta("No hay un pedido activo para guardar.", "error");
+          return;
+        }
+
+        if (productosEditPedido.length === 0) {
+          mostrarToastAlerta("El pedido debe tener al menos un artículo.", "warning");
+          return;
+        }
+
+        const subtotal = productosEditPedido.reduce((acc, item) => {
+          return acc + Number(item.cantidad || 1) * Number(item.precio ?? item.precioVenta ?? 0);
+        }, 0);
+        const envio = Math.max(0, Number(editPedidoEnvio?.value || 0));
+        // SIN DESCUENTO: Total = subtotal + envio
+        const total = Math.max(0, subtotal + envio);
+
+        const estadoVal = editPedidoEstado?.value || "pendiente";
+        const metodoPagoVal = editPedidoMetodoPago?.value === "Tarjeta" ? "Tarjeta" : "Efectivo";
+        const esEfectivo = metodoPagoVal === "Efectivo";
+
+        // NOTA: La información del cliente se mantiene intacta (solo lectura)
+        const clienteNom =
+          typeof pedidoEnEdicion.cliente === "string"
+            ? pedidoEnEdicion.cliente
+            : pedidoEnEdicion.cliente?.nombre || pedidoEnEdicion.clienteNombre || "Cliente";
+
+        const datosActualizados = {
+          // Conservar datos del cliente de solo lectura
+          cliente: clienteNom,
+          clienteNombre: clienteNom,
+          telefono: pedidoEnEdicion.telefono || pedidoEnEdicion.cliente?.telefono || pedidoEnEdicion.clienteTelefono || "",
+          clienteTelefono: pedidoEnEdicion.clienteTelefono || pedidoEnEdicion.telefono || "",
+          correo: pedidoEnEdicion.correo || pedidoEnEdicion.cliente?.correo || "",
+          tipoEntrega: pedidoEnEdicion.tipoEntrega || (esRecogerTienda(pedidoEnEdicion) ? "tienda" : "domicilio"),
+          metodoEntrega: pedidoEnEdicion.metodoEntrega || (esRecogerTienda(pedidoEnEdicion) ? "En Tienda" : "A Domicilio"),
+          direccion: pedidoEnEdicion.direccion || pedidoEnEdicion.cliente?.direccion || "",
+          ciudad: pedidoEnEdicion.ciudad || "",
+          codigoPostal: pedidoEnEdicion.codigoPostal || "",
+          notas: pedidoEnEdicion.notas || pedidoEnEdicion.cliente?.notas || pedidoEnEdicion.notasEntrega || "",
+          notasEntrega: pedidoEnEdicion.notasEntrega || pedidoEnEdicion.notas || "",
+
+          // Estado y método de pago (solo Efectivo o Tarjeta)
+          estado: estadoVal,
+          estadoPedido: estadoVal,
+          estadoEntrega: estadoVal,
+          metodoPago: metodoPagoVal,
+          tipoPago: metodoPagoVal.toLowerCase(),
+          esEfectivo: esEfectivo,
+          esTarjeta: !esEfectivo,
+
+          // Productos actualizados
+          productos: productosEditPedido.map((p) => ({
+            id: p.id || "",
+            nombre: p.nombre || "Producto",
+            talla_volumen: p.talla_volumen || p.talla || "",
+            talla: p.talla_volumen || p.talla || "",
+            precio: Number(p.precio ?? p.precioVenta ?? 0),
+            precioVenta: Number(p.precio ?? p.precioVenta ?? 0),
+            cantidad: Number(p.cantidad || 1),
+            imagenUrl: p.imagenUrl || "",
+            subtotal: Number(p.cantidad || 1) * Number(p.precio ?? p.precioVenta ?? 0),
+          })),
+
+          // Totales financieros sin descuento
+          subtotal: subtotal,
+          envio: envio,
+          costoEnvio: envio,
+          descuento: 0,
+          total: total,
+        };
+
+        const originalBtnHtml = btnGuardarCambiosPedido.innerHTML;
+        try {
+          btnGuardarCambiosPedido.disabled = true;
+          btnGuardarCambiosPedido.innerHTML = `
+            <span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
+            <span>Guardando...</span>
+          `;
+
+          const ahora = new Date();
+          const payloadActualizacion = {
+            ...datosActualizados,
+            fechaActualizacion: ahora,
+            timestampActualizacion: ahora.getTime(),
+          };
+
+          if (estadoVal === "entregado" || estadoVal === "completado") {
+            payloadActualizacion.entregado = true;
+            payloadActualizacion.completado = true;
+            payloadActualizacion.fechaEntrega = ahora;
+            payloadActualizacion.timestampEntrega = ahora.getTime();
+          }
+
+          // Guardar cambios en el pedido móvil
+          await editarPedidoMovil(pedidoEnEdicion.id, payloadActualizacion);
+
+          cerrarModalEditarPedido();
+          await cargarPedidosMoviles(false);
+          mostrarToastAlerta("Pedido actualizado correctamente.", "check_circle");
+        } catch (error) {
+          console.error("Error al actualizar pedido móvil:", error);
+          mostrarToastAlerta("No se pudo actualizar el pedido. Intenta nuevamente.", "error");
+        } finally {
+          btnGuardarCambiosPedido.disabled = false;
+          btnGuardarCambiosPedido.innerHTML = originalBtnHtml;
+        }
+      });
+      btnCerrarModalEditarPedido?.addEventListener("click", cerrarModalEditarPedido);
+      btnCancelarModalEditarPedido?.addEventListener("click", cerrarModalEditarPedido);
+      modalEditarPedido?.addEventListener("click", (e) => {
+        if (e.target === modalEditarPedido) cerrarModalEditarPedido();
+      });
 
       // TICKET PARA VENTA DIRECTA (PUNTO DE VENTA)
       window.abrirTicketVentaDirecta = function (venta) {
@@ -2332,6 +3695,15 @@
       document.getElementById("inputBuscarPedidos")?.addEventListener("input", (e) => {
         busquedaPedidoTexto = (e.target.value || "").trim();
         renderizarPedidosMoviles();
+      });
+
+      // Cerrar modal con tecla Escape
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          if (modalEditarPedido && !modalEditarPedido.classList.contains("hidden")) {
+            cerrarModalEditarPedido();
+          }
+        }
       });
     </script>
   </body>

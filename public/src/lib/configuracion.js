@@ -11439,6 +11439,9 @@ function __PRIVATE_validateIsNotUsedTogether(t2, n2, r2, i2) {
 function __PRIVATE_validateDocumentPath(t2) {
   if (!DocumentKey.isDocumentKey(t2)) throw new e(ta.INVALID_ARGUMENT, `Invalid document reference. Document references must have an even number of segments, but ${t2} has ${t2.length}.`);
 }
+function __PRIVATE_validateCollectionPath(t2) {
+  if (DocumentKey.isDocumentKey(t2)) throw new e(ta.INVALID_ARGUMENT, `Invalid collection reference. Collection references must have an odd number of segments, but ${t2} has ${t2.length}.`);
+}
 function p(e2) {
   return "object" == typeof e2 && null !== e2 && (Object.getPrototypeOf(e2) === Object.prototype || null === Object.getPrototypeOf(e2));
 }
@@ -15959,6 +15962,27 @@ var na = class _na extends Query {
     return new _na(this.firestore, e2, this._path);
   }
 };
+function collection(t2, n2, ...r2) {
+  if (t2 = getModularInstance(t2), __PRIVATE_validateNonEmptyArgument("collection", "path", n2), t2 instanceof Dt) {
+    const e2 = ResourcePath.fromString(n2, ...r2);
+    return __PRIVATE_validateCollectionPath(e2), new na(
+      t2,
+      /* converter= */
+      null,
+      e2
+    );
+  }
+  {
+    if (!(t2 instanceof aa || t2 instanceof na)) throw new e(ta.INVALID_ARGUMENT, "Expected first argument to collection() to be a CollectionReference, a DocumentReference or FirebaseFirestore");
+    const i2 = t2._path.child(ResourcePath.fromString(n2, ...r2));
+    return __PRIVATE_validateCollectionPath(i2), new na(
+      t2.firestore,
+      /* converter= */
+      null,
+      i2
+    );
+  }
+}
 function doc(t2, n2, ...r2) {
   if (t2 = getModularInstance(t2), // We allow omission of 'pathString' but explicitly prohibit passing in both
   // 'undefined' and 'null'.
@@ -18560,6 +18584,58 @@ $.Pr = "full_replace";
 function __PRIVATE_readUserDataHelper(e2, t2) {
   return __PRIVATE_isUserData(e2) ? e2._readUserData(t2) : Array.isArray(e2) ? e2.forEach(((e3) => e3._readUserData(t2))) : e2 instanceof Map ? e2.forEach(((e3) => e3._readUserData(t2))) : Object.values(e2).forEach(((e3) => e3._readUserData(t2))), e2;
 }
+var __PRIVATE_RealtimePipeline = class ___PRIVATE_RealtimePipeline {
+  /**
+   * @internal
+   * @private
+   * @param _db
+   * @param userDataReader
+   * @param _userDataWriter
+   * @param _documentReferenceFactory
+   * @param stages
+   */
+  constructor(e2, t2, n2, r2) {
+    this._db = e2, this.userDataReader = t2, this._userDataWriter = n2, this.stages = r2;
+  }
+  /**
+   * Reads user data for each expression in the expressionMap.
+   * @param name Name of the calling function. Used for error messages when invalid user data is encountered.
+   * @param expressionMap
+   * @return the expressionMap argument.
+   * @private
+   * @internal
+   */
+  Ar(e2, t2) {
+    const n2 = this.userDataReader.createContext(3, e2);
+    return __PRIVATE_isUserData(t2) ? t2._readUserData(n2) : Array.isArray(t2) ? t2.forEach(((e3) => e3._readUserData(n2))) : t2.forEach(((e3) => e3._readUserData(n2))), t2;
+  }
+  where(e2) {
+    const t2 = this.stages.map(((e3) => e3));
+    return this.Ar("where", e2), t2.push(new A(e2, {})), new ___PRIVATE_RealtimePipeline(this._db, this.userDataReader, this._userDataWriter, t2);
+  }
+  limit(e2) {
+    const t2 = this.stages.map(((e3) => e3));
+    return t2.push(new v(e2, {})), new ___PRIVATE_RealtimePipeline(this._db, this.userDataReader, this._userDataWriter, t2);
+  }
+  sort(e2, ...t2) {
+    const n2 = this.stages.map(((e3) => e3));
+    return "orderings" in e2 ? n2.push(new L(this.Ar("sort", e2.orderings), {})) : (
+      // Ordering object
+      n2.push(new L(this.Ar("sort", [e2, ...t2]), {}))
+    ), new ___PRIVATE_RealtimePipeline(this._db, this.userDataReader, this._userDataWriter, n2);
+  }
+  /**
+   * @internal
+   * @private
+   */
+  Vr(e2) {
+    return {
+      pipeline: {
+        stages: this.stages.map(((t2) => t2._toProto(e2)))
+      }
+    };
+  }
+};
 var CorePipeline = class {
   constructor(e2, t2, n2) {
     this.serializer = e2, this.stages = t2, this.listenOptions = n2, this.isCorePipeline = true;
@@ -20267,6 +20343,26 @@ function __PRIVATE_canonifyTargetOrPipeline(e2) {
 }
 function __PRIVATE_targetOrPipelineEqual(e2, t2) {
   return e2 instanceof CorePipeline && t2 instanceof CorePipeline ? __PRIVATE_pipelineEq(e2, t2) : !(e2 instanceof CorePipeline && !(t2 instanceof CorePipeline) || !(e2 instanceof CorePipeline) && t2 instanceof CorePipeline) && __PRIVATE_targetEquals(e2, t2);
+}
+function __PRIVATE_toCorePipeline(e2, t2) {
+  const n2 = (function __PRIVATE_rewriteStages(e3) {
+    let t3 = false;
+    const n3 = [];
+    for (const r2 of e3)
+      if (r2 instanceof L)
+        if (t3 = true, r2.orderings.some(((e4) => e4.expr instanceof o && e4.expr.fieldName === Ce))) n3.push(r2);
+        else {
+          const e4 = r2.orderings.map(((e5) => e5));
+          e4.push(s(Ce).ascending()), n3.push(new L(e4, {}));
+        }
+      else r2 instanceof v ? (t3 || (n3.push(new L([s(Ce).ascending()], {})), t3 = true), n3.push(r2)) : n3.push(r2);
+    return t3 || n3.push(new L([s(Ce).ascending()], {})), n3;
+  })(e2.stages);
+  if (e2.userDataReader) {
+    const t3 = e2.userDataReader.createContext(3, "toCorePipeline");
+    n2.forEach(((e3) => e3._readUserData(t3)));
+  }
+  return new CorePipeline(e2.userDataReader.serializer, n2, t2);
 }
 var MutationBatch = class {
   /**
@@ -23949,6 +24045,21 @@ function __PRIVATE_firestoreClientGetDocumentViaSnapshotListener(t2, n2, r2 = {}
     return __PRIVATE_eventManagerListen(t3, o2);
   })(await __PRIVATE_getEventManager(t2), t2.asyncQueue, n2, r2, i2))), i2.promise;
 }
+function __PRIVATE_firestoreClientGetDocumentsViaSnapshotListener(t2, n2, r2 = {}) {
+  const i2 = new __PRIVATE_Deferred();
+  return t2.asyncQueue.enqueueAndForget((async () => (function __PRIVATE_executeQueryViaSnapshotListener(t3, n3, r3, i3, s2) {
+    const _ = new __PRIVATE_AsyncObserver({
+      next: (r4) => {
+        _.Aa(), n3.enqueueAndForget((() => __PRIVATE_eventManagerUnlisten(t3, o2))), r4.fromCache && "server" === i3.source ? s2.reject(new e(ta.UNAVAILABLE, 'Failed to get documents from server. (However, these documents may exist in the local cache. Run again without setting source to "server" to retrieve the cached documents.)')) : s2.resolve(r4);
+      },
+      error: (e2) => s2.reject(e2)
+    }), o2 = new __PRIVATE_QueryListener(r3 instanceof __PRIVATE_RealtimePipeline ? __PRIVATE_toCorePipeline(r3) : r3, _, {
+      includeMetadataChanges: true,
+      waitForSyncWhenOnline: true
+    });
+    return __PRIVATE_eventManagerListen(t3, o2);
+  })(await __PRIVATE_getEventManager(t2), t2.asyncQueue, n2, r2, i2))), i2.promise;
+}
 function __PRIVATE_firestoreClientWrite(e2, t2) {
   const n2 = new __PRIVATE_Deferred();
   return e2.asyncQueue.enqueueAndForget((async () => __PRIVATE_syncEngineWrite(await __PRIVATE_getSyncEngine(e2), t2, n2))), n2.promise;
@@ -24572,10 +24683,18 @@ QuerySnapshot._jsonSchemaVersion = "firestore/querySnapshot/1.0", QuerySnapshot.
 };
 
 // node_modules/@firebase/firestore/dist/index.esm.js
+function __PRIVATE_validateHasExplicitOrderByForLimitToLast(e$1) {
+  if ("L" === e$1.limitType && 0 === e$1.explicitOrderBy.length) throw new e(ta.UNIMPLEMENTED, "limitToLast() queries require specifying at least one orderBy() clause");
+}
 function getDoc(e2) {
   e2 = ra(e2, aa);
   const t2 = ra(e2.firestore, da), n2 = oa(t2);
   return __PRIVATE_firestoreClientGetDocumentViaSnapshotListener(n2, e2._key).then(((n3) => __PRIVATE_convertToDocSnapshot(t2, e2, n3)));
+}
+function getDocs(e2) {
+  e2 = ra(e2, Query);
+  const t2 = ra(e2.firestore, da), n2 = oa(t2), r2 = new ua(t2);
+  return __PRIVATE_validateHasExplicitOrderByForLimitToLast(e2._query), __PRIVATE_firestoreClientGetDocumentsViaSnapshotListener(n2, e2._query).then(((n3) => new QuerySnapshot(t2, r2, e2, n3)));
 }
 function setDoc(e2, t2, n2) {
   e2 = ra(e2, aa);
@@ -24641,60 +24760,200 @@ var db = getFirestore(
 );
 
 // src/lib/configuracion.js
-var DOC_ID = "general";
-var COLECCION = "configuracion";
-var STORAGE_KEY = "lmscents_config";
-var CONFIG_DEFAULT = {
-  nombreComercial: "LM Scents",
-  nit: "",
-  direccion: "",
-  telefono: "",
-  email: "",
+var TABLA = "configuracion";
+var DOC_CANONICO = "general";
+var CONFIG_DEFAULTS = {
+  actualizadoEn: "29 de septiembre del 2026",
+  correo: "Lmscents@gmail.com",
+  email: "Lmscents@gmail.com",
+  direccion: "Blvd. Sonora y Calle Agust\xEDn de Iturbide, Puerto Pe\xF1asco, Sonora. ",
+  googleMapsUrl: "https://maps.app.goo.gl/4G3YvCDNuoK53fKh9",
+  horario: " Lunes a S\xE1bado: 10:00 AM - 8:00 PM",
+  linkMaps: "https://maps.app.goo.gl/4G3YvCDNuoK53fKh9",
+  mapsUrl: "https://maps.app.goo.gl/4G3YvCDNuoK53fKh9",
+  nombreComercial: "Lm Scents Boutique",
+  nombreTienda: "LM Scents",
+  pickupActivo: true,
+  pickupBadge: "Inmediato",
+  pickupDireccion: "Blvd. Sonora y Calle Agust\xEDn de Iturbide, Puerto Pe\xF1asco, Sonora. ",
+  pickupHorario: " Lunes a S\xE1bado: 10:00 AM - 8:00 PM",
+  pickupMapsUrl: "https://maps.app.goo.gl/4G3YvCDNuoK53fKh9",
+  pickupTitulo: "LM Scents",
+  taxId: "1",
+  nit: "1",
+  telefono: "6674863190",
   iva: 16,
   facturacionElectronica: false,
   resolucionFacturacion: "",
-  impresora: "epson",
+  anchoPapel: "80mm",
   copiasTicket: 1,
-  anchoPapel: "80mm"
+  impresora: "epson",
+  encabezadoTicket: "LM SCENTS BOUTIQUE",
+  subtituloTicket: "Punto de Venta \xB7 Perfumer\xEDa Exclusiva",
+  pieTicket: "\xA1Gracias por su preferencia! \xB7 Cambios con ticket dentro de 7 d\xEDas"
 };
 async function obtenerConfiguracion() {
+  let datos = {};
   try {
-    const docRef = doc(db, COLECCION, DOC_ID);
-    const snapshot = await getDoc(docRef);
-    if (snapshot.exists()) {
-      const data = { ...CONFIG_DEFAULT, ...snapshot.data() };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      return data;
+    const refGeneral = doc(db, TABLA, DOC_CANONICO);
+    const snapGeneral = await getDoc(refGeneral);
+    if (snapGeneral.exists()) {
+      datos = { ...snapGeneral.data() };
     }
-  } catch (err) {
-    console.warn("No se pudo cargar la configuraci\xF3n de Firestore, usando cach\xE9 local:", err);
+  } catch (errGeneral) {
+    console.warn("Aviso al consultar doc general:", errGeneral);
   }
-  try {
-    const local = localStorage.getItem(STORAGE_KEY);
-    if (local) {
-      return { ...CONFIG_DEFAULT, ...JSON.parse(local) };
+  if (Object.keys(datos).length === 0) {
+    try {
+      const refPrincipal = doc(db, TABLA, "principal");
+      const snapPrincipal = await getDoc(refPrincipal);
+      if (snapPrincipal.exists()) {
+        datos = { ...snapPrincipal.data() };
+      }
+    } catch (errPrincipal) {
+      console.warn("Aviso al consultar doc principal:", errPrincipal);
     }
-  } catch (e2) {
-    console.warn("Error leyendo localStorage:", e2);
   }
-  return { ...CONFIG_DEFAULT };
+  if (Object.keys(datos).length === 0) {
+    try {
+      const snapCol = await getDocs(collection(db, TABLA));
+      if (!snapCol.empty) {
+        snapCol.forEach((d) => {
+          const dData = d.data();
+          if (dData && Object.keys(dData).length > 0) {
+            datos = { ...datos, ...dData };
+          }
+        });
+      }
+    } catch (errCol) {
+      console.warn("Aviso al consultar colecci\xF3n configuracion:", errCol);
+    }
+  }
+  const direccionFinal = datos.direccion || datos.pickupDireccion || CONFIG_DEFAULTS.direccion;
+  const horarioFinal = datos.horario || datos.pickupHorario || CONFIG_DEFAULTS.horario;
+  const mapsUrlFinal = datos.googleMapsUrl || datos.mapsUrl || datos.linkMaps || datos.pickupMapsUrl || CONFIG_DEFAULTS.googleMapsUrl;
+  const nombreFinal = datos.nombreComercial || datos.nombreTienda || datos.pickupTitulo || CONFIG_DEFAULTS.nombreComercial;
+  const nombreTiendaFinal = datos.nombreTienda || CONFIG_DEFAULTS.nombreTienda;
+  const telefonoFinal = datos.telefono || datos.pickupTelefono || CONFIG_DEFAULTS.telefono;
+  const emailFinal = datos.correo || datos.email || CONFIG_DEFAULTS.correo;
+  const taxIdFinal = datos.taxId || datos.nit || CONFIG_DEFAULTS.taxId;
+  const badgeFinal = datos.pickupBadge || CONFIG_DEFAULTS.pickupBadge;
+  const activoFinal = typeof datos.pickupActivo === "boolean" ? datos.pickupActivo : CONFIG_DEFAULTS.pickupActivo;
+  return {
+    ...CONFIG_DEFAULTS,
+    ...datos,
+    nombreComercial: nombreFinal,
+    nombreTienda: nombreTiendaFinal,
+    nit: taxIdFinal,
+    taxId: taxIdFinal,
+    direccion: direccionFinal,
+    telefono: telefonoFinal,
+    email: emailFinal,
+    correo: emailFinal,
+    horario: horarioFinal,
+    googleMapsUrl: mapsUrlFinal,
+    linkMaps: mapsUrlFinal,
+    mapsUrl: mapsUrlFinal,
+    pickupTitulo: nombreTiendaFinal,
+    pickupBadge: badgeFinal,
+    pickupDireccion: direccionFinal,
+    pickupHorario: horarioFinal,
+    pickupMapsUrl: mapsUrlFinal,
+    pickupTelefono: telefonoFinal,
+    pickupActivo: activoFinal,
+    iva: datos.iva ?? 16,
+    facturacionElectronica: Boolean(datos.facturacionElectronica),
+    resolucionFacturacion: datos.resolucionFacturacion || "",
+    anchoPapel: datos.anchoPapel || "80mm",
+    copiasTicket: datos.copiasTicket || 1,
+    impresora: datos.impresora || "epson",
+    encabezadoTicket: datos.encabezadoTicket || CONFIG_DEFAULTS.encabezadoTicket,
+    subtituloTicket: datos.subtituloTicket || CONFIG_DEFAULTS.subtituloTicket,
+    pieTicket: datos.pieTicket || CONFIG_DEFAULTS.pieTicket
+  };
 }
-async function guardarConfiguracion(nuevaConfig) {
-  const data = { ...CONFIG_DEFAULT, ...nuevaConfig, actualizadoEn: /* @__PURE__ */ new Date() };
+async function guardarConfiguracion(data) {
+  const ahora = /* @__PURE__ */ new Date();
+  const direccionFinal = (data.pickupDireccion || data.direccion || CONFIG_DEFAULTS.direccion).trim();
+  const horarioFinal = (data.pickupHorario || data.horario || CONFIG_DEFAULTS.horario).trim();
+  const mapsUrlFinal = (data.pickupMapsUrl || data.googleMapsUrl || data.mapsUrl || data.linkMaps || CONFIG_DEFAULTS.googleMapsUrl).trim();
+  const nombreFinal = (data.nombreComercial || CONFIG_DEFAULTS.nombreComercial).trim();
+  const nombreTiendaFinal = (data.nombreTienda || data.pickupTitulo || CONFIG_DEFAULTS.nombreTienda).trim();
+  const telefonoFinal = (data.telefono || data.pickupTelefono || CONFIG_DEFAULTS.telefono).trim();
+  const correoFinal = (data.correo || data.email || CONFIG_DEFAULTS.correo).trim();
+  const taxIdFinal = (data.taxId || data.nit || CONFIG_DEFAULTS.taxId).trim();
+  const badgeFinal = (data.pickupBadge || CONFIG_DEFAULTS.pickupBadge).trim();
+  const activoFinal = typeof data.pickupActivo === "boolean" ? data.pickupActivo : true;
+  const payloadFirestore = {
+    actualizadoEn: ahora.toLocaleDateString("es-MX", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    }),
+    correo: correoFinal,
+    email: correoFinal,
+    direccion: direccionFinal,
+    googleMapsUrl: mapsUrlFinal,
+    horario: horarioFinal,
+    linkMaps: mapsUrlFinal,
+    mapsUrl: mapsUrlFinal,
+    nombreComercial: nombreFinal,
+    nombreTienda: nombreTiendaFinal,
+    pickupActivo: activoFinal,
+    pickupBadge: badgeFinal,
+    pickupDireccion: direccionFinal,
+    pickupHorario: horarioFinal,
+    pickupMapsUrl: mapsUrlFinal,
+    pickupTitulo: nombreTiendaFinal,
+    taxId: taxIdFinal,
+    nit: taxIdFinal,
+    telefono: telefonoFinal,
+    timestampActualizacion: ahora,
+    // Parámetros de boutique POS
+    iva: Number(data.iva) || 16,
+    facturacionElectronica: Boolean(data.facturacionElectronica),
+    resolucionFacturacion: data.resolucionFacturacion || "",
+    impresora: data.impresora || "epson",
+    copiasTicket: Number(data.copiasTicket) || 1,
+    anchoPapel: data.anchoPapel || "80mm",
+    encabezadoTicket: (data.encabezadoTicket || CONFIG_DEFAULTS.encabezadoTicket).trim(),
+    subtituloTicket: (data.subtituloTicket || CONFIG_DEFAULTS.subtituloTicket).trim(),
+    pieTicket: (data.pieTicket || CONFIG_DEFAULTS.pieTicket).trim()
+  };
+  const refGeneral = doc(db, TABLA, DOC_CANONICO);
+  await setDoc(refGeneral, payloadFirestore, { merge: true });
   try {
-    const docRef = doc(db, COLECCION, DOC_ID);
-    await setDoc(docRef, data, { merge: true });
-  } catch (err) {
-    console.warn("No se pudo guardar en Firestore, guardando en local:", err);
+    const refPrincipal = doc(db, TABLA, "principal");
+    await setDoc(refPrincipal, payloadFirestore, { merge: true });
+  } catch (errPrinc) {
+    console.warn("Aviso al guardar en configuracion/principal:", errPrinc);
   }
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  } catch (e2) {
-    console.warn("Error escribiendo en localStorage:", e2);
+    const refPickup = doc(db, TABLA, "pickup");
+    await setDoc(
+      refPickup,
+      {
+        titulo: nombreTiendaFinal,
+        badge: badgeFinal,
+        direccion: direccionFinal,
+        horario: horarioFinal,
+        mapsUrl: mapsUrlFinal,
+        googleMapsUrl: mapsUrlFinal,
+        linkMaps: mapsUrlFinal,
+        telefono: telefonoFinal,
+        activo: activoFinal,
+        actualizadoEn: payloadFirestore.actualizadoEn,
+        timestampActualizacion: ahora
+      },
+      { merge: true }
+    );
+  } catch (errPick) {
+    console.warn("Aviso al guardar en configuracion/pickup:", errPick);
   }
-  return data;
+  return payloadFirestore;
 }
 export {
+  CONFIG_DEFAULTS,
   guardarConfiguracion,
   obtenerConfiguracion
 };
@@ -25532,8 +25791,6 @@ re2js/build/index.js:
    * See the License for the specific language governing permissions and
    * limitations under the License.
    *)
-
-@firebase/firestore/dist/common-CE5hrKY-.esm.js:
   (* Copyright 2024 Google LLC* @license *)
   (**
    * @license

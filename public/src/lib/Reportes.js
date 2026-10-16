@@ -24141,7 +24141,71 @@ var db = getFirestore(
   app
 );
 
+// src/lib/movimientosCaja.js
+function obtenerSesionActiva() {
+  try {
+    const raw = sessionStorage.getItem("lm_sesion_activa") || localStorage.getItem("lm_sesion_activa");
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (data && (data.nombre || data.id)) {
+      return data;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+function cerrarSesion() {
+  try {
+    localStorage.removeItem("lm_sesion_activa");
+    sessionStorage.removeItem("lm_sesion_activa");
+  } catch (e2) {
+    console.warn("Error al cerrar sesi\xF3n:", e2);
+  }
+}
+function verificarSesionOVolverAWelcome() {
+  const sesion = obtenerSesionActiva();
+  if (!sesion) {
+    console.info("Sin sesi\xF3n activa detectada.");
+    if (typeof window !== "undefined") {
+      try {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: "NAVIGATE_TO", path: "/" }, "*");
+        }
+      } catch (e2) {
+      }
+    }
+    return null;
+  }
+  return sesion;
+}
+
 // src/lib/Reportes.js
+var sesionUsuario = verificarSesionOVolverAWelcome();
+if (sesionUsuario) {
+  const badge = document.getElementById("usuario-sesion-badge");
+  const nombreEl = document.getElementById("nombre-usuario-sesion");
+  if (badge && nombreEl) {
+    nombreEl.textContent = sesionUsuario.nombre || "Usuario";
+    badge.classList.remove("hidden");
+  }
+}
+var btnLogout = document.getElementById("btn-cerrar-sesion");
+if (btnLogout) {
+  btnLogout.addEventListener("click", () => {
+    cerrarSesion();
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: "NAVIGATE_TO", path: "/" }, "*");
+      }
+    } catch (e2) {
+    }
+    try {
+      window.location.assign("./welcome.html");
+    } catch (e2) {
+    }
+  });
+}
 var tablaVentas = "ventas";
 var todasLasVentas = [];
 var periodoActual = "hoy";
@@ -24349,8 +24413,10 @@ function renderTabla() {
     const productos = obtenerProductosVenta(venta);
     const productosTexto = productos.length ? productos.map((p2) => {
       const nombre = escaparHTML(p2.nombre || p2.name || "Producto");
+      const talla = p2.talla || p2.size || p2.label || p2.talla_volumen || "";
+      const tallaTexto = talla ? ` (${escaparHTML(talla)})` : "";
       const cantidad = Number(p2.cantidad ?? p2.qty ?? 1) || 1;
-      return `${nombre} \xD7${cantidad}`;
+      return `${nombre}${tallaTexto} \xD7${cantidad}`;
     }).join(", ") : venta.cliente ? `Pedido de ${escaparHTML(venta.cliente)}` : "\u2014";
     const total = Number(venta.total) || 0;
     const ventaId = String(venta.id || indice + 1);
@@ -24463,11 +24529,13 @@ function renderChart() {
   }).join("")}
         </div>
     `;
-  etiquetas.innerHTML = entradas.map((grupo) => `
+  etiquetas.innerHTML = entradas.map(
+    (grupo) => `
         <span class="flex-1 text-center truncate text-[10px] text-on-surface-variant font-label-caps">
             ${escaparHTML(grupo.etiqueta)}
         </span>
-    `).join("");
+    `
+  ).join("");
 }
 function renderTopProductos() {
   const contenedor = document.getElementById("top-productos");
@@ -24476,8 +24544,10 @@ function renderTopProductos() {
   todasLasVentas.forEach((venta) => {
     obtenerProductosVenta(venta).forEach((producto) => {
       const nombre = producto.nombre || producto.producto || producto.name || "Producto sin nombre";
+      const talla = producto.talla || producto.size || producto.label || producto.talla_volumen || "";
+      const clave = talla ? `${nombre} (${talla})` : nombre;
       const cantidad = Number(producto.cantidad ?? producto.qty ?? 1) || 1;
-      conteo[nombre] = (conteo[nombre] || 0) + cantidad;
+      conteo[clave] = (conteo[clave] || 0) + cantidad;
     });
   });
   const top = Object.entries(conteo).sort(([, cantidadA], [, cantidadB]) => cantidadB - cantidadA).slice(0, 5);
@@ -24545,11 +24615,20 @@ async function actualizar() {
 }
 function exportarExcel() {
   const rango = obtenerRangoActual();
-  const total = todasLasVentas.reduce((acumulado, venta) => acumulado + (Number(venta.total) || 0), 0);
+  const total = todasLasVentas.reduce(
+    (acumulado, venta) => acumulado + (Number(venta.total) || 0),
+    0
+  );
   const unidades = calcularUnidades();
   const filas = todasLasVentas.length ? todasLasVentas.map((venta, indice) => {
     const fecha = obtenerFechaVenta(venta);
-    const productos = obtenerProductosVenta(venta).map((p2) => `${p2.nombre || p2.producto || p2.name || "Producto"} x${Number(p2.cantidad ?? p2.qty ?? 1) || 1}`).join(", ");
+    const productos = obtenerProductosVenta(venta).map((p2) => {
+      const nombre = p2.nombre || p2.producto || p2.name || "Producto";
+      const talla = p2.talla || p2.size || p2.label || p2.talla_volumen || "";
+      const tallaTexto = talla ? ` (${talla})` : "";
+      const cant = Number(p2.cantidad ?? p2.qty ?? 1) || 1;
+      return `${nombre}${tallaTexto} x${cant}`;
+    }).join(", ");
     const esApp = venta.origen === "app" || venta.origen === "app_movil" || venta.canal === "app_movil" || venta.canal === "app" || venta.esVentaApp === true;
     const canalTexto = esApp ? "App M\xF3vil (Entregado)" : "Mostrador POS";
     const metodoTexto = venta.esEfectivo || String(venta.metodoPago || "").toLowerCase().includes("efectivo") ? "Efectivo" : venta.metodoPago || "Tarjeta";

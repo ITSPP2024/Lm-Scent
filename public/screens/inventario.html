@@ -206,8 +206,20 @@
         box-shadow: 0 0 15px rgba(242, 202, 80, 0.2);
       }
 
+      html {
+        scroll-behavior: smooth;
+      }
+
+      .custom-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: #4d4635 #1c1b1b;
+        scroll-behavior: smooth;
+        overscroll-behavior-y: contain;
+      }
+
       .custom-scrollbar::-webkit-scrollbar {
-        width: 4px;
+        width: 6px;
+        height: 6px;
       }
 
       .custom-scrollbar::-webkit-scrollbar-track {
@@ -216,7 +228,21 @@
 
       .custom-scrollbar::-webkit-scrollbar-thumb {
         background: #4d4635;
-        border-radius: 10px;
+        border-radius: 6px;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #736952;
+      }
+
+      /* Evita que el scroll de la página se interrumpa o salte al pasar el cursor sobre inputs de número */
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      input[type="number"] {
+        -moz-appearance: textfield;
       }
 
       .premium-border {
@@ -233,28 +259,77 @@
         transition: transform 0.1s ease;
       }
 
-      .campo {
+      /* ========================================================= */
+      /* REGLAS MAESTRAS DE INPUTS Y CONTROLES (FONDO OSCURO Y TEXTO LEGIBLE) */
+      /* ========================================================= */
+      input,
+      input:not([type]),
+      input[type="text"],
+      input[type="number"],
+      input[type="email"],
+      input[type="search"],
+      input[type="password"],
+      input[type="file"],
+      textarea,
+      select,
+      .campo,
+      input.campo,
+      select.campo,
+      textarea.campo {
         width: 100%;
-
-        background: #1c1b1b;
-
-        border: 1px solid #4d4635;
-
-        padding: 14px;
-
+        background-color: #191818 !important;
+        background: #191818 !important;
+        border: 1px solid #4d4635 !important;
+        padding: 12px 14px;
         border-radius: 10px;
-
-        outline: none;
-
-        color: white;
-
-        transition: 0.2s;
+        outline: none !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        transition: 0.2s ease;
       }
 
-      .campo:focus {
-        border-color: #f2ca50;
+      input:focus,
+      input:not([type]):focus,
+      input[type="text"]:focus,
+      input[type="number"]:focus,
+      input[type="email"]:focus,
+      input[type="search"]:focus,
+      input[type="password"]:focus,
+      textarea:focus,
+      select:focus,
+      .campo:focus,
+      input.campo:focus,
+      select.campo:focus,
+      textarea.campo:focus {
+        background-color: #212020 !important;
+        background: #212020 !important;
+        border-color: #f2ca50 !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        box-shadow: 0 0 12px rgba(242, 202, 80, 0.25) !important;
+      }
 
-        box-shadow: 0 0 15px rgba(242, 202, 80, 0.2);
+      /* Evitar que autofill o plugins sobreescriban con fondo blanco */
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover,
+      input:-webkit-autofill:focus,
+      textarea:-webkit-autofill,
+      select:-webkit-autofill {
+        -webkit-text-fill-color: #ffffff !important;
+        -webkit-box-shadow: 0 0 0px 1000px #191818 inset !important;
+        transition: background-color 5000s ease-in-out 0s !important;
+      }
+
+      input::placeholder,
+      textarea::placeholder {
+        color: #8e887b !important;
+        -webkit-text-fill-color: #8e887b !important;
+        opacity: 1 !important;
+      }
+
+      select option {
+        background-color: #191818 !important;
+        color: #ffffff !important;
       }
 
       @keyframes fade {
@@ -373,19 +448,19 @@
       <!-- ===================================================== -->
 
       <div class="flex items-center gap-3 shrink-0">
+       
         <div
-          class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-high/60 border border-outline-variant text-xs text-on-surface-variant"
+          id="usuario-sesion-badge"
+          class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs text-primary font-medium"
         >
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="font-medium text-[11px] uppercase tracking-wider text-on-surface/80"
-            >En Línea</span
-          >
-        </div>
-        <div id="usuario-sesion-badge" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs text-primary font-medium">
           <span class="material-symbols-outlined text-sm">person</span>
           <span id="nombre-usuario-sesion">Usuario</span>
         </div>
-        <button id="btn-cerrar-sesion" title="Cerrar sesión" class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error/10 transition-colors flex items-center justify-center cursor-pointer">
+        <button
+          id="btn-cerrar-sesion"
+          title="Cerrar sesión"
+          class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error/10 transition-colors flex items-center justify-center cursor-pointer"
+        >
           <span class="material-symbols-outlined text-lg">logout</span>
         </button>
       </div>
@@ -518,19 +593,28 @@
             </div>
 
             <div class="flex items-center gap-2">
-              <div class="relative">
+              <div class="relative flex items-center">
+                <span
+                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px] pointer-events-none"
+                >
+                  search
+                </span>
+
                 <input
                   id="buscarProducto"
                   type="text"
                   placeholder="Buscar producto..."
-                  class="bg-surface-container-low border border-outline-variant focus:border-primary focus:ring-0 rounded-lg pl-10 pr-4 py-2 text-sm w-64"
+                  class="bg-surface-container-low border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary rounded-lg pl-9 pr-8 py-2 text-xs sm:text-sm text-on-surface w-48 sm:w-64 transition-all placeholder:text-on-surface-variant/40"
                 />
 
-                <span
-                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]"
+                <button
+                  type="button"
+                  id="btnLimpiarBuscarInventario"
+                  class="hidden absolute right-2 p-0.5 text-on-surface-variant hover:text-on-surface rounded transition-colors cursor-pointer"
+                  title="Limpiar búsqueda"
                 >
-                  search
-                </span>
+                  <span class="material-symbols-outlined text-[16px]">close</span>
+                </button>
               </div>
 
               <button
@@ -782,19 +866,19 @@
             </div>
           </div>
 
-          <!-- SECCIÓN: TALLAS / PRESENTACIONES (SIZES) -->
-          <div class="border-t border-outline-variant/50 pt-5">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+          <!-- SECCIÓN: TALLAS, PRECIOS E INVENTARIO POR TALLA -->
+          <div class="border-t border-outline-variant/50 pt-5 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h4
                   class="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-1.5"
                 >
                   <span class="material-symbols-outlined text-sm">straighten</span>
-                  <span id="tituloSeccionTallas">Tallas / Presentaciones (Sizes)</span>
+                  <span id="tituloSeccionTallas">Tallas, Precios e Inventario</span>
                 </h4>
                 <p class="text-[11px] text-on-surface-variant" id="subtituloSeccionTallas">
-                  Configura las tallas (CH, M, G, XL...) o volúmenes (ml) que el cliente puede
-                  seleccionar en la app móvil.
+                  Cada talla o presentación cuenta con su propio precio de compra, precio de venta,
+                  stock actual y stock mínimo de alerta.
                 </p>
               </div>
 
@@ -802,17 +886,17 @@
                 <button
                   type="button"
                   id="btnAgregarTalla"
-                  class="px-3 py-1.5 text-xs bg-surface-container-high border border-primary/40 text-primary hover:bg-primary hover:text-on-primary rounded-lg transition-colors flex items-center gap-1 font-semibold"
+                  class="px-3 py-1.5 text-xs bg-primary/15 border border-primary/60 text-primary hover:bg-primary hover:text-on-primary rounded-lg transition-colors flex items-center gap-1.5 font-semibold cursor-pointer"
                 >
                   <span class="material-symbols-outlined text-sm">add</span>
-                  Agregar Talla
+                  Agregar Talla / Medida
                 </button>
               </div>
             </div>
 
             <!-- Botones de sugerencias rápidas -->
             <div
-              class="flex flex-wrap items-center gap-1.5 mb-3 p-2 bg-surface-container-lowest border border-outline-variant/50 rounded-lg"
+              class="flex flex-wrap items-center gap-1.5 p-2.5 bg-surface-container-lowest border border-outline-variant/50 rounded-xl"
             >
               <span
                 class="text-[11px] text-on-surface-variant font-semibold shrink-0 mr-1"
@@ -825,121 +909,116 @@
               </div>
             </div>
 
+            <!-- Cabecera de columnas para pantallas medianas/grandes -->
+            <div
+              class="hidden md:grid md:grid-cols-12 gap-2 px-3 py-1.5 text-[11px] font-bold text-on-surface-variant uppercase tracking-wider bg-surface-container/50 rounded-lg border border-outline-variant/30"
+            >
+              <div class="md:col-span-3">Talla / Presentación *</div>
+              <div class="md:col-span-2">Costo Compra ($)</div>
+              <div class="md:col-span-2">Precio Venta ($) *</div>
+              <div class="md:col-span-2 text-center">Stock Actual *</div>
+              <div class="md:col-span-2 text-center">Stock Mínimo</div>
+              <div class="md:col-span-1 text-center">Acción</div>
+            </div>
+
+            <!-- Contenedor dinámico de tallas -->
             <div id="contenedorTallas" class="space-y-2.5">
               <!-- Filas dinámicas de tallas añadidas por JS -->
             </div>
-          </div>
 
-          <!-- SECCIÓN: PRECIOS & STOCK BASE -->
-          <div class="border-t border-outline-variant/50 pt-5">
-            <h4
-              class="text-xs font-bold uppercase tracking-wider text-primary mb-3 flex items-center gap-1.5"
+            <!-- Resumen Automático del Producto -->
+            <div
+              class="p-3.5 bg-surface-container-low border border-primary/30 rounded-xl flex flex-wrap items-center justify-between gap-3 text-xs"
             >
-              <span class="material-symbols-outlined text-sm">payments</span>
-              Precios e Inventario Base
-            </h4>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <div>
-                <label class="block text-xs text-on-surface-variant mb-1"
-                  >Precio de Compra ($)</label
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-base">inventory_2</span>
+                <span class="text-on-surface-variant font-medium">Stock Total Combinado:</span>
+                <span id="resumenStockTotal" class="text-on-surface font-bold text-sm"
+                  >0 unidades</span
                 >
-                <input
-                  type="number"
-                  name="precioCompra"
-                  required
-                  min="0"
-                  step="0.01"
-                  placeholder="0.00"
-                  class="campo"
-                />
               </div>
-
-              <div>
-                <label class="block text-xs text-on-surface-variant mb-1"
-                  >Precio de Venta Base ($) *</label
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-amber-400 text-base"
+                  >notifications_active</span
                 >
-                <input
-                  type="number"
-                  name="precioVenta"
-                  required
-                  min="0"
-                  step="0.01"
-                  placeholder="0.00"
-                  class="campo"
-                />
+                <span class="text-on-surface-variant font-medium">Stock Mínimo Global:</span>
+                <span id="resumenStockMinimo" class="text-on-surface font-bold text-sm"
+                  >0 unidades</span
+                >
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-base">sell</span>
+                <span class="text-on-surface-variant font-medium">Precio al Público:</span>
+                <span id="resumenPrecioVenta" class="text-primary font-bold text-sm">$0.00</span>
               </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs text-on-surface-variant mb-1">Stock Total *</label>
-                <input
-                  type="number"
-                  name="stock"
-                  required
-                  min="0"
-                  step="1"
-                  placeholder="0"
-                  class="campo"
-                />
-              </div>
-
-              <div>
-                <label class="block text-xs text-on-surface-variant mb-1"
-                  >Stock Mínimo (Alerta)</label
-                >
-                <input
-                  type="number"
-                  name="stockMinimo"
-                  min="0"
-                  step="1"
-                  value="5"
-                  placeholder="5"
-                  class="campo"
-                />
-              </div>
-            </div>
+            <!-- Campos ocultos sincronizados automáticamente para compatibilidad con backend y reportes -->
+            <input type="hidden" name="precioCompra" id="hiddenPrecioCompra" value="0" />
+            <input type="hidden" name="precioVenta" id="hiddenPrecioVenta" value="0" />
+            <input type="hidden" name="stock" id="hiddenStock" value="0" />
+            <input type="hidden" name="stockMinimo" id="hiddenStockMinimo" value="5" />
           </div>
 
-          <!-- SECCIÓN: IMAGEN -->
+          <!-- SECCIÓN: IMÁGENES / CARRUSEL APP MÓVIL -->
           <div class="border-t border-outline-variant/50 pt-5 space-y-3">
             <div>
-              <label for="imagenProducto" class="block text-xs text-on-surface-variant mb-2">
-                Imagen del producto
-              </label>
+              <div class="flex items-center justify-between mb-2">
+                <label for="imagenProducto" class="block text-xs text-on-surface-variant font-medium">
+                  Fotos del producto (Carrusel para App Móvil)
+                </label>
+                <span id="contadorFotosBadge" class="hidden text-[11px] font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-full">
+                  0 fotos
+                </span>
+              </div>
 
               <input
                 id="imagenProducto"
                 name="imagen"
                 type="file"
+                multiple
                 accept="image/png,image/jpeg,image/webp,image/gif"
-                class="campo file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:font-semibold file:text-on-primary hover:file:brightness-110"
+                class="campo file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:font-semibold file:text-on-primary hover:file:brightness-110 cursor-pointer"
               />
 
-              <p class="text-xs text-on-surface-variant mt-2">
-                Selecciona una imagen para subirla a Cloudinary al guardar el producto. Máximo 5 MB.
+              <p class="text-xs text-on-surface-variant mt-2 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[15px] text-amber-400">photo_library</span>
+                <span>Puedes seleccionar <strong>una o varias fotos a la vez</strong>. La primera será la foto de portada del carrusel en la App Móvil.</span>
               </p>
             </div>
 
+            <!-- Galería de vistas previas dinámicas -->
             <div
-              id="vistaPreviaImagen"
-              class="hidden rounded-lg border border-outline-variant bg-surface p-3"
+              id="contenedorGaleriaFotos"
+              class="hidden rounded-xl border border-outline-variant bg-surface-container-low p-4 space-y-3"
             >
-              <div class="flex items-center gap-4">
-                <img
-                  id="imagenPrevia"
-                  src=""
-                  alt="Vista previa del producto"
-                  class="h-20 w-20 rounded-lg object-cover border border-outline-variant"
-                />
-                <div class="min-w-0">
-                  <p class="text-sm text-on-surface font-semibold truncate" id="nombreImagen">
-                    Imagen seleccionada
-                  </p>
-                  <p class="text-xs text-on-surface-variant mt-1">Vista previa local</p>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[18px] text-primary">view_carousel</span>
+                  <span class="text-xs font-semibold text-on-surface">Carrusel de fotos del producto</span>
+                  <span id="infoTotalFotos" class="text-xs text-on-surface-variant font-mono">(0 fotos)</span>
                 </div>
+                <button
+                  type="button"
+                  id="btnLimpiarTodasFotos"
+                  class="text-[11px] text-error hover:text-error-container hover:underline transition-colors flex items-center gap-1 cursor-pointer"
+                >
+                  <span class="material-symbols-outlined text-[13px]">delete_sweep</span>
+                  Quitar todas
+                </button>
               </div>
+
+              <div
+                id="gridFotosCarrusel"
+                class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1"
+              >
+                <!-- Miniaturas generadas dinámicamente -->
+              </div>
+
+              <p class="text-[11px] text-on-surface-variant pt-2 border-t border-outline-variant/30 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[14px] text-primary">cloud_done</span>
+                <span>Se suben a Cloudinary y se guardan en el producto (separadas por comas) para el carrusel de la App Móvil.</span>
+              </p>
             </div>
 
             <input id="imagenUrl" name="imagenUrl" type="hidden" value="" />
@@ -987,7 +1066,9 @@
       <div
         class="bg-surface-container-lowest border border-outline-variant rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl p-6 text-center space-y-4"
       >
-        <div class="w-12 h-12 mx-auto rounded-full bg-red-500/10 text-red-500 flex items-center justify-center">
+        <div
+          class="w-12 h-12 mx-auto rounded-full bg-red-500/10 text-red-500 flex items-center justify-center"
+        >
           <span class="material-symbols-outlined text-[28px]">delete_forever</span>
         </div>
         <div>
@@ -996,8 +1077,12 @@
             ¿Estás seguro de que deseas eliminar este producto del inventario?
           </p>
         </div>
-        <div class="py-2.5 px-4 bg-surface-container-low rounded-xl text-center border border-outline-variant/40">
-          <p class="text-sm font-bold text-on-surface truncate" id="nombreProductoEliminarModal">Producto</p>
+        <div
+          class="py-2.5 px-4 bg-surface-container-low rounded-xl text-center border border-outline-variant/40"
+        >
+          <p class="text-sm font-bold text-on-surface truncate" id="nombreProductoEliminarModal">
+            Producto
+          </p>
         </div>
         <div class="flex gap-3 pt-2">
           <button
@@ -1024,7 +1109,9 @@
       id="toastInventario"
       class="fixed bottom-6 right-6 z-[1001] bg-[#2b2930] text-[#e6e1e5] border border-[#49454f] px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 transition-all duration-300 transform translate-y-4 opacity-0 pointer-events-none"
     >
-      <span class="material-symbols-outlined text-[#d0bcff] text-[20px]" id="iconoToastInventario">info</span>
+      <span class="material-symbols-outlined text-[#d0bcff] text-[20px]" id="iconoToastInventario"
+        >info</span
+      >
       <span class="text-xs font-semibold" id="textoToastInventario">Mensaje</span>
     </div>
 
@@ -1039,12 +1126,10 @@
         eliminarProducto,
         editarProducto,
         subirImagenCloudinary,
+        subirMultiplesImagenesCloudinary,
       } from "/src/lib/inventario.js";
 
-      import {
-        verificarSesionOVolverAWelcome,
-        cerrarSesion,
-      } from "/src/lib/movimientosCaja.js";
+      import { verificarSesionOVolverAWelcome, cerrarSesion } from "/src/lib/movimientosCaja.js";
 
       // Validar que exista una sesión activa; de lo contrario redirigir a Bienvenida
       const sesionUsuario = verificarSesionOVolverAWelcome();
@@ -1161,19 +1246,16 @@
       const btnExportarExcel = document.getElementById("btnExportarExcel");
 
       const imagenProducto = document.getElementById("imagenProducto");
+      const contadorFotosBadge = document.getElementById("contadorFotosBadge");
+      const contenedorGaleriaFotos = document.getElementById("contenedorGaleriaFotos");
+      const gridFotosCarrusel = document.getElementById("gridFotosCarrusel");
+      const infoTotalFotos = document.getElementById("infoTotalFotos");
+      const btnLimpiarTodasFotos = document.getElementById("btnLimpiarTodasFotos");
+      const inputHiddenImagenUrl = document.getElementById("imagenUrl");
 
-      const vistaPreviaImagen = document.getElementById("vistaPreviaImagen");
-
-      const imagenPrevia = document.getElementById("imagenPrevia");
-
-      const nombreImagen = document.getElementById("nombreImagen");
-
-      const contenedorTallas = document.getElementById("contenedorTallas");
-
-      const btnAgregarTalla = document.getElementById("btnAgregarTalla");
-
-      let imagenSeleccionada = null;
-      let imagenPreviaUrl = null;
+      // Gestión de múltiples fotos para el carrusel de la App Móvil
+      let imagenesGuardadas = []; // URLs existentes en Firestore / Cloudinary
+      let archivosNuevos = []; // Objetos { id, file, previewUrl, name }
 
       /* ========================================================= */
       /* GESTIÓN DINÁMICA DE TALLAS / PRESENTACIONES */
@@ -1196,66 +1278,202 @@
         return esCategoriaPerfume(cat) ? "Ej. 50 ml, 100 ml" : "Ej. CH, M, G, XL";
       }
 
-      function crearFilaTalla(label = "", price = "", inStock = true) {
+      function crearFilaTalla(
+        label = "",
+        precioVenta = "",
+        precioCompra = "",
+        stock = "0",
+        stockMinimo = "5",
+        inStock = true,
+      ) {
         const catActual = selectCategoria?.value || "";
         const placeholder = obtenerPlaceholderTalla(catActual);
 
         const div = document.createElement("div");
         div.className =
-          "fila-talla flex items-center gap-2 bg-surface-container-low border border-outline-variant/60 p-2 rounded-lg animate-[fade_.15s]";
+          "fila-talla bg-surface-container-lowest border border-outline-variant/60 hover:border-primary/50 p-3 rounded-xl transition-all animate-[fade_.15s]";
 
         div.innerHTML = `
-        <div class="flex-1">
-            <input
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-2.5 items-center">
+            <!-- Talla / Presentación -->
+            <div class="md:col-span-3">
+              <label class="block md:hidden text-[10px] text-on-surface-variant font-bold uppercase mb-1">Talla / Presentación</label>
+              <input
                 type="text"
                 name="tallaLabel"
                 value="${escaparHTML(label)}"
                 placeholder="${placeholder}"
-                class="campo !p-2 !text-xs"
+                class="campo !py-2 !px-2.5 !text-xs font-semibold"
                 required
-            />
-        </div>
-        <div class="w-32">
-            <input
+              />
+            </div>
+
+            <!-- Costo Compra -->
+            <div class="md:col-span-2">
+              <label class="block md:hidden text-[10px] text-on-surface-variant font-bold uppercase mb-1">Costo Compra ($)</label>
+              <div class="relative">
+                <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-xs font-mono">$</span>
+                <input
+                  type="number"
+                  name="tallaPrecioCompra"
+                  value="${precioCompra !== "" && precioCompra !== undefined ? precioCompra : ""}"
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                  class="campo !py-2 !pl-6 !pr-2 !text-xs font-mono"
+                />
+              </div>
+            </div>
+
+            <!-- Precio Venta -->
+            <div class="md:col-span-2">
+              <label class="block md:hidden text-[10px] text-primary font-bold uppercase mb-1">Precio Venta ($) *</label>
+              <div class="relative">
+                <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-primary text-xs font-mono font-bold">$</span>
+                <input
+                  type="number"
+                  name="tallaPrecioVenta"
+                  value="${precioVenta !== "" && precioVenta !== undefined ? precioVenta : ""}"
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                  class="campo !py-2 !pl-6 !pr-2 !text-xs font-mono font-bold text-primary"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Stock Actual -->
+            <div class="md:col-span-2">
+              <label class="block md:hidden text-[10px] text-on-surface-variant font-bold uppercase mb-1">Stock Actual *</label>
+              <input
                 type="number"
-                name="tallaPrecio"
-                value="${price !== "" && price !== undefined ? price : ""}"
+                name="tallaStock"
+                value="${stock !== "" && stock !== undefined ? stock : "0"}"
                 min="0"
-                step="0.01"
-                placeholder="Precio $"
-                class="campo !p-2 !text-xs"
+                step="1"
+                placeholder="0"
+                class="campo !py-2 !px-2.5 !text-xs font-mono text-center font-bold"
                 required
-            />
-        </div>
-        <label class="flex items-center gap-1.5 text-xs text-on-surface-variant cursor-pointer shrink-0 px-2">
-            <input
-                type="checkbox"
-                name="tallaInStock"
-                ${inStock ? "checked" : ""}
-                class="accent-yellow-500 w-4 h-4 rounded"
-            />
-            <span class="text-[11px]">En Stock</span>
-        </label>
-        <button
-            type="button"
-            class="btn-eliminar-talla p-1.5 text-on-surface-variant hover:text-error hover:bg-surface-container-high rounded transition-colors"
-            title="Eliminar talla/presentación"
-        >
-            <span class="material-symbols-outlined text-[18px]">delete</span>
-        </button>
-    `;
+              />
+            </div>
+
+            <!-- Stock Mínimo -->
+            <div class="md:col-span-2">
+              <label class="block md:hidden text-[10px] text-on-surface-variant font-bold uppercase mb-1">Stock Mínimo</label>
+              <input
+                type="number"
+                name="tallaStockMinimo"
+                value="${stockMinimo !== "" && stockMinimo !== undefined ? stockMinimo : "5"}"
+                min="0"
+                step="1"
+                placeholder="5"
+                class="campo !py-2 !px-2.5 !text-xs font-mono text-center"
+              />
+            </div>
+
+            <!-- Acciones -->
+            <div class="md:col-span-1 flex items-center justify-between md:justify-center gap-2 pt-1 md:pt-0">
+              <label class="flex items-center gap-1 text-[11px] text-on-surface-variant cursor-pointer shrink-0" title="Disponible en catálogo y app móvil">
+                <input
+                  type="checkbox"
+                  name="tallaInStock"
+                  ${inStock ? "checked" : ""}
+                  class="accent-yellow-500 w-4 h-4 rounded cursor-pointer"
+                />
+                <span class="md:hidden">Disp.</span>
+              </label>
+              <button
+                type="button"
+                class="btn-eliminar-talla p-1.5 text-on-surface-variant hover:text-error hover:bg-surface-container-high rounded-lg transition-colors cursor-pointer"
+                title="Eliminar esta talla"
+              >
+                <span class="material-symbols-outlined text-[18px]">delete</span>
+              </button>
+            </div>
+          </div>
+        `;
+
+        div.querySelectorAll("input").forEach((inp) => {
+          inp.addEventListener("input", actualizarResumenTotales);
+          inp.addEventListener("change", actualizarResumenTotales);
+        });
 
         div.querySelector(".btn-eliminar-talla")?.addEventListener("click", () => {
           div.remove();
+          actualizarResumenTotales();
         });
 
         return div;
       }
 
-      function agregarFilaTalla(label = "", price = "", inStock = true) {
+      function actualizarResumenTotales() {
+        const filas = Array.from(contenedorTallas?.querySelectorAll(".fila-talla") || []);
+        let totalStock = 0;
+        let totalStockMinimo = 0;
+        const preciosVenta = [];
+        const preciosCompra = [];
+
+        filas.forEach((f) => {
+          const s = Number(f.querySelector('input[name="tallaStock"]')?.value) || 0;
+          const sm = Number(f.querySelector('input[name="tallaStockMinimo"]')?.value) || 0;
+          const pv = Number(f.querySelector('input[name="tallaPrecioVenta"]')?.value) || 0;
+          const pc = Number(f.querySelector('input[name="tallaPrecioCompra"]')?.value) || 0;
+
+          totalStock += s;
+          totalStockMinimo += sm;
+          if (pv > 0) preciosVenta.push(pv);
+          if (pc > 0) preciosCompra.push(pc);
+        });
+
+        const resumenStockTotal = document.getElementById("resumenStockTotal");
+        const resumenStockMinimo = document.getElementById("resumenStockMinimo");
+        const resumenPrecioVenta = document.getElementById("resumenPrecioVenta");
+
+        if (resumenStockTotal) {
+          resumenStockTotal.textContent = `${totalStock} unidad${totalStock === 1 ? "" : "es"}`;
+        }
+        if (resumenStockMinimo) {
+          resumenStockMinimo.textContent = `${totalStockMinimo} unidad${totalStockMinimo === 1 ? "" : "es"}`;
+        }
+        if (resumenPrecioVenta) {
+          if (preciosVenta.length === 0) {
+            resumenPrecioVenta.textContent = "$0.00";
+          } else if (
+            preciosVenta.length === 1 ||
+            Math.min(...preciosVenta) === Math.max(...preciosVenta)
+          ) {
+            resumenPrecioVenta.textContent = moneda(preciosVenta[0]);
+          } else {
+            resumenPrecioVenta.textContent = `${moneda(Math.min(...preciosVenta))} - ${moneda(Math.max(...preciosVenta))}`;
+          }
+        }
+
+        const hiddenStock = document.getElementById("hiddenStock");
+        const hiddenStockMinimo = document.getElementById("hiddenStockMinimo");
+        const hiddenPrecioVenta = document.getElementById("hiddenPrecioVenta");
+        const hiddenPrecioCompra = document.getElementById("hiddenPrecioCompra");
+
+        if (hiddenStock) hiddenStock.value = totalStock;
+        if (hiddenStockMinimo) hiddenStockMinimo.value = totalStockMinimo;
+        if (hiddenPrecioVenta)
+          hiddenPrecioVenta.value = preciosVenta.length ? Math.min(...preciosVenta) : 0;
+        if (hiddenPrecioCompra)
+          hiddenPrecioCompra.value = preciosCompra.length ? preciosCompra[0] : 0;
+      }
+
+      function agregarFilaTalla(
+        label = "",
+        precioVenta = "",
+        precioCompra = "",
+        stock = "0",
+        stockMinimo = "5",
+        inStock = true,
+      ) {
         if (!contenedorTallas) return;
-        const fila = crearFilaTalla(label, price, inStock);
+        const fila = crearFilaTalla(label, precioVenta, precioCompra, stock, stockMinimo, inStock);
         contenedorTallas.appendChild(fila);
+        actualizarResumenTotales();
       }
 
       function renderizarSugerenciasTallas() {
@@ -1268,32 +1486,38 @@
 
         if (tituloSeccionTallas) {
           tituloSeccionTallas.textContent = esPerfume
-            ? "Presentaciones y Volúmenes (ml)"
-            : "Tallas de la Prenda (Sizes)";
+            ? "Presentaciones, Precios y Stock (ml)"
+            : "Tallas, Precios e Inventario";
         }
         if (subtituloSeccionTallas) {
           subtituloSeccionTallas.textContent = esPerfume
-            ? "Configura las presentaciones en mililitros (ml) y sus precios para la app móvil."
-            : "Configura las tallas (CH, M, G, XL...) y sus precios para la app móvil.";
+            ? "Configura cada presentación en ml con su propio precio de compra, venta, stock y stock mínimo."
+            : "Configura cada talla con su propio precio de compra, venta, stock y stock mínimo de reposición.";
         }
 
         sugerencias.forEach((sug) => {
           const btn = document.createElement("button");
           btn.type = "button";
           btn.className =
-            "px-2 py-1 bg-surface-container border border-outline-variant/70 text-on-surface hover:border-primary hover:text-primary text-[11px] font-semibold rounded transition-all";
+            "px-2.5 py-1 bg-surface-container border border-outline-variant/70 text-on-surface hover:border-primary hover:text-primary text-[11px] font-semibold rounded-lg transition-all cursor-pointer";
           btn.innerHTML = `<span class="text-primary font-bold mr-0.5">+</span> ${sug}`;
           btn.addEventListener("click", () => {
-            // Si ya existe una fila con este label exacto, no duplicar vacía
             const existentes = Array.from(
               contenedorTallas?.querySelectorAll('input[name="tallaLabel"]') || [],
-            ).map((i) => i.value.trim());
-            if (existentes.includes(sug)) {
+            ).map((i) => i.value.trim().toLowerCase());
+            if (existentes.includes(sug.toLowerCase())) {
+              mostrarToastInventario(`La talla ${sug} ya está agregada.`, "info");
               return;
             }
-            // Obtener precio base si el usuario ya lo escribió
-            const precioBase = form?.querySelector('input[name="precioVenta"]')?.value || "";
-            agregarFilaTalla(sug, precioBase, true);
+            const primeraFila = contenedorTallas?.querySelector(".fila-talla");
+            const refPrecioVenta =
+              primeraFila?.querySelector('input[name="tallaPrecioVenta"]')?.value || "";
+            const refPrecioCompra =
+              primeraFila?.querySelector('input[name="tallaPrecioCompra"]')?.value || "";
+            const refStockMin =
+              primeraFila?.querySelector('input[name="tallaStockMinimo"]')?.value || "5";
+
+            agregarFilaTalla(sug, refPrecioVenta, refPrecioCompra, "0", refStockMin, true);
           });
           contenedorSugerenciasTallas.appendChild(btn);
         });
@@ -1305,28 +1529,25 @@
         const cat = selectCategoria?.value || "";
         const esPerfume = esCategoriaPerfume(cat);
 
-        // Si el contenedor está vacío o se pide forzar, inicializar según el tipo
         const numFilas = contenedorTallas?.children.length || 0;
         if (numFilas === 0 || forzarInicializacion) {
           if (contenedorTallas) contenedorTallas.innerHTML = "";
-          const precioBase = form?.querySelector('input[name="precioVenta"]')?.value || "";
           if (esPerfume) {
-            agregarFilaTalla("50 ml", precioBase, true);
-            agregarFilaTalla("100 ml", precioBase, true);
+            agregarFilaTalla("50 ml", "", "", "0", "3", true);
+            agregarFilaTalla("100 ml", "", "", "0", "3", true);
           } else {
-            agregarFilaTalla("CH", precioBase, true);
-            agregarFilaTalla("M", precioBase, true);
-            agregarFilaTalla("G", precioBase, true);
-            agregarFilaTalla("XL", precioBase, true);
+            agregarFilaTalla("CH", "", "", "0", "5", true);
+            agregarFilaTalla("M", "", "", "0", "5", true);
+            agregarFilaTalla("G", "", "", "0", "5", true);
+            agregarFilaTalla("XL", "", "", "0", "5", true);
           }
         }
       }
 
       selectCategoria?.addEventListener("change", () => {
-        // Si el usuario cambia de categoría y las tallas actuales no tienen precio asignado o está vacío, reiniciamos inteligentemente
         const filas = Array.from(contenedorTallas?.querySelectorAll(".fila-talla") || []);
         const algunConPrecio = filas.some((f) => {
-          const p = f.querySelector('input[name="tallaPrecio"]')?.value;
+          const p = f.querySelector('input[name="tallaPrecioVenta"]')?.value;
           return p && Number(p) > 0;
         });
 
@@ -1338,8 +1559,14 @@
       });
 
       btnAgregarTalla?.addEventListener("click", () => {
-        const precioBase = form?.querySelector('input[name="precioVenta"]')?.value || "";
-        agregarFilaTalla("", precioBase, true);
+        const primeraFila = contenedorTallas?.querySelector(".fila-talla");
+        const refPrecioVenta =
+          primeraFila?.querySelector('input[name="tallaPrecioVenta"]')?.value || "";
+        const refPrecioCompra =
+          primeraFila?.querySelector('input[name="tallaPrecioCompra"]')?.value || "";
+        const refStockMin =
+          primeraFila?.querySelector('input[name="tallaStockMinimo"]')?.value || "5";
+        agregarFilaTalla("", refPrecioVenta, refPrecioCompra, "0", refStockMin, true);
       });
 
       const buscarProducto = document.getElementById("buscarProducto");
@@ -1362,66 +1589,172 @@
 
       let productos = [];
 
-      function limpiarImagenSeleccionada() {
-        imagenSeleccionada = null;
+      function renderizarGaleriaFotos() {
+        const total = imagenesGuardadas.length + archivosNuevos.length;
 
-        if (imagenPreviaUrl) {
-          URL.revokeObjectURL(imagenPreviaUrl);
-          imagenPreviaUrl = null;
+        if (contadorFotosBadge) {
+          if (total > 0) {
+            contadorFotosBadge.textContent = `${total} foto${total > 1 ? "s" : ""}`;
+            contadorFotosBadge.classList.remove("hidden");
+          } else {
+            contadorFotosBadge.classList.add("hidden");
+          }
         }
 
-        if (imagenProducto) {
-          imagenProducto.value = "";
+        if (infoTotalFotos) {
+          infoTotalFotos.textContent = `(${total} foto${total > 1 ? "s" : ""})`;
         }
 
-        vistaPreviaImagen?.classList.add("hidden");
-
-        if (imagenPrevia) {
-          imagenPrevia.removeAttribute("src");
+        if (total === 0) {
+          contenedorGaleriaFotos?.classList.add("hidden");
+          if (gridFotosCarrusel) gridFotosCarrusel.innerHTML = "";
+          if (inputHiddenImagenUrl) inputHiddenImagenUrl.value = "";
+          return;
         }
 
-        if (nombreImagen) {
-          nombreImagen.textContent = "Imagen seleccionada";
+        contenedorGaleriaFotos?.classList.remove("hidden");
+        if (!gridFotosCarrusel) return;
+
+        gridFotosCarrusel.innerHTML = "";
+
+        const todosItems = [
+          ...imagenesGuardadas.map((url, idx) => ({
+            tipo: "guardada",
+            url,
+            idx,
+            nombre: `Foto ${idx + 1}`,
+          })),
+          ...archivosNuevos.map((item, idx) => ({
+            tipo: "nueva",
+            url: item.previewUrl,
+            idx,
+            nombre: item.name,
+          })),
+        ];
+
+        todosItems.forEach((item, globalIdx) => {
+          const esPortada = globalIdx === 0;
+          const card = document.createElement("div");
+          card.className =
+            "relative group rounded-xl overflow-hidden border border-outline-variant bg-surface aspect-square flex items-center justify-center shadow-xs";
+
+          card.innerHTML = `
+            <img src="${item.url}" alt="${item.nombre}" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/40 pointer-events-none"></div>
+
+            <div class="absolute top-1.5 left-1.5 flex items-center gap-1 pointer-events-none">
+              ${
+                esPortada
+                  ? `<span class="bg-amber-400 text-stone-900 text-[10px] font-bold px-1.5 py-0.5 rounded shadow flex items-center gap-0.5">
+                      <span class="material-symbols-outlined text-[11px]">star</span>Portada
+                    </span>`
+                  : `<span class="bg-black/75 backdrop-blur-xs text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow">
+                      #${globalIdx + 1}
+                    </span>`
+              }
+            </div>
+
+            <span class="absolute bottom-1.5 left-1.5 text-[9px] font-mono px-1 py-0.5 rounded pointer-events-none ${
+              item.tipo === "guardada"
+                ? "bg-emerald-950/80 text-emerald-300 border border-emerald-500/30"
+                : "bg-sky-950/80 text-sky-300 border border-sky-500/30"
+            }">
+              ${item.tipo === "guardada" ? "Guardada" : "Por subir"}
+            </span>
+
+            <button
+              type="button"
+              class="btn-quitar-foto absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-red-600/90 hover:bg-red-500 text-white flex items-center justify-center transition-transform hover:scale-110 shadow cursor-pointer"
+              data-tipo="${item.tipo}"
+              data-idx="${item.idx}"
+              title="Quitar foto"
+            >
+              <span class="material-symbols-outlined text-[13px] pointer-events-none">close</span>
+            </button>
+          `;
+
+          gridFotosCarrusel.appendChild(card);
+        });
+
+        // Event listeners para eliminar fotos individuales
+        gridFotosCarrusel.querySelectorAll(".btn-quitar-foto").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const tipo = btn.dataset.tipo;
+            const idx = parseInt(btn.dataset.idx, 10);
+
+            if (tipo === "guardada") {
+              imagenesGuardadas.splice(idx, 1);
+              mostrarToastInventario("Foto eliminada de la lista.", "info");
+            } else if (tipo === "nueva") {
+              const removido = archivosNuevos.splice(idx, 1)[0];
+              if (removido && removido.previewUrl) {
+                URL.revokeObjectURL(removido.previewUrl);
+              }
+              mostrarToastInventario("Foto quitada.", "info");
+            }
+
+            renderizarGaleriaFotos();
+          });
+        });
+
+        // Actualizar input oculto con las URLs guardadas
+        if (inputHiddenImagenUrl) {
+          inputHiddenImagenUrl.value = imagenesGuardadas.join(", ");
         }
       }
 
+      function limpiarTodasLasFotos() {
+        imagenesGuardadas = [];
+        archivosNuevos.forEach((item) => {
+          if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
+        });
+        archivosNuevos = [];
+        if (imagenProducto) imagenProducto.value = "";
+        renderizarGaleriaFotos();
+      }
+
+      btnLimpiarTodasFotos?.addEventListener("click", () => {
+        limpiarTodasLasFotos();
+        mostrarToastInventario("Se quitaron todas las fotos.", "info");
+      });
+
       imagenProducto?.addEventListener("change", () => {
-        const archivo = imagenProducto.files?.[0];
+        const archivos = Array.from(imagenProducto.files || []);
+        if (archivos.length === 0) return;
 
-        if (!archivo) {
-          limpiarImagenSeleccionada();
-          return;
+        let agregadas = 0;
+        for (const archivo of archivos) {
+          if (!archivo.type.startsWith("image/")) {
+            mostrarToastInventario(`"${archivo.name}" no es una imagen válida.`, "warning");
+            continue;
+          }
+
+          if (archivo.size > 15 * 1024 * 1024) {
+            mostrarToastInventario(`"${archivo.name}" supera los 15 MB permitidos.`, "warning");
+            continue;
+          }
+
+          const previewUrl = URL.createObjectURL(archivo);
+          archivosNuevos.push({
+            id: `img-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+            file: archivo,
+            previewUrl,
+            name: archivo.name,
+          });
+          agregadas++;
         }
 
-        if (!archivo.type.startsWith("image/")) {
-          mostrarToastInventario("Selecciona un archivo de imagen válido.", "warning");
-          limpiarImagenSeleccionada();
-          return;
+        // Limpiar input file para permitir volver a hacer clic y agregar más fotos
+        imagenProducto.value = "";
+        renderizarGaleriaFotos();
+
+        if (agregadas > 0) {
+          mostrarToastInventario(
+            `${agregadas} foto${agregadas > 1 ? "s añadidas" : " añadida"} al carrusel.`,
+            "check_circle",
+          );
         }
-
-        if (archivo.size > 5 * 1024 * 1024) {
-          mostrarToastInventario("La imagen no puede superar los 5 MB.", "warning");
-          limpiarImagenSeleccionada();
-          return;
-        }
-
-        imagenSeleccionada = archivo;
-
-        if (imagenPreviaUrl) {
-          URL.revokeObjectURL(imagenPreviaUrl);
-        }
-
-        imagenPreviaUrl = URL.createObjectURL(archivo);
-
-        if (imagenPrevia) {
-          imagenPrevia.src = imagenPreviaUrl;
-        }
-
-        if (nombreImagen) {
-          nombreImagen.textContent = archivo.name;
-        }
-
-        vistaPreviaImagen?.classList.remove("hidden");
       });
 
       let productoEnEdicionId = null;
@@ -1432,6 +1765,7 @@
 
       function abrirModal() {
         productoEnEdicionId = null;
+        limpiarTodasLasFotos();
 
         if (modalTitulo) {
           modalTitulo.textContent = "Nuevo Producto";
@@ -1450,17 +1784,17 @@
         }
 
         modal.classList.remove("hidden");
-
         modal.classList.add("flex");
-
         document.body.style.overflow = "hidden";
 
-        // Inicializar sugerencias y tallas por defecto si está vacío
-        actualizarOpcionesPorCategoria(false);
+        if (contenedorTallas) {
+          contenedorTallas.innerHTML = "";
+        }
+        actualizarOpcionesPorCategoria(true);
+        actualizarResumenTotales();
 
         setTimeout(() => {
           const primerCampo = form.querySelector('input[name="nombre"]');
-
           primerCampo?.focus();
         }, 100);
       }
@@ -1533,16 +1867,22 @@
         const inputImagenUrl = form.querySelector('input[name="imagenUrl"]');
         if (inputImagenUrl) inputImagenUrl.value = producto.imagenUrl || "";
 
-        // Manejar imagen previa
-        limpiarImagenSeleccionada();
-        if (producto.imagenUrl && imagenPrevia && vistaPreviaImagen) {
-          imagenPrevia.src = producto.imagenUrl;
-          if (nombreImagen) nombreImagen.textContent = "Imagen guardada en el producto";
-          vistaPreviaImagen.classList.remove("hidden");
+        // Cargar galería de fotos para carrusel
+        limpiarTodasLasFotos();
+        let urls = [];
+        if (Array.isArray(producto.imagenes) && producto.imagenes.length > 0) {
+          urls = producto.imagenes.map((u) => String(u || "").trim()).filter(Boolean);
+        } else if (producto.imagenUrl) {
+          urls = String(producto.imagenUrl)
+            .split(",")
+            .map((u) => u.trim())
+            .filter(Boolean);
         }
+        imagenesGuardadas = [...urls];
+        renderizarGaleriaFotos();
 
-        // Configurar sección de tallas
-        actualizarOpcionesPorCategoria(false);
+        // Configurar sección de tallas con todos sus valores
+        renderizarSugerenciasTallas();
 
         if (contenedorTallas) {
           contenedorTallas.innerHTML = "";
@@ -1550,13 +1890,28 @@
 
         if (Array.isArray(producto.sizes) && producto.sizes.length > 0) {
           producto.sizes.forEach((s) => {
-            agregarFilaTalla(s.label, s.price, s.inStock !== false);
+            const label = s.label || s.talla || s.size || "";
+            const pv = s.precioVenta ?? s.price ?? producto.precioVenta ?? "";
+            const pc = s.precioCompra ?? s.costPrice ?? producto.precioCompra ?? "";
+            const stock = s.stock ?? (producto.sizes.length === 1 ? producto.stock : 0);
+            const stockMin =
+              s.stockMinimo ?? (producto.sizes.length === 1 ? producto.stockMinimo : 5);
+            const inStock = s.inStock !== false;
+            agregarFilaTalla(label, pv, pc, stock, stockMin, inStock);
           });
         } else {
-          // Generar una fila inicial con el precio del producto
-          const precioBase = Number(producto.precioVenta) || 0;
-          agregarFilaTalla("M", precioBase, true);
+          const label = esCategoriaPerfume(producto.categoria) ? "100 ml" : "Unitalla";
+          agregarFilaTalla(
+            label,
+            producto.precioVenta ?? "",
+            producto.precioCompra ?? "",
+            producto.stock ?? 0,
+            producto.stockMinimo ?? 5,
+            true,
+          );
         }
+
+        actualizarResumenTotales();
 
         modal.classList.remove("hidden");
         modal.classList.add("flex");
@@ -1600,7 +1955,7 @@
           ratingInput.value = "5.0";
         }
 
-        limpiarImagenSeleccionada();
+        limpiarTodasLasFotos();
       }
 
       btnAgregar?.addEventListener("click", abrirModal);
@@ -1635,17 +1990,65 @@
 
           const data = new FormData(form);
 
-          // Extraer tallas dinámicas
+          // Extraer tallas dinámicas con todos sus campos específicos por talla
           const filasTallas = Array.from(contenedorTallas?.querySelectorAll(".fila-talla") || []);
 
           const sizes = filasTallas
             .map((f) => {
               const label = String(f.querySelector('input[name="tallaLabel"]')?.value || "").trim();
-              const price = Number(f.querySelector('input[name="tallaPrecio"]')?.value) || 0;
+              const precioCompra =
+                Number(f.querySelector('input[name="tallaPrecioCompra"]')?.value) || 0;
+              const precioVenta =
+                Number(f.querySelector('input[name="tallaPrecioVenta"]')?.value) || 0;
+              const stock = Number(f.querySelector('input[name="tallaStock"]')?.value) || 0;
+              const stockMinimo =
+                Number(f.querySelector('input[name="tallaStockMinimo"]')?.value) || 0;
               const inStock = f.querySelector('input[name="tallaInStock"]')?.checked ?? true;
-              return { label, price, inStock };
+
+              return {
+                label,
+                talla: label,
+                size: label,
+                precioCompra,
+                costPrice: precioCompra,
+                precioVenta,
+                price: precioVenta,
+                stock,
+                stockMinimo,
+                inStock,
+              };
             })
             .filter((s) => Boolean(s.label));
+
+          if (sizes.length === 0) {
+            mostrarToastInventario(
+              "Agrega al menos una talla o presentación con su precio y stock.",
+              "warning",
+            );
+            return;
+          }
+
+          const algunNegativo = sizes.some(
+            (s) => s.precioVenta < 0 || s.precioCompra < 0 || s.stock < 0 || s.stockMinimo < 0,
+          );
+          if (algunNegativo) {
+            mostrarToastInventario(
+              "Los precios y existencias de las tallas no pueden ser negativos.",
+              "warning",
+            );
+            return;
+          }
+
+          // Resumen total y valores base
+          const totalStock = sizes.reduce((acc, s) => acc + (Number(s.stock) || 0), 0);
+          const totalStockMinimo = sizes.reduce((acc, s) => acc + (Number(s.stockMinimo) || 0), 0);
+          const preciosVentaValidos = sizes
+            .map((s) => Number(s.precioVenta) || 0)
+            .filter((p) => p > 0);
+          const precioVentaBase = preciosVentaValidos.length
+            ? Math.min(...preciosVentaValidos)
+            : Number(sizes[0].precioVenta) || 0;
+          const precioCompraBase = Number(sizes[0].precioCompra) || 0;
 
           // Extraer características y notas
           const rawCaracteristicas = String(data.get("caracteristicas") || "").trim();
@@ -1658,36 +2061,20 @@
 
           const producto = {
             nombre: String(data.get("nombre") || "").trim(),
-
             sku: String(data.get("sku") || "").trim(),
-
             codigoBarras: String(data.get("codigoBarras") || "").trim(),
-
             categoria: String(data.get("categoria") || "").trim(),
-
             rating: Number(data.get("rating")) || 5.0,
-
             descripcion: String(data.get("descripcion") || "").trim(),
-
             description: String(data.get("descripcion") || "").trim(),
-
             caracteristicas: caracteristicas,
-
             scentNotes: caracteristicas,
-
             sizes: sizes,
-
-            // Cloudinary devuelve esta URL antes de guardar el producto.
             imagenUrl: String(data.get("imagenUrl") || "").trim(),
-
-            precioCompra: Number(data.get("precioCompra")),
-
-            precioVenta: Number(data.get("precioVenta")),
-
-            stock: Number(data.get("stock")),
-
-            stockMinimo: Number(data.get("stockMinimo")),
-
+            precioCompra: precioCompraBase,
+            precioVenta: precioVentaBase,
+            stock: totalStock,
+            stockMinimo: totalStockMinimo,
             activo: data.get("activo") === "on",
           };
 
@@ -1702,21 +2089,54 @@
             producto.stock < 0 ||
             producto.stockMinimo < 0
           ) {
-            mostrarToastInventario("Los valores de precio y stock no pueden ser negativos.", "warning");
+            mostrarToastInventario(
+              "Los valores de precio y stock no pueden ser negativos.",
+              "warning",
+            );
             return;
           }
 
-          if (imagenSeleccionada) {
-            try {
-              producto.imagenUrl = await subirImagenCloudinary(imagenSeleccionada, producto.nombre);
-            } catch (error) {
-              console.error("Error al subir imagen a Cloudinary:", error);
-              mostrarToastInventario(error?.message || "No se pudo subir la imagen a Cloudinary.", "error");
-              return;
-            }
+          const btnSubmit = form.querySelector('button[type="submit"]');
+          const originalBtnHtml = btnSubmit ? btnSubmit.innerHTML : "";
+          if (btnSubmit) {
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = `<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span><span>${archivosNuevos.length > 0 ? "Subiendo fotos a Cloudinary..." : "Guardando..."}</span>`;
           }
 
           try {
+            let nuevasUrls = [];
+            if (archivosNuevos.length > 0) {
+              mostrarToastInventario(
+                `Subiendo ${archivosNuevos.length} foto${archivosNuevos.length > 1 ? "s" : ""} a Cloudinary...`,
+                "info",
+              );
+
+              try {
+                const archivosASubir = archivosNuevos.map((a) => a.file);
+                nuevasUrls = await subirMultiplesImagenesCloudinary(
+                  archivosASubir,
+                  producto.nombre,
+                  ({ actual, total }) => {
+                    if (btnSubmit) {
+                      btnSubmit.innerHTML = `<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span><span>Subiendo foto ${actual} de ${total} a Cloudinary...</span>`;
+                    }
+                  },
+                );
+              } catch (error) {
+                console.error("Error al subir imágenes a Cloudinary:", error);
+                mostrarToastInventario(
+                  error?.message || "No se pudieron subir las imágenes a Cloudinary.",
+                  "error",
+                );
+                return;
+              }
+            }
+
+            // Unir fotos guardadas previamente con las nuevas URLs de Cloudinary
+            const todasLasUrls = [...imagenesGuardadas, ...nuevasUrls];
+            producto.imagenUrl = todasLasUrls.join(", ");
+            producto.imagenes = todasLasUrls;
+
             if (productoEnEdicionId) {
               await editarProducto(productoEnEdicionId, producto);
               mostrarToastInventario("Producto actualizado correctamente.", "check_circle");
@@ -1733,8 +2153,13 @@
               productoEnEdicionId
                 ? "No se pudo actualizar el producto."
                 : "No se pudo guardar el producto.",
-              "error"
+              "error",
             );
+          } finally {
+            if (btnSubmit) {
+              btnSubmit.disabled = false;
+              btnSubmit.innerHTML = originalBtnHtml;
+            }
           }
         },
       );
@@ -1799,18 +2224,49 @@
         return `<tr>${valores.map((valor) => celdaExcel(valor, encabezado)).join("")}</tr>`;
       }
 
+      function calcularValorStockProducto(producto) {
+        if (Array.isArray(producto.sizes) && producto.sizes.length > 0) {
+          return producto.sizes.reduce((acc, s) => {
+            const stockS = Number(s.stock) || 0;
+            const precioS = Number(s.precioVenta ?? s.price ?? producto.precioVenta ?? 0);
+            return acc + stockS * precioS;
+          }, 0);
+        }
+        return (Number(producto.precioVenta) || 0) * (Number(producto.stock) || 0);
+      }
+
+      function calcularValorCompraProducto(producto) {
+        if (Array.isArray(producto.sizes) && producto.sizes.length > 0) {
+          return producto.sizes.reduce((acc, s) => {
+            const stockS = Number(s.stock) || 0;
+            const costoS = Number(s.precioCompra ?? s.costPrice ?? producto.precioCompra ?? 0);
+            return acc + stockS * costoS;
+          }, 0);
+        }
+        return (Number(producto.precioCompra) || 0) * (Number(producto.stock) || 0);
+      }
+
+      function productoTieneBajoStock(producto) {
+        if (Array.isArray(producto.sizes) && producto.sizes.length > 0) {
+          return producto.sizes.some((s) => (Number(s.stock) || 0) <= (Number(s.stockMinimo) || 0));
+        }
+        return (Number(producto.stock) || 0) <= (Number(producto.stockMinimo) || 0);
+      }
+
       function exportarExcel() {
         const fechaExportacion = new Date().toLocaleString("es-MX");
 
         const valorStock = productos.reduce(
-          (total, producto) =>
-            total + (Number(producto.precioVenta) || 0) * (Number(producto.stock) || 0),
+          (total, producto) => total + calcularValorStockProducto(producto),
           0,
         );
 
-        const alertas = productos.filter(
-          (producto) => (Number(producto.stock) || 0) <= (Number(producto.stockMinimo) || 0),
-        ).length;
+        const valorCompra = productos.reduce(
+          (total, producto) => total + calcularValorCompraProducto(producto),
+          0,
+        );
+
+        const alertas = productos.filter(productoTieneBajoStock).length;
 
         const filasProductos = productos.length
           ? productos
@@ -1833,10 +2289,15 @@
                 const tallasPresentaciones = Array.isArray(producto.sizes)
                   ? producto.sizes
                       .map(
-                        (s) => `${s.label}: $${s.price}${s.inStock === false ? " (Agotado)" : ""}`,
+                        (s) =>
+                          `${s.label}: $${s.precioVenta ?? s.price ?? precioVenta} (Stock: ${s.stock ?? 0}${s.inStock === false ? ", Agotado" : ""})`,
                       )
                       .join(" | ")
                   : "";
+
+                const valorCompraProd = calcularValorCompraProducto(producto);
+                const valorVentaProd = calcularValorStockProducto(producto);
+                const bajoStock = productoTieneBajoStock(producto);
 
                 return filaExcel([
                   producto.id || "",
@@ -1852,9 +2313,9 @@
                   precioVenta,
                   stock,
                   stockMinimo,
-                  stock * precioCompra,
-                  stock * precioVenta,
-                  stock <= stockMinimo ? "Bajo stock" : "En stock",
+                  valorCompraProd,
+                  valorVentaProd,
+                  bajoStock ? "Bajo stock" : "En stock",
                   producto.activo ? "Activo" : "Inactivo",
                   producto.ventas24h ?? 0,
                   fechaExcel(producto.fechaCreacion || producto.creado || producto.createdAt),
@@ -1884,7 +2345,7 @@
         ${filaExcel(["Fecha de exportación", fechaExportacion])}
         ${filaExcel(["Productos registrados", productos.length])}
         ${filaExcel(["Productos con alerta de stock", alertas])}
-        ${filaExcel(["Valor total de compra", productos.reduce((total, producto) => total + (Number(producto.precioCompra) || 0) * (Number(producto.stock) || 0), 0)])}
+        ${filaExcel(["Valor total de compra", valorCompra])}
         ${filaExcel(["Valor total de venta", valorStock])}
     </table>
 
@@ -1993,16 +2454,10 @@
         /* ===================================================== */
 
         const valorStock = productos.reduce((acumulado, producto) => {
-          return acumulado + (Number(producto.precioVenta) || 0) * (Number(producto.stock) || 0);
+          return acumulado + calcularValorStockProducto(producto);
         }, 0);
 
-        const alertas = productos.filter((producto) => {
-          const stock = Number(producto.stock) || 0;
-
-          const minimo = Number(producto.stockMinimo) || 0;
-
-          return stock <= minimo;
-        }).length;
+        const alertas = productos.filter(productoTieneBajoStock).length;
 
         statValorStock.textContent = moneda(valorStock);
 
@@ -2022,13 +2477,27 @@
         /* ===================================================== */
 
         for (const producto of lista) {
+          const sizes = Array.isArray(producto.sizes) ? producto.sizes : [];
+
           const stock = Number(producto.stock) || 0;
 
           const stockMinimo = Number(producto.stockMinimo) || 0;
 
           const precio = Number(producto.precioVenta) || 0;
 
-          const bajoStock = stock <= stockMinimo;
+          const bajoStock = productoTieneBajoStock(producto);
+
+          let precioTexto = moneda(precio);
+          if (sizes.length > 1) {
+            const preciosValidos = sizes
+              .map((s) => Number(s.precioVenta ?? s.price ?? precio) || 0)
+              .filter((p) => p > 0);
+            if (preciosValidos.length > 0) {
+              const minP = Math.min(...preciosValidos);
+              const maxP = Math.max(...preciosValidos);
+              precioTexto = minP === maxP ? moneda(minP) : `${moneda(minP)} - ${moneda(maxP)}`;
+            }
+          }
 
           const nombre = escaparHTML(producto.nombre);
 
@@ -2036,7 +2505,13 @@
 
           const codigoBarras = escaparHTML(producto.codigoBarras);
 
-          const imagenUrl = escaparHTML(producto.imagenUrl || "");
+          const rawImgStr = String(producto.imagenUrl || "").trim();
+          let urlsImagenes = rawImgStr ? rawImgStr.split(",").map((u) => u.trim()).filter(Boolean) : [];
+          if (urlsImagenes.length === 0 && Array.isArray(producto.imagenes)) {
+            urlsImagenes = producto.imagenes.map((u) => String(u || "").trim()).filter(Boolean);
+          }
+          const primeraImagen = escaparHTML(urlsImagenes[0] || "");
+          const totalFotos = urlsImagenes.length;
 
           const rating = Number(producto.rating) || 5.0;
 
@@ -2047,8 +2522,6 @@
             : Array.isArray(producto.scentNotes)
               ? producto.scentNotes
               : [];
-
-          const sizes = Array.isArray(producto.sizes) ? producto.sizes : [];
 
           const fila = document.createElement("tr");
 
@@ -2063,13 +2536,27 @@
                 <div class="flex items-start gap-3">
 
                     ${
-                      imagenUrl
+                      primeraImagen
                         ? `
-                            <img
-                                src="${imagenUrl}"
-                                alt="Imagen de ${nombre}"
-                                class="h-14 w-14 rounded-lg object-cover border border-outline-variant shrink-0"
-                            />
+                            <div class="relative group/thumb shrink-0">
+                                <img
+                                    src="${primeraImagen}"
+                                    alt="Imagen de ${nombre}"
+                                    class="h-14 w-14 rounded-lg object-cover border border-outline-variant shrink-0"
+                                />
+                                ${
+                                  totalFotos > 1
+                                    ? `
+                                    <span
+                                      class="absolute bottom-1 right-1 bg-black/85 backdrop-blur-xs text-[10px] text-amber-300 font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5 shadow border border-amber-400/20"
+                                      title="${totalFotos} fotos para carrusel en App Móvil"
+                                    >
+                                      <span class="material-symbols-outlined text-[11px]">photo_library</span>${totalFotos}
+                                    </span>
+                                    `
+                                    : ""
+                                }
+                            </div>
                             `
                         : `
                             <div class="h-14 w-14 rounded-lg border border-dashed border-outline-variant flex items-center justify-center shrink-0 text-on-surface-variant bg-surface-container-low">
@@ -2120,13 +2607,14 @@
                           sizes.length
                             ? `
                                 <div class="flex flex-wrap items-center gap-1.5 mt-1.5">
-                                    <span class="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold">Presentaciones:</span>
+                                    <span class="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold">Tallas / Stock:</span>
                                     ${sizes
                                       .map(
                                         (s) => `
                                         <span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-surface-container-lowest border border-outline-variant/60 text-[10px] rounded ${s.inStock === false ? "opacity-50 line-through" : "text-on-surface"}">
-                                            <span class="font-semibold">${escaparHTML(s.label)}</span>
-                                            <span class="text-primary font-bold">${moneda(s.price)}</span>
+                                            <span class="font-semibold">${escaparHTML(s.label || s.talla || "")}</span>
+                                            <span class="text-primary font-bold">${moneda(s.price || s.precioVenta || 0)}</span>
+                                            ${s.stock !== undefined && s.stock !== null ? `<span class="text-on-surface-variant text-[9px] font-mono">(${s.stock} pz)</span>` : ""}
                                         </span>
                                     `,
                                       )
@@ -2152,7 +2640,7 @@
 
             <td class="px-gutter py-5 text-on-surface font-semibold text-right">
 
-                ${moneda(precio)}
+                ${precioTexto}
 
             </td>
 
@@ -2166,7 +2654,12 @@
                 "
             >
 
-                ${stock}
+                <span class="block">${stock}</span>
+                ${
+                  sizes.length > 1
+                    ? `<span class="block text-[10px] text-on-surface-variant font-normal leading-tight">${sizes.length} tallas</span>`
+                    : ""
+                }
 
             </td>
 
@@ -2316,7 +2809,10 @@
 
               try {
                 await eliminarProducto(id);
-                mostrarToastInventario(`"${producto?.nombre || "Producto"}" eliminado del inventario.`, "check_circle");
+                mostrarToastInventario(
+                  `"${producto?.nombre || "Producto"}" eliminado del inventario.`,
+                  "check_circle",
+                );
                 await cargar();
               } catch (error) {
                 console.error("Error al eliminar:", error);
@@ -2353,7 +2849,34 @@
         renderizar(resultado);
       }
 
-      buscarProducto?.addEventListener("input", filtrarProductos);
+      const btnLimpiarBuscarInventario = document.getElementById("btnLimpiarBuscarInventario");
+
+      buscarProducto?.addEventListener("input", () => {
+        filtrarProductos();
+        if (btnLimpiarBuscarInventario) {
+          btnLimpiarBuscarInventario.classList.toggle("hidden", !buscarProducto.value.trim());
+        }
+      });
+
+      btnLimpiarBuscarInventario?.addEventListener("click", () => {
+        if (buscarProducto) {
+          buscarProducto.value = "";
+          btnLimpiarBuscarInventario.classList.add("hidden");
+          filtrarProductos();
+          buscarProducto.focus();
+        }
+      });
+
+      // Suavizar scroll y evitar que la rueda del mouse modifique campos numéricos accidentalmente
+      window.addEventListener(
+        "wheel",
+        () => {
+          if (document.activeElement && document.activeElement.type === "number") {
+            document.activeElement.blur();
+          }
+        },
+        { passive: true }
+      );
 
       /* ========================================================= */
       /* RECARGAR */

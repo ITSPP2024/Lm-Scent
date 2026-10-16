@@ -24792,64 +24792,272 @@ var db = getFirestore(
 
 // src/lib/inventario.js
 var tabla = "inventario";
-var MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+var MAX_IMAGE_BYTES = 15 * 1024 * 1024;
 function generarNombreArchivoImagen(nombreProducto, archivo) {
   const extension = String(archivo?.name || "").split(".").pop()?.toLowerCase() || "jpg";
   const nombreSeguro = String(nombreProducto || "producto").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase() || "producto";
   return `${nombreSeguro}.${extension}`;
 }
+async function procesarYComprimirImagen(archivo, maxDim = 1200, calidad = 0.88) {
+  const dataUrlOriginal = await new Promise((resolve) => {
+    const lector = new FileReader();
+    lector.onload = (e2) => resolve(e2.target?.result || null);
+    lector.onerror = () => resolve(null);
+    lector.readAsDataURL(archivo);
+  });
+  if (!dataUrlOriginal) {
+    throw new Error("No se pudo leer el archivo de imagen.");
+  }
+  if (typeof window !== "undefined" && typeof document !== "undefined") {
+    try {
+      const dataUrlComprimido = await new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          try {
+            let { width, height } = img;
+            if (width > maxDim || height > maxDim) {
+              if (width > height) {
+                height = Math.round(height * maxDim / width);
+                width = maxDim;
+              } else {
+                width = Math.round(width * maxDim / height);
+                height = maxDim;
+              }
+            }
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            if (ctx) {
+              ctx.drawImage(img, 0, 0, width, height);
+              const result = canvas.toDataURL("image/jpeg", calidad);
+              resolve(result);
+              return;
+            }
+          } catch (canvasErr) {
+            console.warn("Advertencia de compresi\xF3n en Canvas:", canvasErr);
+          }
+          resolve(null);
+        };
+        img.onerror = () => resolve(null);
+        img.src = dataUrlOriginal;
+      });
+      if (dataUrlComprimido) {
+        return dataUrlComprimido;
+      }
+    } catch {
+    }
+  }
+  return dataUrlOriginal;
+}
+var CLOUDINARY_CONFIG = {
+  cloud_name: "crdybz0f",
+  api_key: "242136737982968",
+  api_secret: "JjkwPFUQtcpTdioWCH9VKDwuDoM"
+};
+async function calcularSha1(texto) {
+  if (typeof crypto !== "undefined" && crypto.subtle && typeof TextEncoder !== "undefined") {
+    try {
+      const data = new TextEncoder().encode(texto);
+      const hashBuffer = await crypto.subtle.digest("SHA-1", data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map((b2) => b2.toString(16).padStart(2, "0")).join("");
+    } catch {
+    }
+  }
+  function rotateLeft(n2, s2) {
+    return n2 << s2 | n2 >>> 32 - s2;
+  }
+  function cvtHex(val) {
+    let str = "";
+    for (let i2 = 7; i2 >= 0; i2--) {
+      str += (val >>> i2 * 4 & 15).toString(16);
+    }
+    return str;
+  }
+  let utftext = "";
+  for (let n2 = 0; n2 < texto.length; n2++) {
+    const c2 = texto.charCodeAt(n2);
+    if (c2 < 128) {
+      utftext += String.fromCharCode(c2);
+    } else if (c2 > 127 && c2 < 2048) {
+      utftext += String.fromCharCode(c2 >> 6 | 192);
+      utftext += String.fromCharCode(c2 & 63 | 128);
+    } else {
+      utftext += String.fromCharCode(c2 >> 12 | 224);
+      utftext += String.fromCharCode(c2 >> 6 & 63 | 128);
+      utftext += String.fromCharCode(c2 & 63 | 128);
+    }
+  }
+  const words = [];
+  for (let i2 = 0; i2 < utftext.length; i2++) {
+    words[i2 >> 2] |= (utftext.charCodeAt(i2) & 255) << 24 - i2 % 4 * 8;
+  }
+  words[utftext.length >> 2] |= 128 << 24 - utftext.length % 4 * 8;
+  words[(utftext.length + 8 >> 6 << 4) + 15] = utftext.length * 8;
+  const W = new Array(80);
+  let H0 = 1732584193, H1 = 4023233417, H2 = 2562383102, H3 = 271733878, H4 = 3285377520;
+  for (let i2 = 0; i2 < words.length; i2 += 16) {
+    let A2 = H0, B = H1, C = H2, D = H3, E = H4;
+    for (let j = 0; j < 80; j++) {
+      if (j < 16) W[j] = words[i2 + j] || 0;
+      else W[j] = rotateLeft(W[j - 3] ^ W[j - 8] ^ W[j - 14] ^ W[j - 16], 1);
+      let t2;
+      if (j < 20)
+        t2 = rotateLeft(A2, 5) + (B & C | ~B & D) + E + W[j] + 1518500249 & 4294967295;
+      else if (j < 40) t2 = rotateLeft(A2, 5) + (B ^ C ^ D) + E + W[j] + 1859775393 & 4294967295;
+      else if (j < 60)
+        t2 = rotateLeft(A2, 5) + (B & C | B & D | C & D) + E + W[j] + 2400959708 & 4294967295;
+      else t2 = rotateLeft(A2, 5) + (B ^ C ^ D) + E + W[j] + 3395469782 & 4294967295;
+      E = D;
+      D = C;
+      C = rotateLeft(B, 30);
+      B = A2;
+      A2 = t2;
+    }
+    H0 = H0 + A2 & 4294967295;
+    H1 = H1 + B & 4294967295;
+    H2 = H2 + C & 4294967295;
+    H3 = H3 + D & 4294967295;
+    H4 = H4 + E & 4294967295;
+  }
+  return [H0, H1, H2, H3, H4].map(cvtHex).join("");
+}
+async function subirDirectoACloudinary(dataUri, nombreProducto) {
+  const { cloud_name, api_key, api_secret } = CLOUDINARY_CONFIG;
+  const safeName = String(nombreProducto ?? "producto").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase();
+  const salt = Math.floor(Math.random() * 1e5);
+  const publicId = `inventario/${safeName || "producto"}-${Date.now()}-${salt}`;
+  const timestamp = Math.round(Date.now() / 1e3);
+  const stringParaFirmar = `public_id=${publicId}&timestamp=${timestamp}${api_secret}`;
+  const signature = await calcularSha1(stringParaFirmar);
+  const formData = new FormData();
+  formData.append("file", dataUri);
+  formData.append("api_key", api_key);
+  formData.append("timestamp", String(timestamp));
+  formData.append("public_id", publicId);
+  formData.append("signature", signature);
+  const endpointUrl = `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`;
+  try {
+    const res = await fetch(endpointUrl, {
+      method: "POST",
+      mode: "cors",
+      body: formData
+    });
+    const datos = await res.json().catch(() => ({}));
+    if (res.ok && datos.secure_url) {
+      return datos.secure_url;
+    }
+    if (datos?.error?.message) {
+      console.warn("Cloudinary fetch devolvi\xF3 error:", datos.error.message);
+    }
+  } catch (errFetch) {
+    console.warn("Fetch directo a Cloudinary no disponible, intentando XHR:", errFetch);
+  }
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", endpointUrl, true);
+    xhr.onload = () => {
+      try {
+        const datos = JSON.parse(xhr.responseText || "{}");
+        if (xhr.status >= 200 && xhr.status < 300 && datos.secure_url) {
+          resolve(datos.secure_url);
+        } else {
+          const msg = datos?.error?.message || `HTTP ${xhr.status}: ${xhr.statusText}`;
+          reject(new Error(msg));
+        }
+      } catch (parseErr) {
+        reject(new Error(`Respuesta inv\xE1lida de Cloudinary: ${parseErr.message}`));
+      }
+    };
+    xhr.onerror = () => {
+      reject(
+        new Error("Error de red al conectar con Cloudinary. Verifica tu conexi\xF3n a internet.")
+      );
+    };
+    xhr.ontimeout = () => {
+      reject(new Error("Tiempo de espera agotado al subir imagen a Cloudinary."));
+    };
+    xhr.timeout = 5e4;
+    xhr.send(formData);
+  });
+}
 async function subirImagenCloudinary(archivo, nombreProducto) {
   if (!(archivo instanceof File)) {
     throw new Error("Selecciona una imagen antes de continuar.");
   }
-  if (!archivo.type.startsWith("image/")) {
+  if (archivo.type && !archivo.type.startsWith("image/")) {
     throw new Error("El archivo seleccionado no es una imagen v\xE1lida.");
   }
   if (archivo.size > MAX_IMAGE_BYTES) {
-    throw new Error("La imagen no puede superar los 5 MB.");
+    throw new Error("La imagen supera el l\xEDmite permitido de 15 MB.");
   }
-  const dataUri = await new Promise(
-    (resolve, reject) => {
-      const lector = new FileReader();
-      lector.onload = () => resolve(lector.result);
-      lector.onerror = () => reject(
-        new Error(
-          "No se pudo leer la imagen seleccionada."
-        )
-      );
-      lector.readAsDataURL(archivo);
-    }
-  );
-  const respuesta = await fetch(
-    "/api/cloudinary/upload",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        dataUri,
-        nombreProducto,
-        nombreArchivo: generarNombreArchivoImagen(
-          nombreProducto,
-          archivo
-        )
-      })
-    }
-  );
-  const respuestaTexto = await respuesta.text();
-  let resultado = {};
+  const dataUri = await procesarYComprimirImagen(archivo);
+  if (!dataUri) {
+    throw new Error("No se pudo leer ni procesar la imagen seleccionada.");
+  }
+  let ultimoError = null;
   try {
-    resultado = respuestaTexto ? JSON.parse(respuestaTexto) : {};
-  } catch {
-    resultado = {};
+    const urlSegura = await subirDirectoACloudinary(dataUri, nombreProducto);
+    if (urlSegura) {
+      return urlSegura;
+    }
+  } catch (errorDirecto) {
+    console.warn("Fallo en subida directa a Cloudinary:", errorDirecto);
+    ultimoError = errorDirecto;
   }
-  if (!respuesta.ok || !resultado.url) {
-    throw new Error(
-      resultado.message || `Error HTTP ${respuesta.status} al subir la imagen a Cloudinary.`
-    );
+  const posiblesUrls = ["/api/cloudinary/upload"];
+  if (typeof window !== "undefined" && window.location?.origin && window.location.origin.startsWith("http")) {
+    posiblesUrls.unshift(`${window.location.origin}/api/cloudinary/upload`);
   }
-  return resultado.url;
+  for (const urlApi of posiblesUrls) {
+    try {
+      const respuesta = await fetch(urlApi, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          dataUri,
+          nombreProducto,
+          nombreArchivo: generarNombreArchivoImagen(nombreProducto, archivo)
+        })
+      });
+      const respuestaTexto = await respuesta.text();
+      let resultado = {};
+      try {
+        resultado = respuestaTexto ? JSON.parse(respuestaTexto) : {};
+      } catch {
+        resultado = {};
+      }
+      if (respuesta.ok && resultado.url) {
+        return resultado.url;
+      }
+    } catch (errFallback) {
+      console.warn(`Fallo en endpoint ${urlApi}:`, errFallback);
+    }
+  }
+  throw new Error(
+    `No se pudo guardar la imagen en Cloudinary: ${ultimoError?.message || "Verifica tu conexi\xF3n y credenciales de Cloudinary."}`
+  );
+}
+async function subirMultiplesImagenesCloudinary(archivos, nombreProducto, onProgreso) {
+  if (!Array.isArray(archivos) || archivos.length === 0) {
+    return [];
+  }
+  const urls = [];
+  for (let i2 = 0; i2 < archivos.length; i2++) {
+    const archivo = archivos[i2];
+    const sufijoNombre = archivos.length > 1 ? `${nombreProducto || "producto"}-${i2 + 1}` : nombreProducto || "producto";
+    if (typeof onProgreso === "function") {
+      onProgreso({ actual: i2 + 1, total: archivos.length, archivo });
+    }
+    const url = await subirImagenCloudinary(archivo, sufijoNombre);
+    if (url) {
+      urls.push(url);
+    }
+  }
+  return urls;
 }
 async function obtenerProductos() {
   try {
@@ -24864,33 +25072,23 @@ async function obtenerProductos() {
   }
 }
 async function agregarProducto(data) {
+  const rawImagenUrl = String(data.imagenUrl ?? "").trim();
+  const imagenesArray = Array.isArray(data.imagenes) && data.imagenes.length > 0 ? data.imagenes.map((s2) => String(s2 || "").trim()).filter(Boolean) : rawImagenUrl ? rawImagenUrl.split(",").map((s2) => s2.trim()).filter(Boolean) : [];
   await addDoc(
-    collection(
-      db,
-      tabla
-    ),
+    collection(db, tabla),
     {
       activo: data.activo ?? true,
       codigoBarras: data.codigoBarras ?? "",
       nombre: data.nombre ?? "",
-      imagenUrl: data.imagenUrl ?? "",
+      imagenUrl: rawImagenUrl,
+      imagenes: imagenesArray,
       categoria: data.categoria ?? "",
-      precioCompra: Number(
-        data.precioCompra
-      ) || 0,
-      precioVenta: Number(
-        data.precioVenta
-      ) || 0,
+      precioCompra: Number(data.precioCompra) || 0,
+      precioVenta: Number(data.precioVenta) || 0,
       sku: data.sku ?? "",
-      stock: Number(
-        data.stock
-      ) || 0,
-      stockMinimo: Number(
-        data.stockMinimo
-      ) || 5,
-      rating: Number(
-        data.rating
-      ) || 5,
+      stock: Number(data.stock) || 0,
+      stockMinimo: Number(data.stockMinimo) || 5,
+      rating: Number(data.rating) || 5,
       concentracion: data.concentracion ?? data.concentration ?? "",
       descripcion: data.descripcion ?? data.description ?? "",
       caracteristicas: Array.isArray(data.caracteristicas) ? data.caracteristicas : data.caracteristicas ? String(data.caracteristicas).split(",").map((s2) => s2.trim()).filter(Boolean) : [],
@@ -24902,34 +25100,26 @@ async function agregarProducto(data) {
   );
 }
 async function eliminarProducto(id) {
-  await deleteDoc(
-    doc(
-      db,
-      tabla,
-      id
-    )
-  );
+  await deleteDoc(doc(db, tabla, id));
 }
 async function editarProducto(id, data) {
-  if (!id) return;
-  const cleanData = {};
-  for (const [key, value] of Object.entries(data)) {
-    if (value !== void 0 && typeof value !== "function") {
-      if (typeof value === "number" && Number.isNaN(value)) {
-        cleanData[key] = 0;
-      } else {
-        cleanData[key] = value;
-      }
+  const datosActualizados = { ...data };
+  if (datosActualizados.imagenUrl !== void 0) {
+    const rawImagenUrl = String(datosActualizados.imagenUrl ?? "").trim();
+    datosActualizados.imagenUrl = rawImagenUrl;
+    if (!Array.isArray(datosActualizados.imagenes) || datosActualizados.imagenes.length === 0) {
+      datosActualizados.imagenes = rawImagenUrl ? rawImagenUrl.split(",").map((s2) => s2.trim()).filter(Boolean) : [];
     }
   }
-  await updateDoc(doc(db, tabla, id), cleanData);
+  await updateDoc(doc(db, tabla, id), datosActualizados);
 }
 export {
   agregarProducto,
   editarProducto,
   eliminarProducto,
   obtenerProductos,
-  subirImagenCloudinary
+  subirImagenCloudinary,
+  subirMultiplesImagenesCloudinary
 };
 /*! Bundled license information:
 
